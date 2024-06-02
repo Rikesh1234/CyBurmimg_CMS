@@ -6,8 +6,12 @@
 	box-sizing: border-box;
 }
 
+ol, ul {
+    padding-left: 0;
+}
+
 a {
-	text-decoration: none;
+	text-decoration: none !important;
 }
 
 li {
@@ -249,6 +253,7 @@ body {
 #content nav .nav-link {
 	font-size: 16px;
 	transition: .3s ease;
+	height: 100px;
 }
 #content nav .nav-link:hover {
 	color: var(--blue);
@@ -440,7 +445,135 @@ body {
 	color: var(--dark);	
 }
 
+.nav-link label.field {
+	border-radius: 2px;
+	color: #666;
+	display: block;
+	max-width: 80px;
+	padding: 4px;
+	opacity: 0;
+	position: relative;
+	transition-property: opacity;
+	z-index: 1;
+	margin-top: 6px;
+}
 
+.nav-link label.field span {
+	color: inherit;
+	display: block;
+	font-size: 16px;
+	height: 20px;
+	line-height: 20px;
+	left: 9px;
+	pointer-events: none;
+	position: absolute;
+	top: 32px;
+	transform: scale(1) translateY(0);
+	transition-property: color, font-size, top;
+	z-index: 1;
+}
+
+.nav-link label.field span.required::after {
+	color: inherit;
+	content: "*";
+	display: block;
+	height: 20px;
+	left: -20px;
+	line-height: 20px;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	width: 20px;
+}
+
+.error label.field span {
+	color: #f02318;
+}
+
+.nav-link label.field .psuedo_select {
+	background: rgba(255, 255, 255, 0);
+	position: relative;
+	border-color: #666;
+	border-style: solid;
+	border-width: 0 0 2px 0;
+	color: #666;
+	cursor: pointer;
+	font-size: 14px;
+	height: 24px;
+	line-height: 24px;
+	margin: 24px 32px 0 0;
+	min-width: 92px;
+	padding-top: 24px;
+	outline: 0;
+	z-index: 1;
+}
+
+.nav-link label.field .psuedo_select::after {
+	background: url("data:image/svg+xml;utf8,<svg fill='#666' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'> <path d='M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z'/> <path d='M0-.75h24v24H0z' fill='none'/> </svg>"), no-repeat;
+	content: "";
+	height: 24px;
+	width: 24px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	transition-property: background;
+}
+
+.nav-link label.field .psuedo_select .selected {
+	height: 24px;
+	left: 1px;
+	line-height: 24px;
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	transform: translateY(24px);
+	transition-property: opacity, transform;
+	will-change: transform;
+}
+
+.nav-link label.field .psuedo_select ul {
+	background: #fff;
+	box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+	display: block;
+	height: 0;
+	list-style: none;
+	margin-top: 2px;
+	opacity: 0;
+	overflow: hidden;
+	padding: 0 1px;
+	pointer-events: none;
+	transition-property: height, opacity;
+	width: 100%;
+	z-index: 2;
+}
+
+.nav-link label.field .psuedo_select ul li {
+	height: 32px;
+	padding: 8px 4px;
+}
+
+.nav-link label.field .deselect {
+	height: 100vh;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100vw;
+	z-index: -1;
+}
+
+.nav-link label.field.focused {
+	color: #007bed;
+}
+.nav-link label.field.focused .psuedo_select {
+	border-color: #007bed;
+}
+.nav-link label.field.focused .psuedo_select::after {
+	background: url("data:image/svg+xml;utf8,<svg fill='#007BED' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'> <path d='M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z'/> <path d='M0-.75h24v24H0z' fill='none'/> </svg>"), no-repeat;
+}
+.nav-link label.field.focused .psuedo_select ul {
+	opacity: 1;
+	pointer-events: all;
+}
 
 
 
@@ -642,3 +775,91 @@ body {
 		min-width: 420px;
 	}
 }
+
+
+/* **************************post style************************** */
+.card-container{
+	display: flex;
+    flex: 3;
+    flex-wrap: wrap;
+    gap: 0px;
+}
+
+.card.post .card-img-top{
+		border-top-left-radius: var(--bs-card-inner-border-radius);
+		border-top-right-radius: var(--bs-card-inner-border-radius);
+		width: 100%;
+		vertical-align: middle;
+		height: 250px;
+		object-fit: cover;
+}
+
+.card.post .img-fluid{
+	max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+    position: absolute !important;
+    bottom: -18px !important;
+    left: 14px !important;
+}
+
+.card.post .card-author-name{
+	position: absolute;
+    bottom: -17px;
+    left: 57px;
+	font-size: 13px;
+}
+
+.card.post .category-name{
+	background: #818;
+}
+
+.category-published{
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category-published .wraper {
+	display: flex;
+	flex-direction:column;
+}
+.category-published .label-text {
+	color: rgb(74, 72, 72);
+	font-size: 1rem;
+}
+.category-published .switch-wrap {
+	cursor: pointer;
+	background: #15273b;
+	width: 73px;
+	height: 31px;
+	border-radius: 50px;
+	padding: 3px;
+}
+.category-published .switch-wrap input {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+.category-published .switch {
+	height: 100%;
+	display: grid;
+	grid-template-columns: 0fr 1fr 1fr;
+	transition: 0.2s;
+}
+.category-published .switch::after {
+	content: '';
+	border-radius: 50%;
+	background: #ccc;
+	grid-column: 2;
+	transition: background 0.2s;
+}
+.category-published input:checked + .switch {
+	grid-template-columns: 1fr 1fr 0fr;
+}
+input:checked + .switch::after {
+	background-color: #52cf71;
+}
+
+
