@@ -65,6 +65,11 @@ body {
 
 
 /* SIDEBAR */
+.mobile-sidebar{
+	display: none;
+}
+
+
 #sidebar {
 	position: fixed;
 	top: 0;
@@ -813,7 +818,7 @@ body {
 		border-top-right-radius: var(--bs-card-inner-border-radius);
 		width: 100%;
 		vertical-align: middle;
-		height: 250px;
+		height: 25%;
 		object-fit: cover;
 }
 
@@ -828,9 +833,11 @@ body {
 
 .card.post .card-author-name{
 	position: absolute;
-    bottom: -17px;
+    bottom: -19px;
     left: 57px;
-	font-size: 13px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Poppins';
 }
 
 .card.post .category-name{
@@ -883,6 +890,15 @@ body {
 }
 input:checked + .switch::after {
 	background-color: #52cf71;
+}
+
+.card.post .icon-container{
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.card.post .icon-container .post-calender{
+	margin: 0 !important;
 }
 
 
@@ -942,5 +958,46 @@ input:checked + .switch::after {
 	width: 1px;
 	overflow: hidden;
 }
+
+/* **********************************pagination*|***************** */
+
+.pagination-container {
+	position: relative;
+	margin-top: 50px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+
+  .pagination-container .pagination {
+	position: relative;
+	height: 60px;
+	background: rgba(255, 255, 255);
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	backdrop-filter: blur(3px);
+	border-radius: 2px;
+  }
+
+  .pagination-container .pagination li {
+	list-style-type: none;
+	display: inline-block;
+  }
+
+  .pagination-container .pagination li a {
+	position: relative;
+	padding: 20px 25px;
+	text-decoration: none;
+	color: #000;
+	font-weight: 500;
+	border: 1px solid rgba(0, 0, 0, 0.2);;
+  }
+  .pagination-container .pagination li a:hover,
+  .pagination-container .pagination li.active a {
+	background: rgba(255, 255, 255, 0.2);
+  }
 
 

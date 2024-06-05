@@ -165,8 +165,8 @@ iframe {
   background-size: cover;
   position: relative;
   z-index: 1;  
-  -webkit-animation: slidein 100s;
-  animation: slidein 100s;
+  -webkit-animation: slideinDesktop 100s;
+  animation: slideinDesktop 100s;
 
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
@@ -178,16 +178,27 @@ iframe {
   animation-direction: alternate; 
 }
 
-@-webkit-keyframes slidein {
+@-webkit-keyframes slideinDesktop {
   from {background-position: center; background-size:150%; }
   to {background-position: 100% 100%;background-size:100%;}
   }
   
-  @keyframes slidein {
+  @keyframes slideinDesktop {
   from {background-position: center;background-size:150%; }
   to {background-position: 100% 100%;background-size:100%;}
   
   }
+
+  @-webkit-keyframes slideinMobile {
+    from {background-position: center; background-size:250%; }
+    to {background-position: 100% 100%;background-size:100%;}
+    }
+    
+    @keyframes slideinMobile {
+    from {background-position: center;background-size:250%; }
+    to {background-position: 100% 100%;background-size:100%;}
+    
+    }
 
 .container-login100::before {
   content: "";

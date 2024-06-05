@@ -11,16 +11,51 @@ allSideMenu.forEach(item=> {
 	})
 });
 
-
+const sidebar = document.querySelector(".mobile-sidebar");
+const sidebarClose = document.querySelector("#sidebar-close");
+const menu = document.querySelector(".menu-content");
+const menuItems = document.querySelectorAll(".submenu-item");
+const subMenuTitles = document.querySelectorAll(".submenu .menu-title");
+sidebarClose.addEventListener("click", () => sidebar.style.left = "-800px");
+menuItems.forEach((item, index) => {
+  item.addEventListener("click", () => {
+    menu.classList.add("submenu-active");
+    item.classList.add("show-submenu");
+    menuItems.forEach((item2, index2) => {
+      if (index !== index2) {
+        item2.classList.remove("show-submenu");
+      }
+    });
+  });
+});
+subMenuTitles.forEach((title) => {
+  title.addEventListener("click", () => {
+    menu.classList.remove("submenu-active");
+  });
+});
 
 
 // TOGGLE SIDEBAR
 const menuBar = document.querySelector('#content nav .bx.bx-menu');
-const sidebar = document.getElementById('sidebar');
+const sidebared = document.getElementById('sidebar');
 
+
+var screenWidth = window.innerWidth;
+// Check screen height
+var screenHeight = window.innerHeight;
+
+if(screenWidth > 1500){
 menuBar.addEventListener('click', function () {
-	sidebar.classList.toggle('hide');
+
+	sidebared.classList.toggle('hide');
 })
+}else{
+	menuBar.addEventListener('click', function () {
+		console.log("adjlasjd")
+		sidebar.style.left = "0px"
+})
+}
+
 
 
 
@@ -76,6 +111,8 @@ switchMode.addEventListener('change', function () {
 })
 
 document.addEventListener("DOMContentLoaded", function() {
+	console.log(window.screenWidt);
+	if(window.screenWidth > 1500){
     const dropdowns = document.querySelectorAll('.dropdown');
 	let clickcount = 0;
 	let dropdownmenuHeight;
@@ -111,6 +148,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
+}
 });
 
 var util = {
@@ -326,4 +364,6 @@ f: {
 		}
 	}
 }}
+
+
 window.onload = form.f.init.register
