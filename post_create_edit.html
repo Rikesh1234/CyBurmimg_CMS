@@ -2,6 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="stylesheet"
@@ -10,12 +12,16 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link rel="stylesheet" href="public/vendor/select2/select2.css" />
+    <link rel="stylesheet" href="public/vendor/select2/select2.min.css" />
+    <script src="public/vendor/jquery/jquery-3.2.1.min.js"></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
+    <script src="public/js/ckeditor.js"></script>
     <!-- Bootstrap Toggle CSS -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/css/bootstrap4-toggle.min.css"
@@ -23,6 +29,7 @@
     />
     <!-- My CSS -->
     <link rel="stylesheet" href="public/css/style.css" />
+    <link rel="stylesheet" href="public/css/responsive.css" />
 
     <!-- Boxicons -->
     <link
@@ -30,12 +37,131 @@
       rel="stylesheet"
     />
     <!-- My CSS -->
-    <link rel="stylesheet" href="public/css/style.css" />
+    <!-- <link rel="stylesheet" href="public/css/style.css" /> -->
 
     <title>CyBurning</title>
   </head>
 
   <body>
+    <!-- Mobile Navigation -->
+    <nav class="mobile-sidebar">
+      <div class="logo-cross">
+        <a href="#" class="logo">CodingLab</a>
+        <span class="cross" id="sidebar-close"></span>
+      </div>
+      <div class="menu-content">
+        <ul class="menu-items">
+          <div class="menu-title">Your menu title</div>
+          <li class="item">
+            <a href="#">Your first link</a>
+          </li>
+          <li class="item">
+            <div class="submenu-item">
+              <span>First submenu</span>
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <ul class="menu-items submenu">
+              <div class="menu-title">
+                <i class="fa-solid fa-chevron-left"></i>
+                Your submenu title
+              </div>
+              <li class="item">
+                <a href="#">First sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">First sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">First sublink</a>
+              </li>
+            </ul>
+          </li>
+          <li class="item">
+            <div class="submenu-item">
+              <span>Second submenu</span>
+              <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <ul class="menu-items submenu">
+              <div class="menu-title">
+                <i class="fa-solid fa-chevron-left"></i>
+                Your submenu title
+              </div>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+              <li class="item">
+                <a href="#">Second sublink</a>
+              </li>
+            </ul>
+          </li>
+          <li class="item">
+            <a href="#">Your second link</a>
+          </li>
+          <li class="item">
+            <a href="#">Your third link</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- Mobile Navigation-->
+
     <!-- SIDEBAR -->
     <section id="sidebar">
       <a href="#" class="brand">
@@ -65,7 +191,6 @@
             <li>
               <a href="#"><i class="bx bxs-pen"></i>Author</a>
             </li>
-            <!-- Add more dropdown items here -->
           </ul>
         </li>
         <li class="dropdown">
@@ -81,7 +206,6 @@
             <li>
               <a href="#"><i class="bx bxs-pen"></i>Role</a>
             </li>
-            <!-- Add more dropdown items here -->
           </ul>
         </li>
         <li>
@@ -103,7 +227,6 @@
             <li>
               <a href="#"><i class="bx bx-polygon"></i>Project Category</a>
             </li>
-            <!-- Add more dropdown items here -->
           </ul>
         </li>
         <li>
@@ -191,362 +314,463 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Post</h1>
+            <h1>Add Post</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="dashboard.html">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active" href="#">Post</a>
+                <a href="post_listing.html">Post</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active" href="#">Add Post</a>
               </li>
             </ul>
           </div>
           <a href="#" class="btn-create">
-            <i class="fas fa-plus"></i>
-            <span class="text">Create a Post</span>
+            <i class="fas fa-arrow-left"></i>
+            <span class="text">Back</span>
           </a>
         </div>
 
-        <div class="search-container">
-          <form onsubmit="event.preventDefault();" role="search">
-            <label for="search">Search for stuff</label>
-            <input
-              id="search"
-              type="search"
-              placeholder="Search..."
-              autofocus
-              required
-            />
-            <button type="submit">Go</button>
-          </form>
-        </div>
-
-        <div class="row">
-          <div class="card-container">
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a href="../main/blog-detail.html">
-                    <img
-                      src="public/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                  <img
-                    src="public/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <span class="card-author-name">Author Name</span>
+        <form action="#">
+          <div class="form-container">
+            <div class="post-right-container col-md-7">
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Title</label
+                  ><span class="important">*</span>
                 </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
+                <input type="text" class="form-control" name="title" />
+              </div>
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="tag_line">Tag Line</label>
+                </div>
+                <input type="text" class="form-control" name="tag_line" />
+              </div>
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="summary">Summary</label>
+                </div>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  name="summary"
+                  rows="7"
+                  cols="7"
+                ></textarea>
+              </div>
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="content">Content</label>
+                </div>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  name="content"
+                  rows="7"
+                  cols="7"
+                  id="description"
+                ></textarea>
+              </div>
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="category">Category</label>
+                </div>
+                <select
+                  name="category"
+                  class="select-category form-control"
+                  multiple="multiple"
+                >
+                  <option>Cat A</option>
+                  <option>Cat B</option>
+                </select>
+              </div>
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="author">Author</label>
+                </div>
+                <select
+                  name="author"
+                  class="select-author form-control"
+                  multiple="multiple"
+                >
+                  <option>Cat A</option>
+                  <option>Cat B</option>
+                </select>
+              </div>
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="other_feature">Tags</label>
+                </div>
+                <select
+                  name="tags"
+                  class="select-tags form-control"
+                  multiple="multiple"
+                >
+                  <option>Cat A</option>
+                  <option>Cat B</option>
+                </select>
+              </div>
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Others Feature</label>
+                </div>
+                <div class="form-check form-switch">
+                  <label class="form-check-label" for="Photo Gallery"
+                    >Photo Gallery</label
                   >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center ms-auto">
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="photo_gallery"
+                  />
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Choose Photos for your gallery</label>
+                </div>
+                <div class="upload-container">
+                  <input
+                    id="upload-input"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    style="display: none"
+                  />
+                  <div id="image-container"></div>
+                  <label for="upload-input">Upload Image</label>
                 </div>
               </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a href="../main/blog-detail.html">
-                    <img
-                      src="public/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                  <img
-                    src="public/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <span class="card-author-name">Author Name</span>
+            <div class="post-left-container col-md-4">
+
+              <div class="form-box" style="margin-bottom: 15px;">
+                <div class="form-label">
+                  <label for="Published">Published</label>
+              <div class="form-check form-switch" style="margin-top: 10px;">
+                <label class="form-check-label" for="Status"
+                  >Status</label
+                >
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="status"
+                />
+              </div>
+              </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="Published_date">Published Date</label>
                 </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
+                     <input type='datetime-local' name="date" id="date" class="form-control" placeholder="YYYY/MM/HH H:M:S" />
+              </div>
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="Published_date">Featued Image</label>
+                </div>
+                <div class="upload-container-one">
+                  <input id="upload-input-one" type="file" accept="image/*" hidden>
+                  <div id="image-container-one">
+                    <img src="public/images/upload.png" class="uploaded-image">
                   </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center ms-auto">
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
+                  <label for="upload-input-one">Upload Image</label>
                 </div>
               </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a href="../main/blog-detail.html">
-                    <img
-                      src="public/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                  <img
-                    src="public/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <span class="card-author-name">Author Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center ms-auto">
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a href="../main/blog-detail.html">
-                    <img
-                      src="public/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                  <img
-                    src="public/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <span class="card-author-name">Author Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center ms-auto">
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
+              <input type="submit" class="full-submit-button form-control" />
+              <div class="button-box">
+                <input type="submit" class="submit-button form-control" />
+                <input
+                  type="button"
+                  class="cancel-button form-control"
+                  value="cancel"
+                />
               </div>
             </div>
           </div>
-        </div>
-        <div class="pagination-container">
-          <ul class="pagination">
-            <li>
-              <a href="#">Prev</a>
-            </li>
-            <li>
-              <a href="#">1</a>
-            </li>
-            <li class="active">
-              <a href="#">2</a>
-            </li>
-            <li>
-              <a href="#">3</a>
-            </li>
-            <li>
-              <a href="#">4</a>
-            </li>
-            <li>
-              <a href="#">5</a>
-            </li>
-            <li>
-              <a href="#">Next</a>
-            </li>
-          </ul>
-        </div>
+        </form>
       </main>
       <!-- MAIN -->
     </section>
     <!-- CONTENT -->
 
-    <script src="public/js/script.js"></script>
+    <script src="public/js/script.js?v=1.1"></script>
+    <script src="public/vendor/select2/select2.js"></script>
+    <script src="public/vendor/select2/select2.min.js"></script>
+    <script>
+      ClassicEditor.create(document.querySelector("#description"), {
+        toolbar: {
+          items: [
+            "exportPDF",
+            "exportWord",
+            "|",
+            "findAndReplace",
+            "selectAll",
+            "|",
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "strikethrough",
+            "underline",
+            "code",
+            "subscript",
+            "superscript",
+            "removeFormat",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "todoList",
+            "|",
+            "outdent",
+            "indent",
+            "|",
+            "undo",
+            "redo",
+            "-",
+            "fontSize",
+            "fontFamily",
+            "fontColor",
+            "fontBackgroundColor",
+            "highlight",
+            "|",
+            "alignment",
+            "|",
+            "link",
+            "uploadImage",
+            "blockQuote",
+            "insertTable",
+            "mediaEmbed",
+            "codeBlock",
+            "htmlEmbed",
+            "|",
+            "specialCharacters",
+            "horizontalLine",
+            "pageBreak",
+            "|",
+            "textPartLanguage",
+            "|",
+            "sourceEditing",
+          ],
+          shouldNotGroupWhenFull: true,
+        },
+        // Changing the language of the interface requires loading the language file using the <script> tag.
+        // language: 'es',
+        list: {
+          properties: {
+            styles: true,
+            startIndex: true,
+            reversed: true,
+          },
+        },
+        // https://ckeditor.com/docs/ckeditor5/latest/features/headings.html#configuration
+        heading: {
+          options: [
+            {
+              model: "paragraph",
+              title: "Paragraph",
+              class: "ck-heading_paragraph",
+            },
+            {
+              model: "heading1",
+              view: "h1",
+              title: "Heading 1",
+              class: "ck-heading_heading1",
+            },
+            {
+              model: "heading2",
+              view: "h2",
+              title: "Heading 2",
+              class: "ck-heading_heading2",
+            },
+            {
+              model: "heading3",
+              view: "h3",
+              title: "Heading 3",
+              class: "ck-heading_heading3",
+            },
+            {
+              model: "heading4",
+              view: "h4",
+              title: "Heading 4",
+              class: "ck-heading_heading4",
+            },
+            {
+              model: "heading5",
+              view: "h5",
+              title: "Heading 5",
+              class: "ck-heading_heading5",
+            },
+            {
+              model: "heading6",
+              view: "h6",
+              title: "Heading 6",
+              class: "ck-heading_heading6",
+            },
+          ],
+        },
+        fontFamily: {
+          options: [
+            "default",
+            "Arial, Helvetica, sans-serif",
+            "Courier New, Courier, monospace",
+            "Georgia, serif",
+            "Lucida Sans Unicode, Lucida Grande, sans-serif",
+            "Tahoma, Geneva, sans-serif",
+            "Times New Roman, Times, serif",
+            "Trebuchet MS, Helvetica, sans-serif",
+            "Verdana, Geneva, sans-serif",
+          ],
+          supportAllValues: true,
+        },
+        // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-size-feature
+        fontSize: {
+          options: [10, 12, 14, "default", 18, 20, 22],
+          supportAllValues: true,
+        },
+        // Be careful with the setting below. It instructs CKEditor to accept ALL HTML markup.
+        // https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#enabling-all-html-features
+        htmlSupport: {
+          allow: [
+            {
+              name: /.*/,
+              attributes: true,
+              classes: true,
+              styles: true,
+            },
+          ],
+        },
+        // Be careful with enabling previews
+        // https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html#content-previews
+        htmlEmbed: {
+          showPreviews: true,
+        },
+        // https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators
+        link: {
+          decorators: {
+            addTargetToExternalLinks: true,
+            defaultProtocol: "https://",
+            toggleDownloadable: {
+              mode: "manual",
+              label: "Downloadable",
+              attributes: {
+                download: "file",
+              },
+            },
+          },
+        },
+        // https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html#configuration
+        mention: {
+          feeds: [
+            {
+              marker: "@",
+              feed: [
+                "@apple",
+                "@bears",
+                "@brownie",
+                "@cake",
+                "@cake",
+                "@candy",
+                "@canes",
+                "@chocolate",
+                "@cookie",
+                "@cotton",
+                "@cream",
+                "@cupcake",
+                "@danish",
+                "@donut",
+                "@dragée",
+                "@fruitcake",
+                "@gingerbread",
+                "@gummi",
+                "@ice",
+                "@jelly-o",
+                "@liquorice",
+                "@macaroon",
+                "@marzipan",
+                "@oat",
+                "@pie",
+                "@plum",
+                "@pudding",
+                "@sesame",
+                "@snaps",
+                "@soufflé",
+                "@sugar",
+                "@sweet",
+                "@topping",
+                "@wafer",
+              ],
+              minimumCharacters: 1,
+            },
+          ],
+        },
+        // The "superbuild" contains more premium features that require additional configuration, disable them below.
+        // Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
+        removePlugins: [
+          // These two are commercial, but you can try them out without registering to a trial.
+          // 'ExportPdf',
+          // 'ExportWord',
+          "AIAssistant",
+          "CKBox",
+          "CKFinder",
+          "EasyImage",
+          // This sample uses the Base64UploadAdapter to handle image uploads as it requires no configuration.
+          // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html
+          // Storing images as Base64 is usually a very bad idea.
+          // Replace it on production website with other solutions:
+          // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html
+          // 'Base64UploadAdapter',
+          "MultiLevelList",
+          "RealTimeCollaborativeComments",
+          "RealTimeCollaborativeTrackChanges",
+          "RealTimeCollaborativeRevisionHistory",
+          "PresenceList",
+          "Comments",
+          "TrackChanges",
+          "TrackChangesData",
+          "RevisionHistory",
+          "Pagination",
+          "WProofreader",
+          // Careful, with the Mathtype plugin CKEditor will not load when loading this sample
+          // from a local file system (file://) - load this site via HTTP server if you enable MathType.
+          "MathType",
+          // The following features are part of the Productivity Pack and require additional license.
+          "SlashCommand",
+          "Template",
+          "DocumentOutline",
+          "FormatPainter",
+          "TableOfContents",
+          "PasteFromOfficeEnhanced",
+          "CaseChange",
+        ],
+      });
+
+      $(document).ready(function domReady() {
+        $(".select-category").select2({
+          placeholder: "Category",
+        });
+
+        $(".select-author").select2({
+          placeholder: "Author",
+        });
+
+        $(".select-tags").select2({
+          placeholder: "Tags",
+        });
+      });
+
+      flatpickr("#date", {
+        enableTime: true,
+    dateFormat: "Y-m-d H:i",
+      });
+    </script>
   </body>
 </html>

@@ -1,4 +1,83 @@
 const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
+const stickyButtons = document.querySelector('.button-box');
+
+window.addEventListener('scroll',()=>{
+	if(window.scrollY > 500){
+		stickyButtons.style.display = "flex";
+		stickyButtons.style.visibility = "visible";
+	}else{
+		stickyButtons.style.display = "none";
+		stickyButtons.style.visibility = "hidden";
+	}
+})
+
+document.addEventListener('DOMContentLoaded', function () {
+	const uploadInput = document.getElementById('upload-input');
+	const imageContainer = document.getElementById('image-container');
+	let images = [];
+	
+	uploadInput.addEventListener('change', function (event) {
+	  const files = event.target.files;
+	  if (files) {
+		for (const file of files) {
+		  const imageCard= document.createElement('div');
+		  imageCard.classList.add('upload-card');
+		  const reader = new FileReader();
+		  reader.onload = function () {
+			const img = document.createElement('img');
+			img.src = reader.result;
+			img.classList.add('uploaded-image');
+			imageCard.appendChild(img);
+			const captionInput = document.createElement('input');
+			captionInput.type = 'text';
+			captionInput.placeholder = 'Enter image caption...';
+			captionInput.classList.add('form-control');
+			imageCard.appendChild(captionInput);
+			const removeButton = document.createElement('button');
+			removeButton.textContent = 'X';
+			removeButton.classList.add('remove-button');
+			removeButton.addEventListener('click', function (e) {
+			  e.stopPropagation(); // Prevents the click event from propagating to the parent elements
+			  imageContainer.removeChild(imageCard);
+			  images = images.filter(image => image.file !== file);
+			});
+			imageCard.appendChild(removeButton);
+			imageContainer.appendChild(imageCard);
+			images.push({ file: file, caption: captionInput });
+		  };
+		  reader.readAsDataURL(file);
+		}
+	  }
+	});
+  
+	// Example of accessing the uploaded images array:
+	// images.forEach(image => {
+	//   console.log(image.file); // Access the file object
+	//   console.log(image.caption.value); // Access the caption value
+	// });
+
+	const uploadInputOne = document.getElementById('upload-input-one');
+  const imageContainerOne = document.getElementById('image-container-one');
+  let uploadedImage = document.querySelector('.uploaded-image');
+
+  uploadInputOne.addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        if (uploadedImage) {
+          imageContainerOne.removeChild(uploadedImage);
+        }
+        const img = document.createElement('img');
+        img.src = reader.result;
+        img.classList.add('uploaded-image');
+        imageContainerOne.appendChild(img);
+        uploadedImage = img;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+  });
 
 allSideMenu.forEach(item=> {
 	const li = item.parentElement;
@@ -16,6 +95,7 @@ const sidebarClose = document.querySelector("#sidebar-close");
 const menu = document.querySelector(".menu-content");
 const menuItems = document.querySelectorAll(".submenu-item");
 const subMenuTitles = document.querySelectorAll(".submenu .menu-title");
+
 sidebarClose.addEventListener("click", () => sidebar.style.left = "-800px");
 menuItems.forEach((item, index) => {
   item.addEventListener("click", () => {
@@ -51,7 +131,6 @@ menuBar.addEventListener('click', function () {
 })
 }else{
 	menuBar.addEventListener('click', function () {
-		console.log("adjlasjd")
 		sidebar.style.left = "0px"
 })
 }
@@ -111,7 +190,7 @@ switchMode.addEventListener('change', function () {
 })
 
 document.addEventListener("DOMContentLoaded", function() {
-	console.log(window.screenWidt);
+
 	if(window.screenWidth > 1500){
     const dropdowns = document.querySelectorAll('.dropdown');
 	let clickcount = 0;
@@ -231,7 +310,6 @@ form = {
 f: {
 	init: {
 		register: function () {
-			console.clear()// just cuz codepen
 			var child, children = document.getElementsByClassName("field"), i
 			for (i = 0; i < children.length; i += 1) {
 				child = children[i]
