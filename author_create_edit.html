@@ -317,18 +317,18 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Post</h1>
+            <h1>Add Author</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="dashboard.html">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="post_listing.html">Post</a>
+                <a href="post_listing.html">Author</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active" href="#">Add Post</a>
+                <a class="active" href="#">Add Author</a>
               </li>
             </ul>
           </div>
@@ -340,7 +340,7 @@
 
         <form action="#">
           <div class="form-container">
-            <div class="post-right-container col-md-7">
+            <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
                 <div class="form-label">
                   <label for="title">Title</label
@@ -348,24 +348,7 @@
                 </div>
                 <input type="text" class="form-control" name="title" />
               </div>
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="tag_line">Tag Line</label>
-                </div>
-                <input type="text" class="form-control" name="tag_line" />
-              </div>
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="summary">Summary</label>
-                </div>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  name="summary"
-                  rows="7"
-                  cols="7"
-                ></textarea>
-              </div>
+    
               <div class="form-box">
                 <div class="form-label">
                   <label for="content">Content</label>
@@ -378,77 +361,6 @@
                   cols="7"
                   id="description"
                 ></textarea>
-              </div>
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="category">Category</label>
-                </div>
-                <select
-                  name="category"
-                  class="select-category form-control"
-                  multiple="multiple"
-                >
-                  <option>Cat A</option>
-                  <option>Cat B</option>
-                </select>
-              </div>
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="author">Author</label>
-                </div>
-                <select
-                  name="author"
-                  class="select-author form-control"
-                  multiple="multiple"
-                >
-                  <option>Cat A</option>
-                  <option>Cat B</option>
-                </select>
-              </div>
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="other_feature">Tags</label>
-                </div>
-                <select
-                  name="tags"
-                  class="select-tags form-control"
-                  multiple="multiple"
-                >
-                  <option>Cat A</option>
-                  <option>Cat B</option>
-                </select>
-              </div>
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="title">Others Feature</label>
-                </div>
-                <div class="form-check form-switch">
-                  <label class="form-check-label" for="Photo Gallery"
-                    >Photo Gallery</label
-                  >
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="photo_gallery"
-                  />
-                </div>
-              </div>
-
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="title">Choose Photos for your gallery</label>
-                </div>
-                <div class="upload-container">
-                  <input
-                    id="upload-input"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    style="display: none"
-                  />
-                  <div id="image-container"></div>
-                  <label for="upload-input">Upload Image</label>
-                </div>
               </div>
             </div>
 
@@ -467,18 +379,7 @@
                 </div>
               </div>
 
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="Published_date">Published Date</label>
-                </div>
-                <input
-                  type="datetime-local"
-                  name="date"
-                  id="date"
-                  class="form-control"
-                  placeholder="YYYY/MM/HH H:M:S"
-                />
-              </div>
+
               <div class="form-box">
                 <div class="form-label">
                   <label for="Published_date">Featued Image</label>
@@ -500,6 +401,11 @@
                 </div>
               </div>
               <input type="submit" class="full-submit-button form-control" />
+              <input
+                  type="button"
+                  class="cancel-button form-control"
+                  value="cancel"
+                />
               <div class="button-box">
                 <input type="submit" class="submit-button form-control" />
                 <input
@@ -765,20 +671,6 @@
           "PasteFromOfficeEnhanced",
           "CaseChange",
         ],
-      });
-
-      $(document).ready(function domReady() {
-        $(".select-category").select2({
-          placeholder: "Category",
-        });
-
-        $(".select-author").select2({
-          placeholder: "Author",
-        });
-
-        $(".select-tags").select2({
-          placeholder: "Tags",
-        });
       });
 
       flatpickr("#date", {

@@ -1,8 +1,11 @@
 const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
 const stickyButtons = document.querySelector('.button-box');
 
+console.log(window.innerWidth)
+
+if(window.innerWidth > 1024){
 window.addEventListener('scroll',()=>{
-	if(window.scrollY > 500){
+	if(window.scrollY > 750){
 		stickyButtons.style.display = "flex";
 		stickyButtons.style.visibility = "visible";
 	}else{
@@ -10,6 +13,7 @@ window.addEventListener('scroll',()=>{
 		stickyButtons.style.visibility = "hidden";
 	}
 })
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 	const uploadInput = document.getElementById('upload-input');

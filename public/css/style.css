@@ -833,7 +833,7 @@ body {
     font-family: 'Poppins';
 }
 
-.card.post .category-name{
+.badge{
 	background: #818;
 }
 
@@ -1075,11 +1075,17 @@ input:checked + .switch::after {
 	transition: all 0.3s ease;
   }
 
-  .form-container .button-box .cancel-button{
-	width: 153px;
+  .form-container .cancel-button{
 	background-color: var(--red);
 	color: #fff;
+	margin-top: 3px;
+	display: none;
+  }
+
+  .form-container .button-box .cancel-button{
+	width: 153px;
 	transition: all 0.3s ease;
+	display: block;
   }
 
   .form-container .ck .ck-content {
@@ -1110,6 +1116,10 @@ input:checked + .switch::after {
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
 	color: #fff;
+}
+
+.select2-container {
+    width: 100% !important;
 }
 
 .form-switch{
@@ -1212,5 +1222,18 @@ input:checked + .switch::after {
 	visibility: visible;
   }
 
+.default-btn{
+	padding: 5px;
+	box-shadow: 5px 5px 5px var(--grey);
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
 
+.default-btn:hover{
+	box-shadow: 8px 8px 8px var(--grey);
+}
+
+.default-btn.active{
+	background-color: var(--yellow);
+}
 

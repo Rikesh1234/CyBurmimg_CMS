@@ -188,5 +188,20 @@
         padding: 17px 10px;
     }
 
+    #content main .head-title .btn-create {
+      margin-bottom: 15px;
+  }
+
+  .form-container{
+    display: block;
+  }
+
+  .form-container .cancel-button{
+    display: block;
+    }
+
+    .one-card-container{
+      width: 100%;
+    }
 
 }
