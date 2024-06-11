@@ -1068,7 +1068,7 @@ input:checked + .switch::after {
 	transition: all 0.3s ease;
   }
 
-  .form-container .button-box .submit-button{
+  .form-container .submit-button{
 	width: 153px;
 	background-color: #52cf71;
 	color: #fff;
@@ -1077,6 +1077,7 @@ input:checked + .switch::after {
 
   .form-container .cancel-button{
 	background-color: var(--red);
+	width: 153px;
 	color: #fff;
 	margin-top: 3px;
 	display: none;
@@ -1237,3 +1238,90 @@ input:checked + .switch::after {
 	background-color: var(--yellow);
 }
 
+/* *****************************User**************** */
+.card-email{
+	font-size: 15px;
+	font-weight: 400;
+	color: #999;
+}
+
+.generate-btn, .generate-btn:focus {
+	width: 25%;
+	background-color: #57bd84;
+	color: #fff;
+	border: none;
+	box-shadow: none;
+	transition: all 0.3s ease;
+}
+
+.generate-btn:hover{
+	background-color: #52cf71;
+}
+
+.indicator{
+	height: 10px;
+	margin: 10px 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	display: none;
+  }
+  .indicator span{
+	position: relative;
+	height: 100%;
+	width: 100%;
+	background: lightgrey;
+	border-radius: 5px;
+  }
+  .indicator span:nth-child(2){
+	margin: 0 3px;
+  }
+  .indicator span.active:before{
+	position: absolute;
+	content: '';
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	border-radius: 5px;
+  }
+  .indicator span.weak:before{
+	background-color: var(--red);
+  }
+  .indicator span.medium:before{
+	background-color: orange;
+  }
+  .indicator span.strong:before{
+	background-color: var(--green);
+  }
+  .indicator-text{
+	font-size: 20px;
+	font-weight: 500;
+	display: none;
+	margin-bottom: 15px;
+	text-align: center;
+  }
+  .indicator-text.weak{
+	color: var(--red);
+  }
+  .indicator-text.medium{
+	color: orange;
+  }
+  .indicator-text.strong{
+	color: var(--green);
+  }
+
+  .check-box-container{
+	display: flex;
+	row-gap: 50px;
+	flex-wrap: wrap;
+	margin-top: 30px;
+  }
+
+  .check-box-container .checkbox-contains{
+	width: calc(100%/4);
+	font-size: 17px;
+	font-weight: 300;
+	display: flex;
+	gap: 5px;
+  }
