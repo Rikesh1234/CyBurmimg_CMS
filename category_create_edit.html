@@ -186,7 +186,9 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-              <a href="post_listing.html"><i class="bx bx-notepad"></i>Category</a>
+              <a href="post_listing.html"
+                ><i class="bx bx-notepad"></i>Category</a
+              >
             </li>
             <li>
               <a href="#"><i class="bx bx-polygon"></i>Category</a>
@@ -346,7 +348,15 @@
                   <label for="title">Title</label
                   ><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="title" />
+                <input type="text" class="form-control" name="title" id="title" />
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="slug">Slug</label
+                  ><span class="important">*</span>
+                </div>
+                <input type="text" class="form-control" name="slug" id="slug" />
               </div>
 
               <div class="form-box">
@@ -355,7 +365,7 @@
                 </div>
                 <input type="text" class="form-control" name="tag_line" />
               </div>
-    
+
               <div class="form-box">
                 <div class="form-label">
                   <label for="content">Content</label>
@@ -369,7 +379,7 @@
                   id="description"
                 ></textarea>
               </div>
-              
+
               <div class="form-box">
                 <div class="form-label">
                   <label for="Parent">Parent</label>
@@ -400,7 +410,6 @@
                 </div>
               </div>
 
-
               <div class="form-box">
                 <div class="form-label">
                   <label for="Published_date">Featued Image</label>
@@ -423,10 +432,10 @@
               </div>
               <input type="submit" class="full-submit-button form-control" />
               <input
-                  type="button"
-                  class="cancel-button form-control"
-                  value="cancel"
-                />
+                type="button"
+                class="cancel-button form-control"
+                value="cancel"
+              />
               <div class="button-box">
                 <input type="submit" class="submit-button form-control" />
                 <input
@@ -704,6 +713,15 @@
         enableTime: true,
         dateFormat: "Y-m-d H:i",
       });
+    </script>
+
+    <script>
+        $('#title').on('keyup', function () {
+      var theTitle = this.value.toLowerCase().trim();
+      var slugInput = $('#slug');
+      var theSlug = theTitle.replace(/&/g, '-and-').replace(/[^a-z0-9-]+/g, '-').replace(/\-\-+/g, '-').replace(/^-+|-+$/g, '');
+      slugInput.val(theSlug);
+  })
     </script>
   </body>
 </html>
