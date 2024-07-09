@@ -343,12 +343,56 @@
             <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
                 <div class="form-label">
-                  <label for="title">Title</label
+                  <label for="name">Name</label><span class="important">*</span>
+                </div>
+                <input type="text" class="form-control" name="name" id="name" />
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="slug">Slug</label><span class="important">*</span>
+                </div>
+                <input type="text" class="form-control" name="slug" id="slug" />
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="email">Email</label
                   ><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="title" />
+                <input type="email" class="form-control" name="email" />
               </div>
-    
+
+              <div class="social-container">
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="facebook">Facebook</label>
+                  </div>
+                  <input type="text" class="form-control" name="facebbok" />
+                </div>
+
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="instagram">Instagram</label>
+                  </div>
+                  <input type="text" class="form-control" name="instagram" />
+                </div>
+
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="twitter">Twitter</label>
+                  </div>
+                  <input type="text" class="form-control" name="twitter" />
+                </div>
+
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="linkedin">Linkedin</label>
+                  </div>
+                  <input type="text" class="form-control" name="linkedin" />
+                </div>
+              </div>
+
               <div class="form-box">
                 <div class="form-label">
                   <label for="content">Content</label>
@@ -379,6 +423,18 @@
                 </div>
               </div>
 
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="Published_date">Published Date</label>
+                </div>
+                <input
+                  type="datetime-local"
+                  name="date"
+                  id="date"
+                  class="form-control"
+                  placeholder="YYYY/MM/HH H:M:S"
+                />
+              </div>
 
               <div class="form-box">
                 <div class="form-label">
@@ -402,10 +458,10 @@
               </div>
               <input type="submit" class="full-submit-button form-control" />
               <input
-                  type="button"
-                  class="cancel-button form-control"
-                  value="cancel"
-                />
+                type="button"
+                class="cancel-button form-control"
+                value="cancel"
+              />
               <div class="button-box">
                 <input type="submit" class="submit-button form-control" />
                 <input
@@ -676,6 +732,19 @@
       flatpickr("#date", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
+      });
+    </script>
+
+    <script>
+      $("#name").on("keyup", function () {
+        var theTitle = this.value.toLowerCase().trim();
+        var slugInput = $("#slug");
+        var theSlug = theTitle
+          .replace(/&/g, "-and-")
+          .replace(/[^a-z0-9-]+/g, "-")
+          .replace(/\-\-+/g, "-")
+          .replace(/^-+|-+$/g, "");
+        slugInput.val(theSlug);
       });
     </script>
   </body>

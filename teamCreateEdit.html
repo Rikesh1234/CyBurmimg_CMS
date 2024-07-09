@@ -317,18 +317,18 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Page</h1>
+            <h1>Add Author</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="dashboard.html">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="post_listing.html">Page</a>
+                <a href="post_listing.html">Author</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active" href="#">Add Page</a>
+                <a class="active" href="#">Add Author</a>
               </li>
             </ul>
           </div>
@@ -340,41 +340,65 @@
 
         <form action="#">
           <div class="form-container">
-            <div class="post-right-container col-md-7">
+            <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
                 <div class="form-label">
-                  <label for="title">Title</label
-                  ><span class="important">*</span>
+                  <label for="name">Name</label><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="title" id="title" />
+                <input type="text" class="form-control" name="name" id="name" />
               </div>
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="slug">Slug</label
-                  ><span class="important">*</span>
+                  <label for="other_feature">Member Type</label>
                 </div>
-                <input type="text" class="form-control" name="slug" id="slug" />
+                <select
+                  name="memberType"
+                  class="select-member-type form-control"
+                >
+                  <option>Cat A</option>
+                  <option>Cat B</option>
+                </select>
               </div>
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="tag_line">Tag Line</label>
+                  <label for="email">Email</label
+                  ><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="tag_line" />
+                <input type="email" class="form-control" name="email" />
               </div>
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="summary">Summary</label>
+
+              <div class="social-container">
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="facebook">Facebook</label>
+                  </div>
+                  <input type="text" class="form-control" name="facebbok" />
                 </div>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  name="summary"
-                  rows="7"
-                  cols="7"
-                ></textarea>
+
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="instagram">Instagram</label>
+                  </div>
+                  <input type="text" class="form-control" name="instagram" />
+                </div>
+
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="twitter">Twitter</label>
+                  </div>
+                  <input type="text" class="form-control" name="twitter" />
+                </div>
+
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="linkedin">Linkedin</label>
+                  </div>
+                  <input type="text" class="form-control" name="linkedin" />
+                </div>
               </div>
+
               <div class="form-box">
                 <div class="form-label">
                   <label for="content">Content</label>
@@ -388,11 +412,6 @@
                   id="description"
                 ></textarea>
               </div>
-             
-             
-             
-              
-
             </div>
 
             <div class="post-left-container col-md-4 col-sm-12">
@@ -423,7 +442,6 @@
                 />
               </div>
 
-              
               <div class="form-box">
                 <div class="form-label">
                   <label for="Published_date">Featued Image</label>
@@ -445,6 +463,11 @@
                 </div>
               </div>
               <input type="submit" class="full-submit-button form-control" />
+              <input
+                type="button"
+                class="cancel-button form-control"
+                value="cancel"
+              />
               <div class="button-box">
                 <input type="submit" class="submit-button form-control" />
                 <input
@@ -712,33 +735,31 @@
         ],
       });
 
-      $(document).ready(function domReady() {
-        $(".select-category").select2({
-          placeholder: "Category",
-        });
-
-        $(".select-author").select2({
-          placeholder: "Author",
-        });
-
-        $(".select-tags").select2({
-          placeholder: "Tags",
-        });
-      });
-
       flatpickr("#date", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
       });
     </script>
 
+<script>
+$(document).ready(function domReady() {
+        $(".select-member-type").select2({
+          placeholder: "Member Type",
+        });
+    });
+    </script>
+
     <script>
-        $('#title').on('keyup', function () {
-      var theTitle = this.value.toLowerCase().trim();
-      var slugInput = $('#slug');
-      var theSlug = theTitle.replace(/&/g, '-and-').replace(/[^a-z0-9-]+/g, '-').replace(/\-\-+/g, '-').replace(/^-+|-+$/g, '');
-      slugInput.val(theSlug);
-  })
+      $("#name").on("keyup", function () {
+        var theTitle = this.value.toLowerCase().trim();
+        var slugInput = $("#slug");
+        var theSlug = theTitle
+          .replace(/&/g, "-and-")
+          .replace(/[^a-z0-9-]+/g, "-")
+          .replace(/\-\-+/g, "-")
+          .replace(/^-+|-+$/g, "");
+        slugInput.val(theSlug);
+      });
     </script>
   </body>
 </html>

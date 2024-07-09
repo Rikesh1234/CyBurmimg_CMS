@@ -1325,3 +1325,111 @@ input:checked + .switch::after {
 	display: flex;
 	gap: 5px;
   }
+
+  .product-ribbon{
+	position: absolute;
+ 
+  box-shadow: 0 0 0 999px #818;
+  clip-path: inset(0 -100%);
+  inset: 0 0 auto auto;
+  transform-origin: 0 0;
+  transform: translate(29.3%) rotate(45deg);
+  }
+
+  /* .column {
+	border: 1px solid;
+	min-height: 400px;
+	max-width: 600px;
+	margin: auto;
+	border-radius: 10px;
+  } */
+
+  .main {
+	display: flex;
+	flex-direction: column;
+	margin-top: 20%;
+	align-items: center;
+	/* border-radius: 5px; */
+	/* padding: 10px; */
+	/* background-color: white; */
+  }
+
+  .form-label.color-product{
+	background-color: #fff  !important;
+	color: #000  !important;
+	display: flex;
+	align-items: center;
+	gap: 10px;	
+  }
+
+  .product-price-container {
+    display: flex;
+    gap: 25px;
+}
+
+  .color-upload-contains{
+	display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      gap: 62px;
+  }
+
+  .uplaadImages{
+	width: 100%;
+  }
+
+  .delete-btn{
+	width: 97px;
+	height: 41px;
+	border-radius: 50%;
+	border: 1px solid #52cf71;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #52cf71;
+	cursor: pointer;
+  }
+  
+  .uploaded-image{
+	width: 200px;
+    height: 200px;
+    margin-bottom: 10px;
+    border: 1px solid black;
+  }
+
+  .social-container {
+    display: flex;
+    column-gap: 128px;
+    flex-wrap: wrap;
+}
+
+.setting-input{
+	width: 100%;
+	background-color: #fff;
+	padding: 0 20px 20px 20px;
+	border-radius: 50%;
+	margin-top: 10px;
+}
+
+.input-repeator-container{
+	display: flex;
+	width: 100%;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 25px;
+	background: #f2f0f0;
+    padding: 20px 10px 20px 10px;
+}
+
+.input-field-container{
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 25px;
+	width: 100%;
+}
+
+.select-target-type{
+	width: 15% !important;
+}
+

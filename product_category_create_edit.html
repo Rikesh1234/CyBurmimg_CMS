@@ -181,12 +181,14 @@
         <li class="dropdown active">
           <a href="#">
             <i class="bx bx-notepad"></i>
-            <span class="text">Post</span>
+            <span class="text">Category</span>
             <i class="bx bx-chevron-down dropdown-icon"></i>
           </a>
           <ul class="dropdown-menu">
             <li>
-              <a href="post_listing.html"><i class="bx bx-notepad"></i>Post</a>
+              <a href="post_listing.html"
+                ><i class="bx bx-notepad"></i>Category</a
+              >
             </li>
             <li>
               <a href="#"><i class="bx bx-polygon"></i>Category</a>
@@ -317,18 +319,18 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Page</h1>
+            <h1>Add Category</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="dashboard.html">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="post_listing.html">Page</a>
+                <a href="post_listing.html">Category</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active" href="#">Add Page</a>
+                <a class="active" href="#">Add Category</a>
               </li>
             </ul>
           </div>
@@ -340,7 +342,7 @@
 
         <form action="#">
           <div class="form-container">
-            <div class="post-right-container col-md-7">
+            <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
                 <div class="form-label">
                   <label for="title">Title</label
@@ -363,18 +365,7 @@
                 </div>
                 <input type="text" class="form-control" name="tag_line" />
               </div>
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="summary">Summary</label>
-                </div>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  name="summary"
-                  rows="7"
-                  cols="7"
-                ></textarea>
-              </div>
+
               <div class="form-box">
                 <div class="form-label">
                   <label for="content">Content</label>
@@ -388,11 +379,20 @@
                   id="description"
                 ></textarea>
               </div>
-             
-             
-             
-              
 
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="Parent">Parent</label>
+                </div>
+                <select
+                  name="parent"
+                  class="select-parent form-control"
+                  multiple="multiple"
+                >
+                  <option>None</option>
+                  <option>Cat B</option>
+                </select>
+              </div>
             </div>
 
             <div class="post-left-container col-md-4 col-sm-12">
@@ -423,7 +423,6 @@
                 />
               </div>
 
-              
               <div class="form-box">
                 <div class="form-label">
                   <label for="Published_date">Featued Image</label>
@@ -445,6 +444,11 @@
                 </div>
               </div>
               <input type="submit" class="full-submit-button form-control" />
+              <input
+                type="button"
+                class="cancel-button form-control"
+                value="cancel"
+              />
               <div class="button-box">
                 <input type="submit" class="submit-button form-control" />
                 <input
@@ -713,16 +717,8 @@
       });
 
       $(document).ready(function domReady() {
-        $(".select-category").select2({
-          placeholder: "Category",
-        });
-
-        $(".select-author").select2({
-          placeholder: "Author",
-        });
-
-        $(".select-tags").select2({
-          placeholder: "Tags",
+        $(".select-parent").select2({
+          placeholder: "Parent",
         });
       });
 
