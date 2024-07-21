@@ -20,304 +20,304 @@ document.addEventListener("DOMContentLoaded", function () {
   const imageContainer = document.getElementById("image-container");
   let images = [];
 
-  // uploadInput.addEventListener("change", function (event) {
-  //   const files = event.target.files;
-  //   if (files) {
-  //     for (const file of files) {
-  //       const imageCard = document.createElement("div");
-  //       imageCard.classList.add("upload-card");
-  //       const reader = new FileReader();
-  //       reader.onload = function () {
-  //         const img = document.createElement("img");
-  //         img.src = reader.result;
-  //         img.classList.add("uploaded-image");
-  //         imageCard.appendChild(img);
-  //         const captionInput = document.createElement("input");
-  //         captionInput.type = "text";
-  //         captionInput.placeholder = "Enter image caption...";
-  //         captionInput.classList.add("form-control");
-  //         imageCard.appendChild(captionInput);
-  //         const removeButton = document.createElement("button");
-  //         removeButton.textContent = "X";
-  //         removeButton.classList.add("remove-button");
-  //         removeButton.addEventListener("click", function (e) {
-  //           e.stopPropagation(); // Prevents the click event from propagating to the parent elements
-  //           imageContainer.removeChild(imageCard);
-  //           images = images.filter((image) => image.file !== file);
-  //         });
-  //         imageCard.appendChild(removeButton);
-  //         imageContainer.appendChild(imageCard);
-  //         images.push({ file: file, caption: captionInput });
-  //       };
-  //       reader.readAsDataURL(file);
-  //     }
-  //   }
-  // });
+  uploadInput.addEventListener("change", function (event) {
+    const files = event.target.files;
+    if (files) {
+      for (const file of files) {
+        const imageCard = document.createElement("div");
+        imageCard.classList.add("upload-card");
+        const reader = new FileReader();
+        reader.onload = function () {
+          const img = document.createElement("img");
+          img.src = reader.result;
+          img.classList.add("uploaded-image");
+          imageCard.appendChild(img);
+          const captionInput = document.createElement("input");
+          captionInput.type = "text";
+          captionInput.placeholder = "Enter image caption...";
+          captionInput.classList.add("form-control");
+          imageCard.appendChild(captionInput);
+          const removeButton = document.createElement("button");
+          removeButton.textContent = "X";
+          removeButton.classList.add("remove-button");
+          removeButton.addEventListener("click", function (e) {
+            e.stopPropagation(); // Prevents the click event from propagating to the parent elements
+            imageContainer.removeChild(imageCard);
+            images = images.filter((image) => image.file !== file);
+          });
+          imageCard.appendChild(removeButton);
+          imageContainer.appendChild(imageCard);
+          images.push({ file: file, caption: captionInput });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  });
 
   // Example of accessing the uploaded images array:
-  // images.forEach(image => {
-  //   console.log(image.file); // Access the file object
-  //   console.log(image.caption.value); // Access the caption value
-  // });
+  images.forEach(image => {
+    console.log(image.file); // Access the file object
+    console.log(image.caption.value); // Access the caption value
+  });
 
   const uploadInputOne = document.getElementById("upload-input-one");
   const imageContainerOne = document.getElementById("image-container-one");
   let uploadedImage = document.querySelector(".uploaded-image");
   let deleteButtons;
 
-  // uploadInputOne.addEventListener("change", function (event) {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = function () {
-  //       if (uploadedImage) {
-  //         imageContainerOne.removeChild(uploadedImage);
-  //       }
-  //       const img = document.createElement("img");
-  //       img.src = reader.result;
-  //       img.classList.add("uploaded-image");
-  //       imageContainerOne.appendChild(img);
-  //       uploadedImage = img;
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // });
+  uploadInputOne.addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        if (uploadedImage) {
+          imageContainerOne.removeChild(uploadedImage);
+        }
+        const img = document.createElement("img");
+        img.src = reader.result;
+        img.classList.add("uploaded-image");
+        imageContainerOne.appendChild(img);
+        uploadedImage = img;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
   const colorRepeator = document.querySelector("#ColorRepetor");
 
-  // colorRepeator.addEventListener("click", (event) => {
-  //     event.preventDefault();
-  //     const container = document.querySelector(".color-container");
+  colorRepeator.addEventListener("click", (event) => {
+      event.preventDefault();
+      const container = document.querySelector(".color-container");
   
-  //     const newElement = document.createElement("div");
-  //     newElement.className = "color-upload-contains";
-  //     newElement.innerHTML = `
-  //         <div class="column">
-  //             <div class="row">
-  //                 <div class="main">
-  //                     <label class="form-label color-product">
-  //                         Color Picker:
-  //                         <input type="color" class="color-picker" value="#ffffff" />
-  //                     </label>
-  //                     <label class="form-label color-product">
-  //                         Hex Code:
-  //                         <input type="text" class="hex-code" name="hex_code" value="#ffffff" style="width: 55%;" />
-  //                     </label>
-  //                 </div>
-  //             </div>
-  //         </div>
-  //         <div class="upload-container" style="width:100%;">
-  //             <input class="upload-input-color-product" type="file" accept="image/*" multiple style="display: none" />
-  //             <label class="upload-label" for="upload-input-color-product">Upload Image</label>
-  //         </div>
-  //         <div class="delete-btn"><i class="fa-solid fa-minus"></i></div>
-  //     `;
+      const newElement = document.createElement("div");
+      newElement.className = "color-upload-contains";
+      newElement.innerHTML = `
+          <div class="column">
+              <div class="row">
+                  <div class="main">
+                      <label class="form-label color-product">
+                          Color Picker:
+                          <input type="color" class="color-picker" value="#ffffff" />
+                      </label>
+                      <label class="form-label color-product">
+                          Hex Code:
+                          <input type="text" class="hex-code" name="hex_code" value="#ffffff" style="width: 55%;" />
+                      </label>
+                  </div>
+              </div>
+          </div>
+          <div class="upload-container" style="width:100%;">
+              <input class="upload-input-color-product" type="file" accept="image/*" multiple style="display: none" />
+              <label class="upload-label" for="upload-input-color-product">Upload Image</label>
+          </div>
+          <div class="delete-btn"><i class="fa-solid fa-minus"></i></div>
+      `;
   
   //     // Append the new element to the container
-  //     container.appendChild(newElement);
+      container.appendChild(newElement);
   
-  //     const deleteButton = newElement.querySelector(".delete-btn");
-  //     deleteButton.addEventListener("click", () => {
-  //         newElement.remove();
-  //     });
+      const deleteButton = newElement.querySelector(".delete-btn");
+      deleteButton.addEventListener("click", () => {
+          newElement.remove();
+      });
   
-  //     const uploadLabel = newElement.querySelector(".upload-label");
-  //     const uploadInput = newElement.querySelector(".upload-input-color-product");
+      const uploadLabel = newElement.querySelector(".upload-label");
+      const uploadInput = newElement.querySelector(".upload-input-color-product");
   
   //     // Show file input when label is clicked
-  //     uploadLabel.addEventListener("click", () => {
-  //         uploadInput.click();
-  //     });
+      uploadLabel.addEventListener("click", () => {
+          uploadInput.click();
+      });
   
   //     // Handle file selection
-  //     uploadInput.addEventListener("change", function (event) {
-  //         const files = event.target.files;
-  //         const imageContainer = newElement.querySelector(".upload-container");
+      uploadInput.addEventListener("change", function (event) {
+          const files = event.target.files;
+          const imageContainer = newElement.querySelector(".upload-container");
   
-  //         // Clear previous content in the image container
-  //         imageContainer.innerHTML = '';
+          // Clear previous content in the image container
+          imageContainer.innerHTML = '';
   
-  //         // Display selected images
-  //         for (let i = 0; i < files.length; i++) {
-  //             const file = files[i];
-  //             const reader = new FileReader();
+          // Display selected images
+          for (let i = 0; i < files.length; i++) {
+              const file = files[i];
+              const reader = new FileReader();
   
-  //             reader.onload = function () {
-  //                 const img = document.createElement("img");
-  //                 img.src = reader.result;
-  //                 img.classList.add("uploaded-image");
+              reader.onload = function () {
+                  const img = document.createElement("img");
+                  img.src = reader.result;
+                  img.classList.add("uploaded-image");
   
-  //                 // Append the new image to the image container
-  //                 imageContainer.appendChild(img);
-  //             };
+                  // Append the new image to the image container
+                  imageContainer.appendChild(img);
+              };
   
-  //             reader.readAsDataURL(file);
-  //         }
-  //     });
-  // });
+              reader.readAsDataURL(file);
+          }
+      });
+  });
   
 
   let itenaryRepetor = document.querySelector("#itenary-btn");
 
-  // itenaryRepetor.addEventListener("click", (event) => {
-  //   event.preventDefault();
-  //   const container = document.querySelector(".itenary-container");
+  itenaryRepetor.addEventListener("click", (event) => {
+    event.preventDefault();
+    const container = document.querySelector(".itenary-container");
 
-  //   const newElement = document.createElement("div");
-  //   newElement.className = "color-upload-contains";
-  //   newElement.innerHTML = `
-	// 	<div class="title-itenary">
-  //                 <div class="form-label color-product">
-  //                   <label for="Title" style="
-  //                           background-color: transparent;
-  //                           color: #000;
-  //                           text-align: left;
-  //                           width: inherit;
-  //                         ">Title</label><span class="important">*</span>
-  //                 </div>
-  //                 <input type="text" name="itenary_title" class="form-control">
-  //                 </div>
-  //                 <div class="description-itenary">
-  //                   <div class="form-label color-product">
-  //                     <label for="description_itenary" style="
-  //                           background-color: transparent;
-  //                           color: #000;
-  //                           text-align: left;
-  //                           width: inherit;
-  //                         ">Description</label>
-  //                   </div>
-  //                   <textarea
-  //                     type="text"
-  //                     class="form-control"
-  //                     name="description_itenary"
-  //                     rows="7"
-  //                     cols="35"
-  //                     id="description_itenary"
-  //                   ></textarea>
-  //                 </div>
-	// 	<div class="delete-btn" id="delete-btn" style="height:61px;"><i class="fa-solid fa-minus"></i></div>
-	// `;
+    const newElement = document.createElement("div");
+    newElement.className = "color-upload-contains";
+    newElement.innerHTML = `
+		<div class="title-itenary">
+                  <div class="form-label color-product">
+                    <label for="Title" style="
+                            background-color: transparent;
+                            color: #000;
+                            text-align: left;
+                            width: inherit;
+                          ">Title</label><span class="important">*</span>
+                  </div>
+                  <input type="text" name="itenary_title" class="form-control">
+                  </div>
+                  <div class="description-itenary">
+                    <div class="form-label color-product">
+                      <label for="description_itenary" style="
+                            background-color: transparent;
+                            color: #000;
+                            text-align: left;
+                            width: inherit;
+                          ">Description</label>
+                    </div>
+                    <textarea
+                      type="text"
+                      class="form-control"
+                      name="description_itenary"
+                      rows="7"
+                      cols="35"
+                      id="description_itenary"
+                    ></textarea>
+                  </div>
+		<div class="delete-btn" id="delete-btn" style="height:61px;"><i class="fa-solid fa-minus"></i></div>
+	`;
 
   //   // Append the new element to the container
-  //   container.appendChild(newElement);
+    container.appendChild(newElement);
 
-  //   deleteButtons = document.querySelectorAll(".delete-btn");
+    deleteButtons = document.querySelectorAll(".delete-btn");
 
-  //   deleteButtons.forEach((currentValue, index, array) => {
-  //     currentValue.addEventListener("click", () => {
-  //       currentValue.parentElement.remove();
-  //     });
-  //   });
-  // });
+    deleteButtons.forEach((currentValue, index, array) => {
+      currentValue.addEventListener("click", () => {
+        currentValue.parentElement.remove();
+      });
+    });
+  });
 
   let includesRepetor = document.querySelector("#includes-btn");
 
-//   includesRepetor.addEventListener("click", (event) => {
-//     event.preventDefault();
-//     const container = document.querySelector(".include-container");
+  includesRepetor.addEventListener("click", (event) => {
+    event.preventDefault();
+    const container = document.querySelector(".include-container");
 
-//     const newElement = document.createElement("div");
-//     newElement.className = "color-upload-contains";
-//     newElement.innerHTML = `
-// 		<div class="description-itenary">
-//                   <div class="form-label color-product">
-//                     <label for="description_itenary" style="
-//                           background-color: transparent;
-//                           color: #000;
-//                           text-align: left;
-//                           width: inherit;
-//                         ">Description</label>
-//                   </div>
-//                   <textarea
-//                     type="text"
-//                     class="form-control"
-//                     name="description_include"
-//                     rows="7"
-//                     cols="72"
-//                     id="description_include"
-//                   ></textarea>
-//                 </div>
-//   <div class="delete-btn" id="delete-btn" style="height:61px;"><i class="fa-solid fa-minus"></i></div>
-// </div>
-// 	`;
+    const newElement = document.createElement("div");
+    newElement.className = "color-upload-contains";
+    newElement.innerHTML = `
+		<div class="description-itenary">
+                  <div class="form-label color-product">
+                    <label for="description_itenary" style="
+                          background-color: transparent;
+                          color: #000;
+                          text-align: left;
+                          width: inherit;
+                        ">Description</label>
+                  </div>
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    name="description_include"
+                    rows="7"
+                    cols="72"
+                    id="description_include"
+                  ></textarea>
+                </div>
+  <div class="delete-btn" id="delete-btn" style="height:61px;"><i class="fa-solid fa-minus"></i></div>
+</div>
+	`;
 
 //     // Append the new element to the container
-//     container.appendChild(newElement);
+    container.appendChild(newElement);
 
-//     deleteButtons = document.querySelectorAll(".delete-btn");
+    deleteButtons = document.querySelectorAll(".delete-btn");
 
-//     deleteButtons.forEach((currentValue, index, array) => {
-//       currentValue.addEventListener("click", () => {
-//         currentValue.parentElement.remove();
-//       });
-//     });
-//   });
+    deleteButtons.forEach((currentValue, index, array) => {
+      currentValue.addEventListener("click", () => {
+        currentValue.parentElement.remove();
+      });
+    });
+  });
 
   let excludesRepetor = document.querySelector("#excludes-btn");
 
-//   excludesRepetor.addEventListener("click", (event) => {
-//     event.preventDefault();
-//     const container = document.querySelector(".exclude-container");
+  excludesRepetor.addEventListener("click", (event) => {
+    event.preventDefault();
+    const container = document.querySelector(".exclude-container");
 
-//     const newElement = document.createElement("div");
-//     newElement.className = "color-upload-contains";
-//     newElement.innerHTML = `
-// 		<div class="description-itenary">
-//                   <div class="form-label color-product">
-//                     <label for="description_itenary" style="
-//                           background-color: transparent;
-//                           color: #000;
-//                           text-align: left;
-//                           width: inherit;
-//                         ">Description</label>
-//                   </div>
-//                   <textarea
-//                     type="text"
-//                     class="form-control"
-//                     name="description_exclude"
-//                     rows="7"
-//                     cols="72"
-//                     id="description_exclude"
-//                   ></textarea>
-//                 </div>
-//   <div class="delete-btn" id="delete-btn" style="height:61px;"><i class="fa-solid fa-minus"></i></div>
-// </div>
-// 	`;
+    const newElement = document.createElement("div");
+    newElement.className = "color-upload-contains";
+    newElement.innerHTML = `
+		<div class="description-itenary">
+                  <div class="form-label color-product">
+                    <label for="description_itenary" style="
+                          background-color: transparent;
+                          color: #000;
+                          text-align: left;
+                          width: inherit;
+                        ">Description</label>
+                  </div>
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    name="description_exclude"
+                    rows="7"
+                    cols="72"
+                    id="description_exclude"
+                  ></textarea>
+                </div>
+  <div class="delete-btn" id="delete-btn" style="height:61px;"><i class="fa-solid fa-minus"></i></div>
+</div>
+	`;
 
 //     // Append the new element to the container
-//     container.appendChild(newElement);
+    container.appendChild(newElement);
 
-//     deleteButtons = document.querySelectorAll(".delete-btn");
+    deleteButtons = document.querySelectorAll(".delete-btn");
 
-//     deleteButtons.forEach((currentValue, index, array) => {
-//       currentValue.addEventListener("click", () => {
-//         currentValue.parentElement.remove();
-//       });
-//     });
-//   });
+    deleteButtons.forEach((currentValue, index, array) => {
+      currentValue.addEventListener("click", () => {
+        currentValue.parentElement.remove();
+      });
+    });
+  });
 
 
   let colorUploadInput = document.querySelectorAll("#upload-input-color");
   let colorImageContainer = document.querySelectorAll("#image-container-color");
   let colorUploadedImage = document.querySelectorAll(".color-uploaded-image");
 
-  //   uploadInputOne.addEventListener('change', function (event) {
-  //     const file = event.target.files[0];
-  //     if (file) {
-  //       const reader = new FileReader();
-  //       reader.onload = function () {
-  //         if (uploadedImage) {
-  //           imageContainerOne.removeChild(uploadedImage);
-  //         }
-  //         const img = document.createElement('img');
-  //         img.src = reader.result;
-  //         img.classList.add('uploaded-image');
-  //         imageContainerOne.appendChild(img);
-  //         uploadedImage = img;
-  //       };
-  //       reader.readAsDataURL(file);
-  //     }
-  //   });
+    uploadInputOne.addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          if (uploadedImage) {
+            imageContainerOne.removeChild(uploadedImage);
+          }
+          const img = document.createElement('img');
+          img.src = reader.result;
+          img.classList.add('uploaded-image');
+          imageContainerOne.appendChild(img);
+          uploadedImage = img;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 });
 
 allSideMenu.forEach((item) => {
@@ -364,9 +364,9 @@ var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
 
 if (screenWidth > 1500) {
-  // menuBar.addEventListener("click", function () {
-  //   sidebared.classList.toggle("hide");
-  // });
+  menuBar.addEventListener("click", function () {
+    sidebared.classList.toggle("hide");
+  });
 } else {
   menuBar.addEventListener("click", function () {
     sidebar.style.left = "0px";
@@ -381,23 +381,23 @@ const searchButtonIcon = document.querySelector(
 );
 const searchForm = document.querySelector("#content nav form");
 
-// searchButton.addEventListener("click", function (e) {
-//   if (window.innerWidth < 576) {
-//     e.preventDefault();
-//     searchForm.classList.toggle("show");
-//     if (searchForm.classList.contains("show")) {
-//       searchButtonIcon.classList.replace("bx-search", "bx-x");
-//     } else {
-//       searchButtonIcon.classList.replace("bx-x", "bx-search");
-//     }
-//   }
-// });
+searchButton.addEventListener("click", function (e) {
+  if (window.innerWidth < 576) {
+    e.preventDefault();
+    searchForm.classList.toggle("show");
+    if (searchForm.classList.contains("show")) {
+      searchButtonIcon.classList.replace("bx-search", "bx-x");
+    } else {
+      searchButtonIcon.classList.replace("bx-x", "bx-search");
+    }
+  }
+});
 
 if (window.innerWidth < 768) {
   sidebar.classList.add("hide");
 } else if (window.innerWidth > 576) {
-  // searchButtonIcon.classList.replace("bx-x", "bx-search");
-  // searchForm.classList.remove("show");
+  searchButtonIcon.classList.replace("bx-x", "bx-search");
+  searchForm.classList.remove("show");
 }
 
 window.addEventListener("resize", function () {
@@ -418,7 +418,7 @@ const switchMode = document.getElementById("switch-mode");
 // });
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (window.screenWidth > 1500) {
+  if (window.screenWidth > 800) {
     const dropdowns = document.querySelectorAll(".dropdown");
     let clickcount = 0;
     let dropdownmenuHeight;
@@ -427,7 +427,8 @@ document.addEventListener("DOMContentLoaded", function () {
       dropdown.addEventListener("click", function () {
         dropdown.classList.toggle("active");
         const dropdownMenu = dropdown.querySelector(".dropdown-menu");
-        checkForOpenMenu(dropdownmenuHeight, dropdown);
+        clickcount = checkForOpenMenu(dropdownmenuHeight, dropdown);
+        console.log(clickcount)
         dropdownMenu.classList.toggle("show");
         dropdownMenu.style.top = dropdown.clientHeight + "px";
         if (clickcount <= 0) {
@@ -436,7 +437,6 @@ document.addEventListener("DOMContentLoaded", function () {
           dropdown.style.height = dropdownMenu.clientHeight + dropdown.clientHeight + "px";
           clickcount = 1;
         } else {
-          
           dropdown.style.height = dropdown.clientHeight - dropdownmenuHeight + "px";
           clickcount = 0;
         }
@@ -444,14 +444,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     checkForOpenMenu=(dropdownmenuHeight,clickMenu)=>{
+      let flag = 0;
       dropdowns.forEach((dropdown) => {
         const dropdownMenu = dropdown.querySelector(".dropdown-menu");
-        if(dropdownMenu.classList.contains("show") && clickMenu != dropdown ){
+        if(dropdownMenu.classList.contains("show")){
+          if(clickMenu != dropdown){
         dropdownMenu.classList.remove("show");
         dropdown.style.height = dropdown.clientHeight - dropdownmenuHeight + "px";
+        flag = 0;
+        }else{
+          flag = 1;
+        }
         }
       });
-
+      return flag;
     }
 
     window.addEventListener("click", function (e) {
@@ -461,8 +467,7 @@ document.addEventListener("DOMContentLoaded", function () {
           dropdown.classList.remove("active");
           const dropdownMenu = dropdown.querySelector(".dropdown-menu");
           dropdownMenu.classList.remove("show");
-          dropdown.style.height =
-            dropdown.clientHeight - dropdownMenu.clientHeight + "px";
+          dropdown.style.height = dropdown.clientHeight - dropdownMenu.clientHeight + "px";
         }
       });
     });
