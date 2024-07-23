@@ -20,42 +20,44 @@ document.addEventListener("DOMContentLoaded", function () {
   const imageContainer = document.getElementById("image-container");
   let images = [];
 
-  uploadInput.addEventListener("change", function (event) {
-    const files = event.target.files;
-    if (files) {
-      for (const file of files) {
-        const imageCard = document.createElement("div");
-        imageCard.classList.add("upload-card");
-        const reader = new FileReader();
-        reader.onload = function () {
-          const img = document.createElement("img");
-          img.src = reader.result;
-          img.classList.add("uploaded-image");
-          imageCard.appendChild(img);
-          const captionInput = document.createElement("input");
-          captionInput.type = "text";
-          captionInput.placeholder = "Enter image caption...";
-          captionInput.classList.add("form-control");
-          imageCard.appendChild(captionInput);
-          const removeButton = document.createElement("button");
-          removeButton.textContent = "X";
-          removeButton.classList.add("remove-button");
-          removeButton.addEventListener("click", function (e) {
-            e.stopPropagation(); // Prevents the click event from propagating to the parent elements
-            imageContainer.removeChild(imageCard);
-            images = images.filter((image) => image.file !== file);
-          });
-          imageCard.appendChild(removeButton);
-          imageContainer.appendChild(imageCard);
-          images.push({ file: file, caption: captionInput });
-        };
-        reader.readAsDataURL(file);
+  if (uploadInput !== null) {
+    uploadInput.addEventListener("change", function (event) {
+      const files = event.target.files;
+      if (files) {
+        for (const file of files) {
+          const imageCard = document.createElement("div");
+          imageCard.classList.add("upload-card");
+          const reader = new FileReader();
+          reader.onload = function () {
+            const img = document.createElement("img");
+            img.src = reader.result;
+            img.classList.add("uploaded-image");
+            imageCard.appendChild(img);
+            const captionInput = document.createElement("input");
+            captionInput.type = "text";
+            captionInput.placeholder = "Enter image caption...";
+            captionInput.classList.add("form-control");
+            imageCard.appendChild(captionInput);
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "X";
+            removeButton.classList.add("remove-button");
+            removeButton.addEventListener("click", function (e) {
+              e.stopPropagation(); // Prevents the click event from propagating to the parent elements
+              imageContainer.removeChild(imageCard);
+              images = images.filter((image) => image.file !== file);
+            });
+            imageCard.appendChild(removeButton);
+            imageContainer.appendChild(imageCard);
+            images.push({ file: file, caption: captionInput });
+          };
+          reader.readAsDataURL(file);
+        }
       }
-    }
-  });
+    });
+  }
 
   // Example of accessing the uploaded images array:
-  images.forEach(image => {
+  images.forEach((image) => {
     console.log(image.file); // Access the file object
     console.log(image.caption.value); // Access the caption value
   });
@@ -65,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let uploadedImage = document.querySelector(".uploaded-image");
   let deleteButtons;
 
+  if(uploadInputOne !== null){
   uploadInputOne.addEventListener("change", function (event) {
     const file = event.target.files[0];
     if (file) {
@@ -82,16 +85,18 @@ document.addEventListener("DOMContentLoaded", function () {
       reader.readAsDataURL(file);
     }
   });
+}
 
   const colorRepeator = document.querySelector("#ColorRepetor");
 
+  if(colorRepeator !== null){
   colorRepeator.addEventListener("click", (event) => {
-      event.preventDefault();
-      const container = document.querySelector(".color-container");
-  
-      const newElement = document.createElement("div");
-      newElement.className = "color-upload-contains";
-      newElement.innerHTML = `
+    event.preventDefault();
+    const container = document.querySelector(".color-container");
+
+    const newElement = document.createElement("div");
+    newElement.className = "color-upload-contains";
+    newElement.innerHTML = `
           <div class="column">
               <div class="row">
                   <div class="main">
@@ -112,53 +117,54 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
           <div class="delete-btn"><i class="fa-solid fa-minus"></i></div>
       `;
-  
-  //     // Append the new element to the container
-      container.appendChild(newElement);
-  
-      const deleteButton = newElement.querySelector(".delete-btn");
-      deleteButton.addEventListener("click", () => {
-          newElement.remove();
-      });
-  
-      const uploadLabel = newElement.querySelector(".upload-label");
-      const uploadInput = newElement.querySelector(".upload-input-color-product");
-  
-  //     // Show file input when label is clicked
-      uploadLabel.addEventListener("click", () => {
-          uploadInput.click();
-      });
-  
-  //     // Handle file selection
-      uploadInput.addEventListener("change", function (event) {
-          const files = event.target.files;
-          const imageContainer = newElement.querySelector(".upload-container");
-  
-          // Clear previous content in the image container
-          imageContainer.innerHTML = '';
-  
-          // Display selected images
-          for (let i = 0; i < files.length; i++) {
-              const file = files[i];
-              const reader = new FileReader();
-  
-              reader.onload = function () {
-                  const img = document.createElement("img");
-                  img.src = reader.result;
-                  img.classList.add("uploaded-image");
-  
-                  // Append the new image to the image container
-                  imageContainer.appendChild(img);
-              };
-  
-              reader.readAsDataURL(file);
-          }
-      });
+
+    //     // Append the new element to the container
+    container.appendChild(newElement);
+
+    const deleteButton = newElement.querySelector(".delete-btn");
+    deleteButton.addEventListener("click", () => {
+      newElement.remove();
+    });
+
+    const uploadLabel = newElement.querySelector(".upload-label");
+    const uploadInput = newElement.querySelector(".upload-input-color-product");
+
+    //     // Show file input when label is clicked
+    uploadLabel.addEventListener("click", () => {
+      uploadInput.click();
+    });
+
+    //     // Handle file selection
+    uploadInput.addEventListener("change", function (event) {
+      const files = event.target.files;
+      const imageContainer = newElement.querySelector(".upload-container");
+
+      // Clear previous content in the image container
+      imageContainer.innerHTML = "";
+
+      // Display selected images
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = function () {
+          const img = document.createElement("img");
+          img.src = reader.result;
+          img.classList.add("uploaded-image");
+
+          // Append the new image to the image container
+          imageContainer.appendChild(img);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    });
   });
-  
+}
 
   let itenaryRepetor = document.querySelector("#itenary-btn");
 
+  if(itenaryRepetor !== null){
   itenaryRepetor.addEventListener("click", (event) => {
     event.preventDefault();
     const container = document.querySelector(".itenary-container");
@@ -198,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		<div class="delete-btn" id="delete-btn" style="height:61px;"><i class="fa-solid fa-minus"></i></div>
 	`;
 
-  //   // Append the new element to the container
+    //   // Append the new element to the container
     container.appendChild(newElement);
 
     deleteButtons = document.querySelectorAll(".delete-btn");
@@ -209,9 +215,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   });
+}
 
   let includesRepetor = document.querySelector("#includes-btn");
 
+  if(includesRepetor !== null){
   includesRepetor.addEventListener("click", (event) => {
     event.preventDefault();
     const container = document.querySelector(".include-container");
@@ -241,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 	`;
 
-//     // Append the new element to the container
+    //     // Append the new element to the container
     container.appendChild(newElement);
 
     deleteButtons = document.querySelectorAll(".delete-btn");
@@ -252,9 +260,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   });
+}
 
   let excludesRepetor = document.querySelector("#excludes-btn");
 
+  if(excludesRepetor !== null){
   excludesRepetor.addEventListener("click", (event) => {
     event.preventDefault();
     const container = document.querySelector(".exclude-container");
@@ -284,7 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 	`;
 
-//     // Append the new element to the container
+    //     // Append the new element to the container
     container.appendChild(newElement);
 
     deleteButtons = document.querySelectorAll(".delete-btn");
@@ -295,29 +305,31 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   });
-
+}
 
   let colorUploadInput = document.querySelectorAll("#upload-input-color");
   let colorImageContainer = document.querySelectorAll("#image-container-color");
   let colorUploadedImage = document.querySelectorAll(".color-uploaded-image");
 
-    uploadInputOne.addEventListener('change', function (event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function () {
-          if (uploadedImage) {
-            imageContainerOne.removeChild(uploadedImage);
-          }
-          const img = document.createElement('img');
-          img.src = reader.result;
-          img.classList.add('uploaded-image');
-          imageContainerOne.appendChild(img);
-          uploadedImage = img;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+  if(uploadInputOne !== null){
+  uploadInputOne.addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        if (uploadedImage) {
+          imageContainerOne.removeChild(uploadedImage);
+        }
+        const img = document.createElement("img");
+        img.src = reader.result;
+        img.classList.add("uploaded-image");
+        imageContainerOne.appendChild(img);
+        uploadedImage = img;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
 });
 
 allSideMenu.forEach((item) => {
@@ -364,13 +376,17 @@ var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
 
 if (screenWidth > 1500) {
+  if(menuBar !== null){
   menuBar.addEventListener("click", function () {
     sidebared.classList.toggle("hide");
   });
+}
 } else {
+  if(menuBar !== null){
   menuBar.addEventListener("click", function () {
     sidebar.style.left = "0px";
   });
+}
 }
 
 const searchButton = document.querySelector(
@@ -381,6 +397,7 @@ const searchButtonIcon = document.querySelector(
 );
 const searchForm = document.querySelector("#content nav form");
 
+if(searchButton !== null){
 searchButton.addEventListener("click", function (e) {
   if (window.innerWidth < 576) {
     e.preventDefault();
@@ -392,12 +409,15 @@ searchButton.addEventListener("click", function (e) {
     }
   }
 });
+}
 
 if (window.innerWidth < 768) {
   sidebar.classList.add("hide");
 } else if (window.innerWidth > 576) {
+  if(searchButtonIcon !== null && searchForm !== null){
   searchButtonIcon.classList.replace("bx-x", "bx-search");
   searchForm.classList.remove("show");
+  }
 }
 
 window.addEventListener("resize", function () {
@@ -428,37 +448,41 @@ document.addEventListener("DOMContentLoaded", function () {
         dropdown.classList.toggle("active");
         const dropdownMenu = dropdown.querySelector(".dropdown-menu");
         clickcount = checkForOpenMenu(dropdownmenuHeight, dropdown);
-        console.log(clickcount)
+        console.log(clickcount);
         dropdownMenu.classList.toggle("show");
         dropdownMenu.style.top = dropdown.clientHeight + "px";
         if (clickcount <= 0) {
           dropdownmenuHeight = dropdownMenu.clientHeight;
-          dropdown.querySelector("a").style.height = dropdown.clientHeight - 10 + "px";
-          dropdown.style.height = dropdownMenu.clientHeight + dropdown.clientHeight + "px";
+          dropdown.querySelector("a").style.height =
+            dropdown.clientHeight - 10 + "px";
+          dropdown.style.height =
+            dropdownMenu.clientHeight + dropdown.clientHeight + "px";
           clickcount = 1;
         } else {
-          dropdown.style.height = dropdown.clientHeight - dropdownmenuHeight + "px";
+          dropdown.style.height =
+            dropdown.clientHeight - dropdownmenuHeight + "px";
           clickcount = 0;
         }
       });
     });
 
-    checkForOpenMenu=(dropdownmenuHeight,clickMenu)=>{
+    checkForOpenMenu = (dropdownmenuHeight, clickMenu) => {
       let flag = 0;
       dropdowns.forEach((dropdown) => {
         const dropdownMenu = dropdown.querySelector(".dropdown-menu");
-        if(dropdownMenu.classList.contains("show")){
-          if(clickMenu != dropdown){
-        dropdownMenu.classList.remove("show");
-        dropdown.style.height = dropdown.clientHeight - dropdownmenuHeight + "px";
-        flag = 0;
-        }else{
-          flag = 1;
-        }
+        if (dropdownMenu.classList.contains("show")) {
+          if (clickMenu != dropdown) {
+            dropdownMenu.classList.remove("show");
+            dropdown.style.height =
+              dropdown.clientHeight - dropdownmenuHeight + "px";
+            flag = 0;
+          } else {
+            flag = 1;
+          }
         }
       });
       return flag;
-    }
+    };
 
     window.addEventListener("click", function (e) {
       dropdowns.forEach((dropdown) => {
@@ -467,7 +491,8 @@ document.addEventListener("DOMContentLoaded", function () {
           dropdown.classList.remove("active");
           const dropdownMenu = dropdown.querySelector(".dropdown-menu");
           dropdownMenu.classList.remove("show");
-          dropdown.style.height = dropdown.clientHeight - dropdownMenu.clientHeight + "px";
+          dropdown.style.height =
+            dropdown.clientHeight - dropdownMenu.clientHeight + "px";
         }
       });
     });
