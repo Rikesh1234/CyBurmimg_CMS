@@ -484,18 +484,18 @@ document.addEventListener("DOMContentLoaded", function () {
       return flag;
     };
 
-    window.addEventListener("click", function (e) {
-      dropdowns.forEach((dropdown) => {
-        // clickcount = 0;
-        if (!dropdown.contains(e.target)) {
-          dropdown.classList.remove("active");
-          const dropdownMenu = dropdown.querySelector(".dropdown-menu");
-          dropdownMenu.classList.remove("show");
-          dropdown.style.height =
-            dropdown.clientHeight - dropdownMenu.clientHeight + "px";
-        }
-      });
-    });
+    // window.addEventListener("click", function (e) {
+    //   dropdowns.forEach((dropdown) => {
+    //     // clickcount = 0;
+    //     if (!dropdown.contains(e.target)) {
+    //       dropdown.classList.remove("active");
+    //       const dropdownMenu = dropdown.querySelector(".dropdown-menu");
+    //       dropdownMenu.classList.remove("show");
+    //       dropdown.style.height =
+    //         dropdown.clientHeight - dropdownMenu.clientHeight + "px";
+    //     }
+    //   });
+    // });
   }
 });
 
