@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <!-- Bootstrap Toggle CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/css/bootstrap4-toggle.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Boxicons -->
+    <link
+      href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+
+    <title>CyBurning</title>
+  </head>
+  <body>
+    <!-- SIDEBAR -->
+    <%- include('../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../layout/header') %>
+      <!-- NAVBAR -->
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>Category</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="dashboard.html">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active" href="#">Category</a>
+              </li>
+            </ul>
+          </div>
+          <a href="#" class="btn-create">
+            <i class="fas fa-plus"></i>
+            <span class="text">Create a Category</span>
+          </a>
+        </div>
+
+        <div class="search-container">
+          <form onsubmit="event.preventDefault();" role="search">
+            <label for="search">Search for stuff</label>
+            <input
+              id="search"
+              type="search"
+              placeholder="Search..."
+              autofocus
+              required
+            />
+            <button type="submit">Go</button>
+          </form>
+        </div>
+
+        <div class="row">
+          <div class="card-container">
+            <div class="one-card-container col-md-6 col-lg-4 col-sm-12">
+              <div
+                class="card category position-relative overflow-hidden"
+              >
+                <div class="position-relative" style="top: 19px; left: 22px; font-size: 21px; font-weight: 500;">
+                  <span class="card-category-name">Category Name</span>
+                </div>
+                <div class="card-body p-4">
+                  <div class="category-published">
+                    <span class="badge parent-name px-2 mt-3">Gadget</span>
+                    <label class="wraper" for="something">
+                      <span class="label-text">Published</span>
+                      <div class="switch-wrap">
+                        <input type="checkbox" checked id="something" />
+                        <div class="switch"></div>
+                      </div>
+                    </label>
+                  </div>
+                  
+                  <div class="d-flex align-items-center gap-4 icon-container" style="margin-top: 21px;">
+                    <div class="d-flex align-items-center gap-2">
+                      <a href="#" class="text-black"
+                        ><i class="fas fa-edit"></i
+                      ></a>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <a href="#" class="text-black"
+                        ><i class="fas fa-trash-alt"></i
+                      ></a>
+                    </div>
+                    <div
+                      class="d-flex align-items-center ms-auto default-btn active">
+                      Set as Default
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="one-card-container col-md-6 col-lg-4">
+                <div
+                  class="card category position-relative overflow-hidden"
+                >
+                  <div class="position-relative" style="top: 19px; left: 22px; font-size: 21px; font-weight: 500;">
+                    <span class="card-category-name">Category Name</span>
+                  </div>
+                  <div class="card-body p-4">
+                    <div class="category-published">
+                      <span class="badge parent-name px-2 mt-3">Gadget</span>
+                      <label class="wraper" for="something">
+                        <span class="label-text">Published</span>
+                        <div class="switch-wrap">
+                          <input type="checkbox" checked id="something" />
+                          <div class="switch"></div>
+                        </div>
+                      </label>
+                    </div>
+                    
+                    <div class="d-flex align-items-center gap-4 icon-container" style="margin-top: 21px;">
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black"
+                          ><i class="fas fa-edit"></i
+                        ></a>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black"
+                          ><i class="fas fa-trash-alt"></i
+                        ></a>
+                      </div>
+                      <div
+                        class="d-flex align-items-center ms-auto default-btn active">
+                        Set as Default
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="one-card-container col-md-6 col-lg-4">
+                <div
+                  class="card category position-relative overflow-hidden"
+                >
+                  <div class="position-relative" style="top: 19px; left: 22px; font-size: 21px; font-weight: 500;">
+                    <span class="card-category-name">Category Name</span>
+                  </div>
+                  <div class="card-body p-4">
+                    <div class="category-published">
+                      <span class="badge parent-name px-2 mt-3">Gadget</span>
+                      <label class="wraper" for="something">
+                        <span class="label-text">Published</span>
+                        <div class="switch-wrap">
+                          <input type="checkbox" checked id="something" />
+                          <div class="switch"></div>
+                        </div>
+                      </label>
+                    </div>
+                    
+                    <div class="d-flex align-items-center gap-4 icon-container" style="margin-top: 21px;">
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black"
+                          ><i class="fas fa-edit"></i
+                        ></a>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black"
+                          ><i class="fas fa-trash-alt"></i
+                        ></a>
+                      </div>
+                      <div
+                        class="d-flex align-items-center ms-auto default-btn active">
+                        Set as Default
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="one-card-container col-md-6 col-lg-4">
+                <div
+                  class="card category position-relative overflow-hidden"
+                >
+                  <div class="position-relative" style="top: 19px; left: 22px; font-size: 21px; font-weight: 500;">
+                    <span class="card-category-name">Category Name</span>
+                  </div>
+                  <div class="card-body p-4">
+                    <div class="category-published">
+                      <span class="badge parent-name px-2 mt-3">Gadget</span>
+                      <label class="wraper" for="something">
+                        <span class="label-text">Published</span>
+                        <div class="switch-wrap">
+                          <input type="checkbox" checked id="something" />
+                          <div class="switch"></div>
+                        </div>
+                      </label>
+                    </div>
+                    
+                    <div class="d-flex align-items-center gap-4 icon-container" style="margin-top: 21px;">
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black"
+                          ><i class="fas fa-edit"></i
+                        ></a>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black"
+                          ><i class="fas fa-trash-alt"></i
+                        ></a>
+                      </div>
+                      <div
+                        class="d-flex align-items-center ms-auto default-btn active">
+                        Set as Default
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="one-card-container col-md-6 col-lg-4">
+                <div
+                  class="card category position-relative overflow-hidden"
+                >
+                  <div class="position-relative" style="top: 19px; left: 22px; font-size: 21px; font-weight: 500;">
+                    <span class="card-category-name">Category Name</span>
+                  </div>
+                  <div class="card-body p-4">
+                    <div class="category-published">
+                      <span class="badge parent-name px-2 mt-3">Gadget</span>
+                      <label class="wraper" for="something">
+                        <span class="label-text">Published</span>
+                        <div class="switch-wrap">
+                          <input type="checkbox" checked id="something" />
+                          <div class="switch"></div>
+                        </div>
+                      </label>
+                    </div>
+                    
+                    <div class="d-flex align-items-center gap-4 icon-container" style="margin-top: 21px;">
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black"
+                          ><i class="fas fa-edit"></i
+                        ></a>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black"
+                          ><i class="fas fa-trash-alt"></i
+                        ></a>
+                      </div>
+                      <div
+                        class="d-flex align-items-center ms-auto default-btn active">
+                        Set as Default
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="one-card-container col-md-6 col-lg-4">
+                <div
+                  class="card category position-relative overflow-hidden"
+                >
+                  <div class="position-relative" style="top: 19px; left: 22px; font-size: 21px; font-weight: 500;">
+                    <span class="card-category-name">Category Name</span>
+                  </div>
+                  <div class="card-body p-4">
+                    <div class="category-published">
+                      <span class="badge parent-name px-2 mt-3">Gadget</span>
+                      <label class="wraper" for="something">
+                        <span class="label-text">Published</span>
+                        <div class="switch-wrap">
+                          <input type="checkbox" checked id="something" />
+                          <div class="switch"></div>
+                        </div>
+                      </label>
+                    </div>
+                    
+                    <div class="d-flex align-items-center gap-4 icon-container" style="margin-top: 21px;">
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black"
+                          ><i class="fas fa-edit"></i
+                        ></a>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black"
+                          ><i class="fas fa-trash-alt"></i
+                        ></a>
+                      </div>
+                      <div
+                        class="d-flex align-items-center ms-auto default-btn active">
+                        Set as Default
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="pagination-container">
+          <ul class="pagination">
+            <li>
+              <a href="#">First</a>
+            </li>
+            <li>
+              <a href="#">Prev</a>
+            </li>
+            <li>
+              <a href="#">1</a>
+            </li>
+            <li class="active">
+              <a href="#">2</a>
+            </li>
+            <li>
+              <a href="#">3</a>
+            </li>
+            <li>
+              <a href="#">Next</a>
+            </li>
+            <li>
+              <a href="#">Last</a>
+            </li>
+          </ul>
+        </div>
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <script src="/js/script.js"></script>
+  </body>
+</html>

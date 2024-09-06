@@ -1,0 +1,40 @@
+<nav>
+  <i class="bx bx-menu"></i>
+  <div class="nav-link">
+    <label
+      id="img_category_label"
+      class="field"
+      for="img_category"
+      data-value=""
+    >
+      <span>Filter</span>
+      <div id="img_category" class="psuedo_select" name="img_category">
+        <span class="selected"></span>
+        <ul id="img_category_options" class="options">
+          <li class="option" data-value="opt_1">Post</li>
+          <li class="option" data-value="opt_2">Category</li>
+          <li class="option" data-value="opt_2">Author</li>
+          <li class="option" data-value="opt_2">Project</li>
+          <li class="option" data-value="opt_2">User</li>
+        </ul>
+      </div>
+    </label>
+  </div>
+  <form action="#">
+    <div class="form-input">
+      <input type="search" placeholder="Search..." />
+      <button type="submit" class="search-btn">
+        <i class="bx bx-search"></i>
+      </button>
+    </div>
+  </form>
+  <input type="checkbox" id="switch-mode" hidden />
+  <label for="switch-mode" class="switch-mode"></label>
+  <a href="#" class="notification">
+    <i class="bx bxs-bell"></i>
+    <span class="num">8</span>
+  </a>
+  <a href="#" class="profile">
+    <img src="/images/people.png" />
+  </a>
+</nav>
