@@ -47,13 +47,13 @@
 
   <body>
     <!-- SIDEBAR -->
-    <%- include('../layout/sidebar') %>
+    <%- include('../../layout/sidebar') %>
     <!-- SIDEBAR -->
 
     <!-- CONTENT -->
     <section id="content">
       <!-- NAVBAR -->
-      <%- include('../layout/header') %>
+      <%- include('../../layout/header') %>
       <!-- NAVBAR -->
 
       <!-- MAIN -->
@@ -63,19 +63,19 @@
             <h1>Add Author</h1>
             <ul class="breadcrumb">
               <li>
-                <a href="dashboard.html">Dashboard</a>
+                <a href="/cms/dashboard">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="post_listing.html">Author</a>
+                <a href="/cms/author">Author</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active" href="#">Add Author</a>
+                <a class="active">Add Author</a>
               </li>
             </ul>
           </div>
-          <a href="#" class="btn-create">
+          <a href="/cms/author" class="btn-create">
             <i class="fas fa-arrow-left"></i>
             <span class="text">Back</span>
           </a>

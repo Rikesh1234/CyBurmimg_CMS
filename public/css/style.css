@@ -191,6 +191,10 @@ body {
 	position: relative;
 }
 
+.dropdown a{
+	cursor: pointer;
+}
+
 .dropdown-menu {
     display: none;
     position: absolute;

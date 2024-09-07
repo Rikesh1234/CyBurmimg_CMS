@@ -31,8 +31,8 @@
       rel="stylesheet"
     />
     <!-- My CSS -->
-    <link rel="stylesheet" href="public/css/style.css" />
-    <link rel="stylesheet" href="public/css/responsive.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
 
     <!-- Boxicons -->
     <link
@@ -47,13 +47,13 @@
 
   <body>
     <!-- SIDEBAR -->
-    <%- include('../layout/sidebar') %>
+    <%- include('../../layout/sidebar') %>
     <!-- SIDEBAR -->
 
     <!-- CONTENT -->
     <section id="content">
       <!-- NAVBAR -->
-      <%- include('../layout/header') %>
+      <%- include('../../layout/header') %>
       <!-- NAVBAR -->
 
       <!-- MAIN -->
@@ -63,19 +63,19 @@
             <h1>Add Role</h1>
             <ul class="breadcrumb">
               <li>
-                <a href="dashboard.html">Dashboard</a>
+                <a href="/cms/dashboard">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="post_listing.html">Role</a>
+                <a href="/cms/role">Role</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active" href="#">Add Role</a>
+                <a class="active">Add Role</a>
               </li>
             </ul>
           </div>
-          <a href="#" class="btn-create">
+          <a href="/cms/role" class="btn-create">
             <i class="fas fa-arrow-left"></i>
             <span class="text">Back</span>
           </a>
