@@ -60,22 +60,22 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Author</h1>
+            <h1>Add Team Type</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="/cms/dashboard">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="/cms/author">Author</a>
+                <a href="/cms/team-type">Team Type</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active">Add Author</a>
+                <a class="active">Add Team Type</a>
               </li>
             </ul>
           </div>
-          <a href="/cms/author" class="btn-create">
+          <a href="/cms/team-type" class="btn-create">
             <i class="fas fa-arrow-left"></i>
             <span class="text">Back</span>
           </a>
@@ -86,55 +86,20 @@
             <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
                 <div class="form-label">
-                  <label for="name">Name</label><span class="important">*</span>
+                  <label for="name">Name</label
+                  ><span class="important">*</span>
                 </div>
                 <input type="text" class="form-control" name="name" id="name" />
               </div>
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="slug">Slug</label><span class="important">*</span>
+                  <label for="slug">Slug</label
+                  ><span class="important">*</span>
                 </div>
                 <input type="text" class="form-control" name="slug" id="slug" />
               </div>
 
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="email">Email</label
-                  ><span class="important">*</span>
-                </div>
-                <input type="email" class="form-control" name="email" />
-              </div>
-
-              <div class="social-container">
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="facebook">Facebook</label>
-                  </div>
-                  <input type="text" class="form-control" name="facebbok" />
-                </div>
-
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="instagram">Instagram</label>
-                  </div>
-                  <input type="text" class="form-control" name="instagram" />
-                </div>
-
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="twitter">Twitter</label>
-                  </div>
-                  <input type="text" class="form-control" name="twitter" />
-                </div>
-
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="linkedin">Linkedin</label>
-                  </div>
-                  <input type="text" class="form-control" name="linkedin" />
-                </div>
-              </div>
 
               <div class="form-box">
                 <div class="form-label">
@@ -149,6 +114,8 @@
                   id="description"
                 ></textarea>
               </div>
+
+              
             </div>
 
             <div class="post-left-container col-md-4 col-sm-12">
@@ -164,19 +131,6 @@
                     />
                   </div>
                 </div>
-              </div>
-
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="Published_date">Published Date</label>
-                </div>
-                <input
-                  type="datetime-local"
-                  name="date"
-                  id="date"
-                  class="form-control"
-                  placeholder="YYYY/MM/HH H:M:S"
-                />
               </div>
 
               <div class="form-box">
@@ -472,6 +426,12 @@
         ],
       });
 
+      $(document).ready(function domReady() {
+        $(".select-parent").select2({
+          placeholder: "Parent",
+        });
+      });
+
       flatpickr("#date", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
@@ -479,16 +439,12 @@
     </script>
 
     <script>
-      $("#name").on("keyup", function () {
-        var theTitle = this.value.toLowerCase().trim();
-        var slugInput = $("#slug");
-        var theSlug = theTitle
-          .replace(/&/g, "-and-")
-          .replace(/[^a-z0-9-]+/g, "-")
-          .replace(/\-\-+/g, "-")
-          .replace(/^-+|-+$/g, "");
-        slugInput.val(theSlug);
-      });
+        $('#title').on('keyup', function () {
+      var theTitle = this.value.toLowerCase().trim();
+      var slugInput = $('#slug');
+      var theSlug = theTitle.replace(/&/g, '-and-').replace(/[^a-z0-9-]+/g, '-').replace(/\-\-+/g, '-').replace(/^-+|-+$/g, '');
+      slugInput.val(theSlug);
+  })
     </script>
   </body>
 </html>

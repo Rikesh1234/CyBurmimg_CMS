@@ -60,22 +60,22 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Author</h1>
+            <h1>Add Product</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="/cms/dashboard">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="/cms/author">Author</a>
+                <a href="/cms/product">Product</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active">Add Author</a>
+                <a class="active">Add Product</a>
               </li>
             </ul>
           </div>
-          <a href="/cms/author" class="btn-create">
+          <a href="/cms/product" class="btn-create">
             <i class="fas fa-arrow-left"></i>
             <span class="text">Back</span>
           </a>
@@ -83,10 +83,11 @@
 
         <form action="#">
           <div class="form-container">
-            <div class="post-right-container col-md-7 col-sm-12">
+            <div class="post-right-container col-md-7">
               <div class="form-box">
                 <div class="form-label">
-                  <label for="name">Name</label><span class="important">*</span>
+                  <label for="title">Name</label
+                  ><span class="important">*</span>
                 </div>
                 <input type="text" class="form-control" name="name" id="name" />
               </div>
@@ -100,42 +101,22 @@
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="email">Email</label
-                  ><span class="important">*</span>
+                  <label for="tag_line">Tag Line</label>
                 </div>
-                <input type="email" class="form-control" name="email" />
+                <input type="text" class="form-control" name="tag_line" />
               </div>
-
-              <div class="social-container">
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="facebook">Facebook</label>
-                  </div>
-                  <input type="text" class="form-control" name="facebbok" />
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="summary">Summary</label>
                 </div>
-
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="instagram">Instagram</label>
-                  </div>
-                  <input type="text" class="form-control" name="instagram" />
-                </div>
-
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="twitter">Twitter</label>
-                  </div>
-                  <input type="text" class="form-control" name="twitter" />
-                </div>
-
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="linkedin">Linkedin</label>
-                  </div>
-                  <input type="text" class="form-control" name="linkedin" />
-                </div>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  name="summary"
+                  rows="7"
+                  cols="7"
+                ></textarea>
               </div>
-
               <div class="form-box">
                 <div class="form-label">
                   <label for="content">Content</label>
@@ -149,6 +130,313 @@
                   id="description"
                 ></textarea>
               </div>
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="category">Product Category</label>
+                  <span class="important">*</span>
+                </div>
+                <select
+                  name="category"
+                  class="select-category form-control"
+                  multiple="multiple"
+                >
+                  <option>Cat A</option>
+                  <option>Cat B</option>
+                </select>
+              </div>
+
+              <div class="product-price-container">
+                <div class="product-price-card" style="width: 290px">
+                  <div class="form-box">
+                    <div class="form-label">
+                      <label for="category">Discount Type</label>
+                    </div>
+                    <select name="discount_type" class="form-control">
+                      <option value="">Select Option</option>
+                      <option value="sales">Sales</option>
+                      <option value="percentage">Discount</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="product-price-card">
+                  <div class="form-box">
+                    <div class="form-label">
+                      <label for="Currency">Currency</label>
+                      <span class="important">*</span>
+                    </div>
+                    <input type="number" class="form-control" name="currency" />
+                  </div>
+                </div>
+
+                <div class="product-price-card">
+                  <div class="form-box">
+                    <div class="form-label">
+                      <label for="tag_line">Old Price</label>
+                      <span class="important">*</span>
+                    </div>
+                    <input type="number" class="form-control" name="old_price" />
+                  </div>
+                </div>
+
+                <div class="product-price-card">
+                  <div class="form-box">
+                    <div class="form-label">
+                      <label for="new_price">New Price</label>
+                    </div>
+                    <input type="number" class="form-control" name="new_price" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Product Choice</label>
+                </div>
+                <div class="form-check form-switch">
+                  <label class="form-check-label" for="Photo Gallery"
+                    >By Color</label
+                  >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="product_color"
+                  />
+                </div>
+
+                <div class="form-check form-switch">
+                  <label class="form-check-label" for="Photo Gallery"
+                    >By Size</label
+                  >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="product_size"
+                  />
+                </div>
+
+                <div class="form-check form-switch">
+                  <label class="form-check-label" for="Photo Gallery"
+                    >By Size</label
+                  >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="product_size"
+                  />
+                </div>
+
+                <div class="form-check form-switch">
+                  <label class="form-check-label" for="Photo Gallery"
+                    >Iteration</label
+                  >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="product_size"
+                  />
+                </div>
+
+                <div class="form-check form-switch">
+                  <label class="form-check-label" for="Photo Gallery"
+                    >Includes</label
+                  >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="product_size"
+                  />
+                </div>
+
+                <div class="form-check form-switch">
+                  <label class="form-check-label" for="Photo Gallery"
+                    >Excludes</label
+                  >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="product_size"
+                  />
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Others Feature</label>
+                </div>
+                <div class="form-check form-switch">
+                  <label class="form-check-label" for="Photo Gallery"
+                    >Photo Gallery</label
+                  >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="photo_gallery"
+                  />
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Choose Photos for your gallery</label>
+                </div>
+                <div class="upload-container">
+                  <input
+                    id="upload-input"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    style="display: none"
+                  />
+                  <div id="image-container"></div>
+                  <label for="upload-input">Upload Image</label>
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Choose Size</label>
+                  <span class="important">*</span>
+                </div>
+                <div class="check-box-container">
+                  <div class="checkbox-contains">
+                    <input type="checkbox" name="product_size" value="S" /><span
+                      class="permission-name"
+                      >S</span
+                    >
+                  </div>
+                  <div class="checkbox-contains">
+                    <input type="checkbox" name="product_size" value="M" /><span
+                      class="permission-name"
+                      >M</span
+                    >
+                  </div>
+                  <div class="checkbox-contains">
+                    <input type="checkbox" name="product_size" value="L" /><span
+                      class="permission-name"
+                      >L</span
+                    >
+                  </div>
+                  <div class="checkbox-contains">
+                    <input
+                      type="checkbox"
+                      name="product_size"
+                      value="XL"
+                    /><span class="permission-name">XL</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Choose Color</label>
+                  <span class="important">*</span>
+                </div>
+                <div
+                  class="upload-container color-container"
+                  style="display: flex; flex-direction: column"
+                ></div>
+                <div
+                  class="btn-container-add"
+                  style="display: flex; justify-content: flex-end"
+                >
+                  <button
+                    class="submit-button form-control"
+                    style="width: 200px; margin-top: 25px; float: right"
+                    id="ColorRepetor"
+                  >
+                    <i class="fa-solid fa-plus"></i>Add Color Product
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Itenary</label>
+                  <span class="important">*</span>
+                </div>
+                <div
+                  class="upload-container color-container"
+                  style="display: flex; flex-direction: column"
+                ></div>
+                <div
+                  class="upload-container color-container itenary-container"
+                  style="display: flex; flex-direction: column"
+                >
+                  
+                </div>
+                <div
+                  class="btn-container-add"
+                  style="display: flex; justify-content: flex-end"
+                >
+                  <button
+                    class="submit-button form-control"
+                    style="width: 200px; margin-top: 25px; float: right"
+                    id="itenary-btn"
+                  >
+                    <i class="fa-solid fa-plus"></i>Add Itenary
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Includes</label>
+                  <span class="important">*</span>
+                </div>
+                <div
+                  class="upload-container color-container"
+                  style="display: flex; flex-direction: column"
+                ></div>
+                <div
+                  class="upload-container color-container include-container"
+                  style="display: flex; flex-direction: column"
+                >
+              
+                </div>
+                <div
+                  class="btn-container-add"
+                  style="display: flex; justify-content: flex-end"
+                >
+                  <button
+                    class="submit-button form-control"
+                    style="width: 200px; margin-top: 25px; float: right"
+                    id="includes-btn"
+                  >
+                    <i class="fa-solid fa-plus"></i>Add Includes
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Excludes</label>
+                  <span class="important">*</span>
+                </div>
+                <div
+                  class="upload-container color-container"
+                  style="display: flex; flex-direction: column"
+                ></div>
+                <div
+                  class="upload-container color-container exclude-container"
+                  style="display: flex; flex-direction: column"
+                >
+              
+                </div>
+                <div
+                  class="btn-container-add"
+                  style="display: flex; justify-content: flex-end"
+                >
+                  <button
+                    class="submit-button form-control"
+                    style="width: 200px; margin-top: 25px; float: right"
+                    id="excludes-btn"
+                  >
+                    <i class="fa-solid fa-plus"></i>Add Excludes
+                  </button>
+                </div>
+              </div>
+
             </div>
 
             <div class="post-left-container col-md-4 col-sm-12">
@@ -178,7 +466,6 @@
                   placeholder="YYYY/MM/HH H:M:S"
                 />
               </div>
-
               <div class="form-box">
                 <div class="form-label">
                   <label for="Published_date">Featued Image</label>
@@ -200,11 +487,6 @@
                 </div>
               </div>
               <input type="submit" class="full-submit-button form-control" />
-              <input
-                type="button"
-                class="cancel-button form-control"
-                value="cancel"
-              />
               <div class="button-box">
                 <input type="submit" class="submit-button form-control" />
                 <input
@@ -470,6 +752,12 @@
           "PasteFromOfficeEnhanced",
           "CaseChange",
         ],
+      });
+
+      $(document).ready(function domReady() {
+        $(".select-category").select2({
+          placeholder: "Category",
+        });
       });
 
       flatpickr("#date", {

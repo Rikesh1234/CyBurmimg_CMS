@@ -35,13 +35,13 @@
   </head>
   <body>
     <!-- SIDEBAR -->
-    <%- include('../layout/sidebar') %>
+    <%- include('../../layout/sidebar') %>
     <!-- SIDEBAR -->
 
     <!-- CONTENT -->
     <section id="content">
       <!-- NAVBAR -->
-      <%- include('../layout/header') %>
+      <%- include('../../layout/header') %>
       <!-- NAVBAR -->
 
       <!-- MAIN -->
@@ -51,15 +51,15 @@
             <h1>Post</h1>
             <ul class="breadcrumb">
               <li>
-                <a href="dashboard.html">Dashboard</a>
+                <a href="/cms/dashboard">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active" href="#">Post</a>
+                <a class="active">Post</a>
               </li>
             </ul>
           </div>
-          <a href="#" class="btn-create">
+          <a href="/cms/post/create" class="btn-create">
             <i class="fas fa-plus"></i>
             <span class="text">Create a Post</span>
           </a>
@@ -86,7 +86,7 @@
                 class="card post post-img-one position-relative overflow-hidden hover-img"
               >
                 <div class="position-relative">
-                  <a href="../main/blog-detail.html">
+                  <a>
                     <img
                       src="/images/default.jpg"
                       class="card-img-top"
@@ -118,12 +118,11 @@
                   </div>
                   <a
                     class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
                     >As yen tumbles, gadget-loving Japan goes for iPhones</a
                   >
                   <a
                     class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
+                 
                     >As yen tumbles, gadget-loving Japan goes for iPhones</a
                   >
                   <div class="d-flex align-items-center gap-4 icon-container">
@@ -136,7 +135,7 @@
                       ></a>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
+                      <a href="/cms/post/edit/1" class="text-black"
                         ><i class="fas fa-edit"></i
                       ></a>
                     </div>

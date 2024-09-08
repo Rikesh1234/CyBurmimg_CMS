@@ -60,22 +60,22 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Author</h1>
+            <h1>Add Team</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="/cms/dashboard">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="/cms/author">Author</a>
+                <a href="/cms/team">Team</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active">Add Author</a>
+                <a class="active">Add Team</a>
               </li>
             </ul>
           </div>
-          <a href="/cms/author" class="btn-create">
+          <a href="/cms/team" class="btn-create">
             <i class="fas fa-arrow-left"></i>
             <span class="text">Back</span>
           </a>
@@ -93,9 +93,15 @@
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="slug">Slug</label><span class="important">*</span>
+                  <label for="other_feature">Member Type</label>
                 </div>
-                <input type="text" class="form-control" name="slug" id="slug" />
+                <select
+                  name="memberType"
+                  class="select-member-type form-control"
+                >
+                  <option>Cat A</option>
+                  <option>Cat B</option>
+                </select>
               </div>
 
               <div class="form-box">
@@ -476,6 +482,14 @@
         enableTime: true,
         dateFormat: "Y-m-d H:i",
       });
+    </script>
+
+<script>
+$(document).ready(function domReady() {
+        $(".select-member-type").select2({
+          placeholder: "Member Type",
+        });
+    });
     </script>
 
     <script>

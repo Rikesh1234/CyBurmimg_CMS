@@ -60,22 +60,22 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Author</h1>
+            <h1>Add Category</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="/cms/dashboard">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="/cms/author">Author</a>
+                <a href="/cms/e-category">Category</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active">Add Author</a>
+                <a class="active">Add Category</a>
               </li>
             </ul>
           </div>
-          <a href="/cms/author" class="btn-create">
+          <a href="/cms/e-category" class="btn-create">
             <i class="fas fa-arrow-left"></i>
             <span class="text">Back</span>
           </a>
@@ -86,9 +86,15 @@
             <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
                 <div class="form-label">
-                  <label for="name">Name</label><span class="important">*</span>
+                  <label for="title">Title</label
+                  ><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="name" id="name" />
+                <input
+                  type="text"
+                  class="form-control"
+                  name="title"
+                  id="title"
+                />
               </div>
 
               <div class="form-box">
@@ -100,40 +106,9 @@
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="email">Email</label
-                  ><span class="important">*</span>
+                  <label for="tag_line">Tag Line</label>
                 </div>
-                <input type="email" class="form-control" name="email" />
-              </div>
-
-              <div class="social-container">
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="facebook">Facebook</label>
-                  </div>
-                  <input type="text" class="form-control" name="facebbok" />
-                </div>
-
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="instagram">Instagram</label>
-                  </div>
-                  <input type="text" class="form-control" name="instagram" />
-                </div>
-
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="twitter">Twitter</label>
-                  </div>
-                  <input type="text" class="form-control" name="twitter" />
-                </div>
-
-                <div class="form-box">
-                  <div class="form-label">
-                    <label for="linkedin">Linkedin</label>
-                  </div>
-                  <input type="text" class="form-control" name="linkedin" />
-                </div>
+                <input type="text" class="form-control" name="tag_line" />
               </div>
 
               <div class="form-box">
@@ -148,6 +123,20 @@
                   cols="7"
                   id="description"
                 ></textarea>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="Parent">Parent</label>
+                </div>
+                <select
+                  name="parent"
+                  class="select-parent form-control"
+                  multiple="multiple"
+                >
+                  <option>None</option>
+                  <option>Cat B</option>
+                </select>
               </div>
             </div>
 
@@ -472,6 +461,12 @@
         ],
       });
 
+      $(document).ready(function domReady() {
+        $(".select-parent").select2({
+          placeholder: "Parent",
+        });
+      });
+
       flatpickr("#date", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
@@ -479,7 +474,7 @@
     </script>
 
     <script>
-      $("#name").on("keyup", function () {
+      $("#title").on("keyup", function () {
         var theTitle = this.value.toLowerCase().trim();
         var slugInput = $("#slug");
         var theSlug = theTitle
