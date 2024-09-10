@@ -19,6 +19,8 @@ router.get('/',homeController.getPage);
 
 // login
 router.get('/admin/login',loginController.getLoginPage);
+router.post('/admin/login',loginController.getAuth);
+router.get('/logout',loginController.getLogout);
 
 //dashboard
 router.get('/cms/dashboard',dashboardController.getPage);
