@@ -1,58 +1,58 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { getRandomImage } = require('../helper/loginImageHelper');
-const User = require('../models/user');
+const { getRandomImage } = require("../helper/loginImageHelper");
+const User = require("../models/user");
 
-
+const randomImageUrl = getRandomImage();
 //view login page
-exports.getLoginPage=(req,res)=>{
+exports.getLoginPage = (req, res) => {
     try {
-        if (!req.session.user) {
-            const randomImageUrl = getRandomImage();
-        res.render('login/login', { imageUrl: randomImageUrl, title:'Login Page' });
-        } else {
-            res.redirect('/cms/dashboard');
-        }
-    } catch (error) {
-        res.status(500).send('Error occurred: ' + error.message);
+    if (!req.session.user) {
+      res.render("login/login", {
+        imageUrl: randomImageUrl,
+        title: "Login Page",
+      });
+    } else {
+      res.redirect("/cms/dashboard");
     }
-}
+  } catch (error) {
+    res.status(500).send("Error occurred: " + error.message);
+  }
+};
 
 //authentication function
-exports.getAuth=async (req,res)=>{
-    const { username, password } = req.body;
-    try{ 
+exports.getAuth = async (req, res) => {
+  const { username, password } = req.body;
+  try {
     const user = await User.findOne({ username });
     if (!user) {
-        console.log('User not found');
-        return;
+    res.render('login/login', { errorMessage: 'Username not found!', imageUrl: randomImageUrl });
+      return;
     }
 
     const isMatch = await user.comparePassword(password);
     if (isMatch) {
-        console.log('Login successful!');
-        // Proceed with session handling or token generation
-        console.log('Setting session for user:', username);
-req.session.user = { username };
-console.log('Session set:', req.session.user);
-        res.redirect('/cms/dashboard');
+      // Proceed with session handling or token generation
+      req.session.user = { username };
+      res.redirect("/cms/dashboard");
     } else {
-        console.log('Invalid password');
+        res.render('login/login', { errorMessage: 'Invalid Password!', imageUrl: randomImageUrl });
     }
-} catch (error) {
-    console.error('Error logging in:', error.message);
-}
-}
+  } catch (error) {
+    res.render('login/login', { errorMessage: 'Something went wrong', imageUrl: randomImageUrl });
+    res.status(500).send('Error logging in: ' + error.message);
+  }
+};
 
 // Logout route
-exports.getLogout=async (req,res)=>{
-    req.session.destroy(err => {
-        if (err) {
-            return res.redirect('cms/dashboard');
-        }
-        res.clearCookie('connect.sid');
-        res.redirect('admin/login');
-    });
-}
+exports.getLogout = async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.redirect("cms/dashboard");
+    }
+    res.clearCookie("connect.sid");
+    res.redirect("admin/login");
+  });
+};
 
 //other APIs ..
