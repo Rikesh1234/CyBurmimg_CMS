@@ -32,3 +32,5 @@ exports.getRoleEditPage=(req,res)=>{
 exports.getPermissionPage=(req,res)=>{
     res.render('users/permission/permission',{title:'Permission Page'});
 }
+
+//

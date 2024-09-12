@@ -10,11 +10,17 @@ const testomonialController = require('../controllers/TestominalController');
 const partnerController = require('../controllers/PartnerController');
 const teamController = require('../controllers/TeamController');
 const settingController = require('../controllers/GlobalController');
+const loginController = require('../controllers/LoginController');
 
 
 
 
 router.get('/',homeController.getPage);
+
+// login
+router.get('/admin/login',loginController.getLoginPage);
+router.post('/admin/login',loginController.getAuth);
+router.get('/logout',loginController.getLogout);
 
 //dashboard
 router.get('/cms/dashboard',dashboardController.getPage);
