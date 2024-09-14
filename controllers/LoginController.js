@@ -3,9 +3,10 @@ const router = express.Router();
 const { getRandomImage } = require("../helper/loginImageHelper");
 const User = require("../models/user");
 
-const randomImageUrl = getRandomImage();
+let randomImageUrl = getRandomImage();
 //view login page
 exports.getLoginPage = (req, res) => {
+   randomImageUrl = getRandomImage();
     try {
     if (!req.session.user) {
       res.render("login/login", {
@@ -22,6 +23,7 @@ exports.getLoginPage = (req, res) => {
 
 //authentication function
 exports.getAuth = async (req, res) => {
+  randomImageUrl = getRandomImage();
   const { username, password } = req.body;
   try {
     const user = await User.findOne({ username });
