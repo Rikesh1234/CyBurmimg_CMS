@@ -7,18 +7,29 @@ const routes = require('./routes/routes');
 const sessionMiddleware = require('./middleware/sessionMiddleware');
 
 // Asynchronous function to connect to the MongoDB database
+// const connectDB = async () => {
+//     try {
+//         await mongoose.connect(process.env.MONGO_URI, {
+//             useNewUrlParser: true,
+//             useUnifiedTopology: true,
+//         });
+//         console.log('Database connected successfully');
+//     } catch (err) {
+//         console.error('Database connection failed:', err.message);
+//         process.exit(1); // Exit the process with failure
+//     }
+// };
+
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        await mongoose.connect(process.env.MONGO_URI);
         console.log('Database connected successfully');
     } catch (err) {
         console.error('Database connection failed:', err.message);
         process.exit(1); // Exit the process with failure
     }
 };
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
