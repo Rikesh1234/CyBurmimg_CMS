@@ -4,6 +4,8 @@ const router=express.Router();
 
 const upload = require('../middleware/uploadMiddleware')
 const homeController= require('../controllers/HomeController');
+const cacheMiddleware = require('../middleware/cacheMiddleware')
+
 const teamController = require('../controllers/TeamController');
 const userController = require('../controllers/UserController');
 const postController = require('../controllers/PostController');
@@ -29,7 +31,9 @@ router.get('/logout',loginController.getLogout);
 router.get('/cms/dashboard',dashboardController.getPage);
 
 //post
-router.get('/cms/post',postController.getPostPage);
+// router.get('/cms/post',postController.getPostPage);
+router.get('/cms/post', cacheMiddleware, postController.getPostPage);
+
 
 router.get('/cms/post/create',postController.getPostCreatePage);
 // Route for handling the post creation

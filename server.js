@@ -1,12 +1,13 @@
 require('dotenv').config();
-
 const path = require('path');
 const csrf = require('csurf');
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes/routes');
 const cookieParser = require('cookie-parser');
+const cacheMiddleware = require('./middleware/cacheMiddleware');
 const sessionMiddleware = require('./middleware/sessionMiddleware');
+
 
 // Asynchronous function to connect to the MongoDB database
 const connectDB = async () => {
@@ -19,24 +20,32 @@ const connectDB = async () => {
     }
 };
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Connect to the database
 connectDB();
 
-// Middleware to parse incoming requests with URL-encoded payloads
+// Middleware for parsing request bodies
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Set the view engine to EJS for rendering templates
-app.set('view engine', 'ejs');
+
+
+// Middleware to parse incoming requests with URL-encoded payloads
+app.use(express.urlencoded({ extended: true }));
 
 // Serve static files (CSS, images, etc.) from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Use session middleware for managing sessions (with Redis)
 app.use(sessionMiddleware);
+
+// Cache middleware applied to all routes
+app.use(cacheMiddleware);
+
+// Set the view engine to EJS for rendering templates
+app.set('view engine', 'ejs');
 
 // Use application routes
 app.use('/', routes);
