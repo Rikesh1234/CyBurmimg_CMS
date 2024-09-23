@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('../../layout/link') %>
-    <title>CyBurning</title>
+    <title><%= title %></title>
   </head>
   <body>
     <!-- SIDEBAR -->
@@ -38,340 +38,57 @@
           </a>
         </div>
 
-        <div class="search-container">
-          <form onsubmit="event.preventDefault();" role="search">
-            <label for="search">Search for stuff</label>
-            <input
-              id="search"
-              type="search"
-              placeholder="Search..."
-              autofocus
-              required
-            />
-            <button type="submit">Go</button>
-          </form>
-        </div>
-
+        <!-- Display posts dynamically -->
         <div class="row">
-          <div class="card-container">
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a>
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
+          <% posts.forEach(post => { %>
+          <div class="col-md-6 col-lg-4">
+            <div
+              class="card post post-img-one position-relative overflow-hidden hover-img"
+            >
+              <div class="position-relative">
+                <a href="/cms/post/edit/<%= post._id %>">
                   <img
-                    src="/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
+                    src="<%= post.featured_image ? post.featured_image : '/images/default.jpg' %>"
+                    class="card-img-top"
+                    alt="Post Image"
                   />
-                  <span class="card-author-name">Author Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
+                </a>
+                <span class="card-author-name"><%= post.author %></span>
+              </div>
+              <div class="card-body p-4">
+                <a
+                  class="d-block my-2 text-dark fw-semibold link-primary"
+                  href="/cms/post/edit/<%= post._id %>"
+                >
+                  <%= post.title %>
+                </a>
+                <p class="post-content" id="post-content-<%= post._id %>">
+                  <%- post.content %>
+                </p>
+                <div class="d-flex align-items-center gap-4">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-calendar-check px-1 text-dark"></i>
+                    <%= new Date(post.createdAt).toLocaleDateString() %>
                   </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                 
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4 icon-container">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/post/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div
-                      class="d-flex align-items-center ms-auto post-calender"
+                  <div class="d-flex align-items-center gap-2">
+                    <a href="/cms/post/edit/<%= post._id %>" class="text-black">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <a
+                      href="#"
+                      class="text-black delete-post"
+                      data-id="<%= post._id %>"
                     >
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a href="../main/blog-detail.html">
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                  <img
-                    src="/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <span class="card-author-name">Author Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something1">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something1" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center ms-auto">
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a href="../main/blog-detail.html">
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                  <img
-                    src="/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <span class="card-author-name">Author Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center ms-auto">
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a href="../main/blog-detail.html">
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                  <img
-                    src="/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <span class="card-author-name">Author Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center ms-auto">
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
+                      <i class="fas fa-trash-alt"></i>
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="pagination-container">
-          <ul class="pagination">
-            <li>
-              <a href="#">First</a>
-            </li>
-            <li>
-              <a href="#">Prev</a>
-            </li>
-            <li>
-              <a href="#">1</a>
-            </li>
-            <li class="active">
-              <a href="#">2</a>
-            </li>
-            <li>
-              <a href="#">3</a>
-            </li>
-            <li>
-              <a href="#">Next</a>
-            </li>
-            <li>
-              <a href="#">Last</a>
-            </li>
-          </ul>
+          <% }) %>
         </div>
       </main>
       <!-- MAIN -->
@@ -379,5 +96,75 @@
     <!-- CONTENT -->
 
     <%- include('../../layout/script') %>
+
+    <script>
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Function to strip HTML tags from a string
+        function stripHTMLTags(str) {
+          let div = document.createElement('div');
+          div.innerHTML = str;
+          return div.textContent || div.innerText || '';
+        }
+      
+        // Function to truncate the text with an ellipsis
+        function truncateText(str, length) {
+          return str.length > length ? str.substring(0, length) + '...' : str;
+        }
+      
+        // Select all post content elements and apply truncation
+        document.querySelectorAll('.post-content').forEach(element => {
+          const rawContent = element.innerHTML;
+          const plainTextContent = stripHTMLTags(rawContent);
+          const truncatedContent = truncateText(plainTextContent, 100); // Adjust the length as needed
+          element.innerText = truncatedContent;
+        });
+      
+        // Handle delete button functionality
+        const deleteButtons = document.querySelectorAll('.delete-post');
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+            const postId = this.getAttribute('data-id'); // Get post ID
+            // Trigger SweetAlert2 modal
+            Swal.fire({
+              title: 'Are you sure?',
+              text: 'Do you really want to delete this post? This action cannot be undone.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Delete',
+              cancelButtonText: 'Cancel'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // If confirmed, send POST request to delete the post
+                fetch(`/cms/post/delete/${postId}`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  }
+                })
+                .then(response => {
+                  if (response.ok) {
+                    // Show success message and reload the page
+                    Swal.fire('Deleted!', 'Your post has been deleted.', 'success').then(() => {
+                      location.reload(); // Reload the page after successful deletion
+                    });
+                  } else {
+                    Swal.fire('Error!', 'There was an issue deleting the post.', 'error');
+                  }
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  Swal.fire('Error!', 'There was an issue deleting the post.', 'error');
+                });
+              }
+            });
+          });
+        });
+      });
+      
+    </script>
   </body>
 </html>

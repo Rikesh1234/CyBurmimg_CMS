@@ -1,16 +1,21 @@
 const express=require('express');
+
 const router=express.Router();
+
+const upload = require('../middleware/uploadMiddleware')
 const homeController= require('../controllers/HomeController');
-const dashboardController= require('../controllers/DashboardController');
-const postController = require('../controllers/PostController');
-const userController = require('../controllers/UserController');
-const staticPageController = require('../controllers/StaticPageController');
-const productController = require('../controllers/ProductController');
-const testomonialController = require('../controllers/TestominalController');
-const partnerController = require('../controllers/PartnerController');
+const cacheMiddleware = require('../middleware/cacheMiddleware')
+
 const teamController = require('../controllers/TeamController');
-const settingController = require('../controllers/GlobalController');
+const userController = require('../controllers/UserController');
+const postController = require('../controllers/PostController');
 const loginController = require('../controllers/LoginController');
+const settingController = require('../controllers/GlobalController');
+const partnerController = require('../controllers/PartnerController');
+const productController = require('../controllers/ProductController');
+const dashboardController= require('../controllers/DashboardController');
+const staticPageController = require('../controllers/StaticPageController');
+const testomonialController = require('../controllers/TestominalController');
 
 
 
@@ -26,9 +31,32 @@ router.get('/logout',loginController.getLogout);
 router.get('/cms/dashboard',dashboardController.getPage);
 
 //post
-router.get('/cms/post',postController.getPostPage);
+// router.get('/cms/post',postController.getPostPage);
+router.get('/cms/post', cacheMiddleware, postController.getPostPage);
+
+
 router.get('/cms/post/create',postController.getPostCreatePage);
+// Route for handling the post creation
+router.post('/cms/post/create', 
+    upload.fields([
+      { name: 'featured_image', maxCount: 1 },  
+      { name: 'gallery_images', maxCount: 10 }
+    ]), 
+    postController.createPost
+  );
+
 router.get('/cms/post/edit/:postId',postController.getPostEditPage);
+// Route to handle the edit (update) request
+router.post('/cms/post/edit/:postId', 
+  upload.fields([
+    { name: 'featured_image', maxCount: 1 },
+    { name: 'gallery_images', maxCount: 10 }
+  ]),
+  postController.updatePost
+);
+
+router.post('/cms/post/delete/:postId',postController.deletePost);
+
 
 //author
 router.get('/cms/author',postController.getAuthorPage);
