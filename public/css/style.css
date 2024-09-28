@@ -1579,5 +1579,12 @@ input:checked + .switch::after {
   .custom-swal-button-error:hover {
 	background-color: #992a26 !important; /* Example hash code for darker green */
   }
+
+  .setting-container{
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+  }
   
 

@@ -9,7 +9,7 @@ const productController = require('../controllers/ProductController');
 const testomonialController = require('../controllers/TestominalController');
 const partnerController = require('../controllers/PartnerController');
 const teamController = require('../controllers/TeamController');
-const settingController = require('../controllers/GlobalController');
+const customFieldController = require('../controllers/CustomFieldController');
 const loginController = require('../controllers/LoginController');
 
 
@@ -88,9 +88,9 @@ router.get('/cms/team-type',teamController.getTeamTypePage);
 router.get('/cms/team-type/create',teamController.getTeamTypeCreatePage);
 router.get('/cms/team-type/edit/:userId',teamController.getTeamTypeEditPage);
 
-//setting
-router.get('/cms/setting',settingController.getSettingPage);
-router.get('/cms/setting/create',settingController.getSettingCreatePage);
+//custom field
+router.get('/cms/custom-field',customFieldController.getCustomFieldPage);
+router.get('/cms/custom-field/create',customFieldController.getCustomFieldCreatePage);
 
 // router.use((req,res)=>{
 //     res.status(404).render('404',{title:'Page Not Found'});
