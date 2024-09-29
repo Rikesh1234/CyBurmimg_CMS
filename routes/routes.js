@@ -11,7 +11,8 @@ const partnerController = require('../controllers/PartnerController');
 const teamController = require('../controllers/TeamController');
 const customFieldController = require('../controllers/CustomFieldController');
 const loginController = require('../controllers/LoginController');
-
+const sliderController = require('../controllers/SliderController');
+const packageController = require('../controllers/PackageController');
 
 
 
@@ -87,6 +88,16 @@ router.get('/cms/team/edit/:userId',teamController.getTeamEditPage);
 router.get('/cms/team-type',teamController.getTeamTypePage);
 router.get('/cms/team-type/create',teamController.getTeamTypeCreatePage);
 router.get('/cms/team-type/edit/:userId',teamController.getTeamTypeEditPage);
+
+//slider
+router.get('/cms/slider',sliderController.getSliderPage);
+router.get('/cms/slider/create',sliderController.getSliderCreatePage);
+router.get('/cms/slider/edit/:sliderId',sliderController.getSliderEditPage);
+
+//package
+router.get('/cms/package',packageController.getPackagePage);
+router.get('/cms/package/create',packageController.getPackageCreatePage);
+router.get('/cms/package/edit/:packageId',packageController.getPackageEditPage);
 
 //custom field
 router.get('/cms/custom-field',customFieldController.getCustomFieldPage);

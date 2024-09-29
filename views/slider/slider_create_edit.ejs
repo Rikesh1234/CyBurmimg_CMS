@@ -2,14 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <%- include(../layout/script) %>
-    <!-- Boxicons -->
-    <link
-      href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-    <!-- My CSS -->
-    <!-- <link rel="stylesheet" href="/css/style.css" /> -->
+    <%- include('../layout/link') %>
 
     <title>CyBurning</title>
   </head>
@@ -29,22 +22,22 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Partner</h1>
+            <h1>Add slider</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="/cms/dashboard">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="post_listing.html">Partner</a>
+                <a href="/cms/slider">slider</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active" href="#">Add Partner</a>
+                <a class="active">Add slider</a>
               </li>
             </ul>
           </div>
-          <a href="#" class="btn-create">
+          <a href="/cms/slider" class="btn-create">
             <i class="fas fa-arrow-left"></i>
             <span class="text">Back</span>
           </a>
@@ -52,30 +45,31 @@
 
         <form action="#">
           <div class="form-container">
-            <div class="post-right-container col-md-7 col-sm-12">
+            <div class="post-right-container col-md-7">
               <div class="form-box">
                 <div class="form-label">
                   <label for="title">Title</label
                   ><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="title" />
+                <input type="text" class="form-control" name="title" id="title" />
               </div>
 
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="sub title">Sub title</label>
-                </div>
-                <input type="text" class="form-control" name="sub_title" />
-              </div>
 
+              
               <div class="form-box">
                 <div class="form-label">
-                  <label for="redirect link">Redirct Link</label>
+                  <label for="subtitle">Subtitle</label>
                 </div>
-                <input type="text" class="form-control" name="redirect_link" />
+                <input type="text" class="form-control" name="sub-title" id="sub-title" />
               </div>
-            </div>
             
+        
+           
+           
+              
+
+             
+            </div>
 
             <div class="post-left-container col-md-4 col-sm-12">
               <div class="form-box" style="margin-bottom: 15px">
@@ -105,6 +99,7 @@
                 />
               </div>
 
+              
               <div class="form-box">
                 <div class="form-label">
                   <label for="Published_date">Featued Image</label>
@@ -126,11 +121,6 @@
                 </div>
               </div>
               <input type="submit" class="full-submit-button form-control" />
-              <input
-                  type="button"
-                  class="cancel-button form-control"
-                  value="cancel"
-                />
               <div class="button-box">
                 <input type="submit" class="submit-button form-control" />
                 <input
@@ -146,7 +136,8 @@
       <!-- MAIN -->
     </section>
     <!-- CONTENT -->
+    <%- include('../layout/script') %>
+    
 
-    <%- include(../layout/script) %>
   </body>
 </html>
