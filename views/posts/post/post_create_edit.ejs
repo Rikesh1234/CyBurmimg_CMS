@@ -114,9 +114,9 @@
                         <label for="category">Category</label>
                       </div>
                       <select name="category" class="select-category form-control" multiple="multiple">
-                        <option value="Cat A" <%= post && post.category && post.category.includes('Cat A') ? 'selected' : '' %>>Cat A</option>
-                        <option value="Cat B" <%= post && post.category && post.category.includes('Cat B') ? 'selected' : '' %>>Cat B</option>
-                        <option value="Cat C" <%= post && post.category && post.category.includes('Cat C') ? 'selected' : '' %>>Cat C</option>
+                        <% categories.forEach(category => { %>
+                          <option value="<%= category._id %>" <%= post && post.category && post.category.toString() === category._id.toString() ? 'selected' : '' %>><%= category.title %></option>
+                          <% }) %>
                       </select>
                       
                     </div>
@@ -127,8 +127,8 @@
                         <label for="author">Author</label>
                       </div>
                       <select name="author" class="select-author form-control" multiple="multiple">
-                        <option value="Author A" <%= post && post.author === 'Author A' ? 'selected' : '' %>>Author A</option>
-                        <option value="Author B" <%= post && post.author === 'Author B' ? 'selected' : '' %>>Author B</option>
+                        <option value="1" <%= post && post.author === 'Author A' ? 'selected' : '' %>>Author A</option>
+                        <option value="2" <%= post && post.author === 'Author B' ? 'selected' : '' %>>Author B</option>
                       </select>
                       
                     </div>

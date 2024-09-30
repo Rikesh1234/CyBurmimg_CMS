@@ -55,285 +55,69 @@
 
         <div class="row">
           <div class="card-container">
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a>
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Page</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
+            <% pages.forEach(page => { %>
+              <div class="col-md-6 col-lg-4">
+                <div class="card post post-img-one position-relative overflow-hidden hover-img">
+                  <!-- Page Image -->
+                  <div class="position-relative">
+                    <a>
+                      <img
+                        src="<%= page.featured_image ? page.featured_image : '/images/default.jpg' %>"
+                        class="card-img-top"
+                        alt="<%= page.title %>"
+                      />
+                    </a>
                   </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                  
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4 icon-container">
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
+                  <div class="card-body p-4">
+                    <div class="category-published">
+                      <!-- Category Name (Page) -->
+                      <span class="badge category-name px-2 mt-3">Page</span>
+                      
+                      <!-- Published Switch -->
+                      <label class="wraper" for="publish_<%= page._id %>">
+                        <span class="label-text">Published</span>
+                        <div class="switch-wrap">
+                          <input type="checkbox" id="publish_<%= page._id %>" <%= page.status === 'active' ? 'checked' : '' %> />
+                          <div class="switch"></div>
+                        </div>
+                      </label>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/static-page/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div
-                      class="d-flex align-items-center ms-auto post-calender"
-                    >
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+                    
+                    <!-- Page Title -->
+                    <a
+                      class="d-block my-2 text-dark fw-semibold link-primary"
+                    ><%= page.title %></a>
+                    <!-- Page Slug -->
+                    <a
+                      class="d-block my-2 text-dark link-primary"
+                    ><%= page.slug %></a>
 
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a href="../main/blog-detail.html">
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                  <img
-                    src="/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <span class="card-author-name">Author Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something1">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something1" />
-                        <div class="switch"></div>
+                    <!-- Action Buttons -->
+                    <div class="d-flex align-items-center gap-4 icon-container">
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="/cms/static-page/view/<%= page._id %>" class="text-dark">
+                          <i class="fas fa-eye"></i>
+                        </a>
                       </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center ms-auto">
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="/cms/static-page/edit/<%= page._id %>" class="text-black">
+                          <i class="fas fa-edit"></i>
+                        </a>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black delete-page" data-id="<%= page._id %>">
+                          <i class="fas fa-trash-alt"></i>
+                        </a>
+                      </div>
+                      <div class="d-flex align-items-center ms-auto post-calender">
+                        <i class="fas fa-calendar-check px-1 text-dark"></i>
+                        <%= new Date(page.createdAt).toLocaleDateString() %>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a href="../main/blog-detail.html">
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                  <img
-                    src="/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <span class="card-author-name">Author Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center ms-auto">
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a href="../main/blog-detail.html">
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                  <img
-                    src="/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <span class="card-author-name">Author Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Gadget</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    href="../main/blog-detail.html"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="fas fa-heart"></i>9,125
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-dark"
-                        ><i class="fas fa-eye"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center ms-auto">
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <% }) %>
           </div>
         </div>
         <div class="pagination-container">

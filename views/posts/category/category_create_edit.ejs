@@ -43,7 +43,7 @@
           </a>
         </div>
 
-        <form action="#">
+        <form action="/cms/category/create" method="POST" enctype="multipart/form-data">
           <div class="form-container">
             <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
@@ -51,13 +51,17 @@
                   <label for="title">Title</label
                   ><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="title" id="title" />
+                <input
+                  type="text"
+                  class="form-control"
+                  name="title"
+                  id="title"
+                />
               </div>
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="slug">Slug</label
-                  ><span class="important">*</span>
+                  <label for="slug">Slug</label><span class="important">*</span>
                 </div>
                 <input type="text" class="form-control" name="slug" id="slug" />
               </div>
@@ -73,14 +77,13 @@
                 <div class="form-label">
                   <label for="Parent">Parent</label>
                 </div>
-                <select
-                  name="parent"
-                  class="select-parent form-control"
-                  multiple="multiple"
-                >
-                  <option>None</option>
-                  <option>Cat B</option>
+                <select name="parent" class="select-parent form-control">
+                  <option value="None">None</option>
+                  <% categories.forEach(category => { %>
+                    <option value="<%= category._id %>"><%= category.title %></option>
+                  <% }) %>
                 </select>
+                
               </div>
 
               <div class="form-box">
@@ -96,8 +99,6 @@
                   id="description"
                 ></textarea>
               </div>
-
-              
             </div>
 
             <div class="post-left-container col-md-4 col-sm-12">
@@ -110,6 +111,7 @@
                       class="form-check-input"
                       type="checkbox"
                       id="status"
+                      name="status"
                     />
                   </div>
                 </div>
@@ -127,10 +129,7 @@
                     hidden
                   />
                   <div id="image-container-one">
-                    <img
-                      src="/images/upload.png"
-                      class="uploaded-image"
-                    />
+                    <img src="/images/upload.png" class="uploaded-image" />
                   </div>
                   <label for="upload-input-one">Upload Image</label>
                 </div>
@@ -419,12 +418,42 @@
     </script>
 
     <script>
-        $('#title').on('keyup', function () {
-      var theTitle = this.value.toLowerCase().trim();
-      var slugInput = $('#slug');
-      var theSlug = theTitle.replace(/&/g, '-and-').replace(/[^a-z0-9-]+/g, '-').replace(/\-\-+/g, '-').replace(/^-+|-+$/g, '');
-      slugInput.val(theSlug);
-  })
+      $("#title").on("keyup", function () {
+        var theTitle = this.value.toLowerCase().trim();
+        var slugInput = $("#slug");
+        var theSlug = theTitle
+          .replace(/&/g, "-and-")
+          .replace(/[^a-z0-9-]+/g, "-")
+          .replace(/\-\-+/g, "-")
+          .replace(/^-+|-+$/g, "");
+        slugInput.val(theSlug);
+      });
+
+      $("form").on("submit", function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        $.ajax({
+          url: "/cms/category/create", // Endpoint to your server
+          type: "POST",
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            // Success feedback using SweetAlert
+            Swal.fire("Success", response.message, "success").then(() => {
+              window.location.href = "/cms/category"; // Redirect to category list page
+            });
+          },
+          error: function (xhr) {
+            const errors = xhr.responseJSON?.errors || [
+              xhr.responseJSON.message,
+            ];
+            Swal.fire("Error", errors.join("<br>"), "error");
+          },
+        });
+      });
     </script>
   </body>
 </html>

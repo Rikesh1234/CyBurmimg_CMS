@@ -1,5 +1,10 @@
 const Post = require("../models/Post");
+const Category = require("../models/Category");
+const Author = require("../models/Author");
+
+
 const redis = require("../config/redis");
+const { body, validationResult } = require("express-validator");
 
 //view post page
 exports.getPostPage = async (req, res) => {
@@ -16,13 +21,22 @@ exports.getPostPage = async (req, res) => {
 };
 
 //view post Create page
-exports.getPostCreatePage = (req, res) => {
-  res.render("posts/post/post_create_edit", {
-    title: "Create Post",
-    errorMessages: [],
-    formData: {},
-    post: null,
-  });
+exports.getPostCreatePage = async (req, res) => {
+  try {
+    // Fetch all categories to populate the dropdown
+    const categories = await Category.find({ status: "active" }).lean(); // Assuming you only want active categories
+
+    res.render("posts/post/post_create_edit", {
+      title: "Create Post",
+      errorMessages: [],
+      formData: {},
+      post: null,
+      categories,
+    });
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    res.status(500).send("Server Error");
+  }
 };
 
 exports.createPost = async (req, res) => {
@@ -83,11 +97,15 @@ exports.createPost = async (req, res) => {
       const errorMessages = Object.values(err.errors).map(
         (error) => error.message
       );
+
+      // Fetch categories again to render the form
+      const categories = await Category.find({ status: "active" }).lean();
       res.render("posts/post/post_create_edit", {
         title: "Create Post",
         errorMessages,
         formData: req.body,
         post: null,
+        categories,
       });
     } else {
       console.error(err);
@@ -242,33 +260,280 @@ exports.updatePost = async (req, res) => {
   }
 };
 
-//view Author page
-exports.getAuthorPage = (req, res) => {
-  res.render("posts/author/author_listing", { title: "Author Page" });
+// View Authors page
+exports.getAuthorPage = async (req, res) => {
+  try {
+    const authors = await Author.find();
+    res.render('posts/author/author_listing', { title: 'Author Page', authors });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
 };
-
-//view Author Create page
+// View Author Create page
 exports.getAuthorCreatePage = (req, res) => {
   res.render("posts/author/author_create_edit", {
     title: "Author Create Page",
+    author: null 
   });
 };
 
-//view Author Edit page
-exports.getAuthorEditPage = (req, res) => {
-  res.render("posts/author/author_create_edit", { title: "Author Edit Page" });
+// Create Author
+exports.createAuthor = [
+  // Validation rules
+  body('name').notEmpty().withMessage('Name is required'),
+  body('slug').notEmpty().withMessage('Slug is required'),
+  body('email').isEmail().withMessage('Invalid email address'),
+
+  async (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array().map(err => err.msg) });
+    }
+
+    try {
+      // Extract form data
+      const { name, slug, email, content } = req.body;
+      const status = req.body.status === 'on' ? 'active' : 'inactive';
+
+      // Group social media links under `socialLinks`
+      const socialLinks = {
+        facebook: req.body.facebook || '',
+        instagram: req.body.instagram || '',
+        twitter: req.body.twitter || '',
+        linkedin: req.body.linkedin || '',
+      };
+
+      // Create new author object
+      const newAuthor = new Author({
+        name,
+        slug,
+        email,
+        content,
+        status,
+        socialLinks, // Store social media links correctly
+      });
+
+      // Save author to database
+      await newAuthor.save();
+      await redis.del('/cms/author'); // Clear cache
+
+      // Redirect to author listing
+      res.redirect('/cms/author');
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+    }
+  },
+];
+
+// View Author Edit page
+exports.getAuthorEditPage = async (req, res) => {
+  try {
+    const authorId = req.params.authorId;
+
+    // Find the author by ID
+    const author = await Author.findById(authorId);
+
+    // Log the `author` object to verify fields
+    console.log('Fetched Author:', author);
+    console.log(author.socialLinks)
+
+    // If the author is not found, handle the error appropriately
+    if (!author) {
+      return res.status(404).send('Author not found');
+    }
+
+    // Render the form with the existing author data
+    res.render('posts/author/author_create_edit', {
+      title: 'Edit Author',
+      author: author, // Pass the author object to the template
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
 };
+
+
+
+
+// Update Author
+exports.updateAuthor = async (req, res) => {
+  try {
+    const { name, slug, email, facebook, instagram, twitter, linkedin, content } = req.body;
+
+    // Convert "on" to "active", otherwise "inactive"
+    const status = req.body.status === 'on' ? 'active' : 'inactive';
+
+    const updatedAuthor = await Author.findByIdAndUpdate(
+      req.params.authorId, 
+      { name, slug, email, facebook, instagram, twitter, linkedin, content, status }, 
+      { new: true }
+    );
+
+    if (!updatedAuthor) return res.status(404).send('Author not found');
+
+    await redis.del('/cms/author'); 
+
+    res.redirect('/cms/author');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+};
+
+
+
+// Delete Author
+exports.deleteAuthor = async (req, res) => {
+  try {
+    const authorId = req.params.authorId;
+
+    // Use `findByIdAndDelete` to delete the author directly
+    const deletedAuthor = await Author.findByIdAndDelete(authorId);
+
+    if (!deletedAuthor) {
+      return res.status(404).json({ message: 'Author not found' });
+    }
+
+    // Clear cache after deletion
+    await redis.del('/cms/author');
+
+    // Send a JSON response indicating success
+    res.json({ message: 'Author deleted successfully!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 
 //view Category page
-exports.getCategoryPage = (req, res) => {
-  res.render("posts/category/category_listing", { title: "Category Page" });
+exports.getCategoryPage = async (req, res) => {
+  try {
+    const categories = await Category.find().populate("parent");
+    // Pass categories to the view
+    res.render("posts/category/category_listing", {
+      title: "Category Page",
+      categories,
+    });
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    res.status(500).send("Server Error");
+  }
 };
 
+// Create Category
+exports.createCategory = [
+  // Validate fields
+  body("title").notEmpty().withMessage("Title is required"),
+  body("slug")
+    .notEmpty()
+    .withMessage("Slug is required")
+    .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .withMessage("Invalid slug format"),
+
+  // Process request
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res
+        .status(400)
+        .json({ errors: errors.array().map((err) => err.msg) });
+    }
+
+    try {
+      const { title, slug, tag_line, parent, content, status } = req.body;
+
+      // Correctly handle "None" as parent
+      const parentCategory = parent === "None" ? null : parent;
+
+      // Create category with correct `parent` field
+      const category = new Category({
+        title,
+        slug,
+        tag_line,
+        parent: parentCategory,
+        content,
+        status,
+      });
+
+      // Handle uploaded file (category_image)
+      if (req.file) {
+        category.featured_image = `/uploads/category/${req.file.filename}`;
+      }
+
+      await category.save();
+      await redis.del("/cms/category");
+
+      res.status(200).json({ message: "Category created successfully!" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create category", error });
+    }
+  },
+];
+
 //view Category Create page
-exports.getCategoryCreatePage = (req, res) => {
-  res.render("posts/category/category_create_edit", {
-    title: "Category Create Page",
-  });
+exports.getCategoryCreatePage = async (req, res) => {
+  try {
+    // Fetch all categories
+    const categories = await Category.find();
+
+    // Render the view and pass the categories
+    res.render("posts/category/category_create_edit", {
+      title: "Category Create Page",
+      categories, // Pass categories to view
+    });
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.deleteCategory = async (req, res) => {
+  const { categoryId } = req.params;
+  try {
+    // Find the category to be deleted
+    const category = await Category.findById(categoryId);
+
+    if (!category) {
+      return res.status(404).json({ message: "Category not found!" });
+    }
+
+    // Check if the category is a parent to other categories
+    const isParent = await Category.exists({ parent: categoryId });
+    if (isParent) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "Cannot delete category as it is a parent to one or more categories.",
+        });
+    }
+
+    // Check if the category is used in any posts
+    const isUsedInPosts = await Post.exists({ category: categoryId });
+    if (isUsedInPosts) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "Cannot delete category as it is assigned to one or more posts.",
+        });
+    }
+
+    // If not a parent and not used in posts, proceed to delete
+    await category.deleteOne();
+    await redis.del("/cms/category");
+
+    res.status(200).json({ message: "Category deleted successfully!" });
+  } catch (error) {
+    console.error("Failed to delete category:", error);
+    res.status(500).json({ message: "Failed to delete category", error });
+  }
 };
 
 //view Category Edit page
