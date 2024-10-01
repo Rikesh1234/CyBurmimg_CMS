@@ -18,6 +18,7 @@ const dashboardController= require('../controllers/DashboardController');
 const staticPageController = require('../controllers/StaticPageController');
 const testomonialController = require('../controllers/TestominalController');
 const customFieldController = require('../controllers/CustomFieldController');
+const sliderController = require('../controllers/SliderController');
 
 
 
@@ -257,8 +258,6 @@ router.get("/cms/team-type/edit/:userId", teamController.getTeamTypeEditPage);
 //custom field
 router.get('/cms/custom-field',customFieldController.getCustomFieldPage);
 router.get('/cms/custom-field/create',customFieldController.getCustomFieldCreatePage);
-// router.get("/cms/setting", settingController.getSettingPage);
-// router.get("/cms/setting/create", settingController.getSettingCreatePage);
 
 // Static Page - Listing
 router.get("/cms/static-page",cacheMiddleware, staticPageController.getStaticPagePage);
