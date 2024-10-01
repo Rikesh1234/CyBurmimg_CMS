@@ -1,0 +1,11 @@
+{
+    "post": {
+      "title": true,
+      "slug": true,
+      "content": true,
+      "author": true,
+      "category": true,
+      "tags": false
+    }
+  }
+  

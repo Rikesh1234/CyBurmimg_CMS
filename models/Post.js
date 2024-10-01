@@ -9,7 +9,7 @@ const postSchema = new mongoose.Schema({
   summary: { type: String },
   content: { type: String, required: [true, 'Content is required'] },
   category: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: [true, 'Category is required'] }],
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'Author', required: [true, 'Author is required'] },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'Author'},
   tags: { type: [String] },
   photo_gallery: { type: Boolean, default: false },
   published: { type: Boolean, default: false },
