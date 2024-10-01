@@ -26,6 +26,7 @@ const sliderController = require('../controllers/SliderController');
 
 
 
+
 router.get("/", homeController.getPage);
 
 // login
