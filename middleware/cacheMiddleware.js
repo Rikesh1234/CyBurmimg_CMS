@@ -4,7 +4,7 @@ const redisClient = require("../config/redis");
 // Cache middleware function
 const cacheMiddleware = async (req, res, next) => {
   // Define cacheable routes
-  const cacheableRoutes = ["/cms/post", "/cms/category","/cms/static-page"];
+  const cacheableRoutes = ["/cms/post", "/cms/category","/cms/static-page",'/cms/package'];
   // const cacheableRoutes = []
 
   // Check if environment is development
@@ -22,7 +22,6 @@ const cacheMiddleware = async (req, res, next) => {
   try {
     // Check if Redis client is still connected
     if (!redisClient.isOpen) {
-      console.log("Redis client is not open, skipping cache.");
       console.log("Redis client is not open, skipping cache.");
       return next(); // Skip cache if Redis is not connected
     }

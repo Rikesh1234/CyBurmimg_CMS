@@ -31,6 +31,8 @@ exports.getPackageCreatePage = (req, res) => {
 // Handle package creation
 exports.createPackage = async (req, res) => {
   try {
+    console.log(req.body);
+    
     const { title, currency, price, includes } = req.body;
 
     // If includes are provided, make sure it's an array
@@ -46,6 +48,8 @@ exports.createPackage = async (req, res) => {
 
     // Save the package to the database
     await newPackage.save();
+    await redis.del("/cms/package");
+
 
     // Redirect to package listing or any other desired page after successful creation
     res.redirect("/cms/package");
@@ -100,11 +104,34 @@ exports.updatePackage = async (req, res) => {
     if (!updatedPackage) {
       return res.status(404).send('Package not found');
     }
+    await redis.del("/cms/package");
 
     // Redirect to package listing or any other desired page after successful update
     res.redirect("/cms/package");
   } catch (error) {
     console.error('Error updating package:', error);
     res.status(500).send('Server Error');
+  }
+};
+
+// Delete package function
+exports.deletePackage = async (req, res) => {
+  try {
+    const packageId = req.params.id;
+
+    // Find and delete the package by ID
+    const deletedPackage = await Package.findByIdAndDelete(packageId);
+
+    // If the package is not found, send a 404 response
+    if (!deletedPackage) {
+      return res.status(404).send("Package not found");
+    }
+    await redis.del("/cms/package");
+
+    // Redirect to the package listing after successful deletion
+    res.redirect('/cms/package');
+  } catch (err) {
+    console.error("Error deleting package:", err);
+    res.status(500).send("Server Error");
   }
 };
