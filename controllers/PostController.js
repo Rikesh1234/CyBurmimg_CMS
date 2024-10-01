@@ -6,7 +6,6 @@ const validationConfig = require('../config/validationConfig.json');
 
 const redis = require("../config/redis");
 const { body, validationResult } = require("express-validator");
-const { body, validationResult } = require("express-validator");
 
 
 const getPostValidationRules = () => {

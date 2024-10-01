@@ -1,15 +1,11 @@
 const express = require("express");
-const express = require("express");
 
-const router = express.Router();
 const router = express.Router();
 
 const upload = require("../middleware/uploadMiddleware");
 const homeController = require("../controllers/HomeController");
 const cacheMiddleware = require("../middleware/cacheMiddleware");
-const upload = require("../middleware/uploadMiddleware");
-const homeController = require("../controllers/HomeController");
-const cacheMiddleware = require("../middleware/cacheMiddleware");
+
 
 const teamController = require('../controllers/TeamController');
 const userController = require('../controllers/UserController');
@@ -69,8 +65,7 @@ router.post(
 router.get("/cms/post/edit/:postId", postController.getPostEditPage);
 router.get("/cms/post/edit/:postId", postController.getPostEditPage);
 // Route to handle the edit (update) request
-router.post(
-  "/cms/post/edit/:postId",
+
 router.post(
   "/cms/post/edit/:postId",
   upload.fields([
