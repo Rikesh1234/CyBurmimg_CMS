@@ -1,3 +1,7 @@
+const Team = require("../models/Team");
+const redis = require("../config/redis");
+
+
 //view member page
 exports.getTeamPage=(req,res)=>{
     res.render('teams/team/team_listing',{title:'Team Page'});
@@ -27,3 +31,181 @@ exports.getTeamTypeCreatePage=(req,res)=>{
 exports.getTeamTypeEditPage=(req,res)=>{
     res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page'});
 }
+
+
+//cruds for team
+exports.createTeam = async (req, res) => {
+  try {
+    // Extract form data from the request body
+    const {
+      name,
+      content,
+      category,
+      email,
+      facebook,
+      instagram,
+      twitter,
+      linkedln,
+      published,
+      published_date,
+    } = req.body;
+
+    // Handle featured image upload
+    const featured_image = req.files["featured_image"]
+      ? `/uploads/team/${req.files["featured_image"][0].filename}`
+      : "/images/default.jpg";
+
+    
+    // Create a new team object
+    const newTeam = new Team({
+      name,
+      content,
+      category,
+      email,
+      facebook,
+      instagram,
+      twitter,
+      linkedln,
+      published: published === "on",
+      published_date: published_date || Date.now(),
+      featured_image,
+    });
+
+    // Save the team to the database
+    await newTeam.save();
+
+    // Invalidate the cached team list
+    await redis.del("/cms/team");
+
+    // Redirect to the team listing page after successful creation
+    res.redirect("/cms/team");
+  } catch (err) {
+    if (err.name === "ValidationError") {
+      const errorMessages = Object.values(err.errors).map(
+        (error) => error.message
+      );
+      res.render("teams/team/team_create_edit", {
+        title: "Create Team",
+        errorMessages,
+        formData: req.body,
+        team: null,
+      });
+    } else {
+      console.error(err);
+      res.status(500).send("Server Error");
+    }
+  }
+};
+
+exports.deleteTeam = async (req, res) => {
+  try {
+    const team = await Team.findByIdAndDelete(req.params.teamId);
+
+    if (!team) {
+      return res.status(404).send("Team not found");
+    }
+
+    // Invalidate the cached team list
+    await redis.del("/cms/team");
+    // Handle deletion of associated files here if necessary
+    res.redirect("/cms/team");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.updateTeam = async (req, res) => {
+  const teamId = req.params.teamId;
+  const {
+    name,
+    category,
+    content,
+    email,
+    facebook,
+    instagram,
+    twitter,
+    linkedln,
+    published,
+    published_date,
+  } = req.body;
+
+  // Array to collect validation errors
+  const errorMessages = [];
+
+  // Perform manual validation on required fields
+  if (!name || name.trim() === "") errorMessages.push("Title is required");
+  if (!email || email.trim() === "") errorMessages.push("Email is required");
+  if (!content || content.trim() === "")
+    errorMessages.push("Content is required");
+  if (!category || category.length === 0)
+    errorMessages.push("At least one category is required");
+  if (!author || author.trim() === "") errorMessages.push("Author is required");
+
+  // If there are validation errors, re-render the form with error messages
+  if (errorMessages.length > 0) {
+    // Fetch the existing team to repopulate the form
+    const existingTeam = await Team.findById(teamId);
+    return res.render("teams/team/team_create_edit", {
+      title: "Edit Team",
+      errorMessages,
+      team: {
+        ...existingTeam.toObject(), // Copy existing team details
+        name, // Preserve user’s current input
+        email,
+        content,
+        facebook,
+        instagram,
+        twitter,
+        linkedln,
+        published,
+        published_date,
+      },
+    });
+  }
+
+  try {
+    // Handle featured image update if provided
+    const featured_image = req.files["featured_image"]
+      ? `/uploads/team/${req.files["featured_image"][0].filename}`
+      : req.body.existing_featured_image;
+
+    
+    // Ensure empty values for category and author are not set to old values
+    const updatedCategory = category && category.length > 0 ? category : [];
+
+    // Update the team
+    const updatedTeam = await Team.findByIdAndUpdate(
+      teamId,
+      {
+        name,
+        email,
+        content,
+        category: updatedCategory, // Ensure empty category doesn't default to old value
+        facebook,
+        instagram,
+        twitter,
+        linkedln,
+        featured_image,
+        published: published === "on",
+        published_date: published_date || Date.now(),
+      },
+      { new: true, runValidators: true } // Ensure Mongoose validation is still applied
+    );
+
+    if (!updatedTeam) {
+      return res.status(404).send("Team not found");
+    }
+
+    // Invalidate the cached team list
+    await redis.del("/cms/team");
+
+    // Redirect after successful update
+    res.redirect("/cms/team");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+};
+
+//end of cruds for team

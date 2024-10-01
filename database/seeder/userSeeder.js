@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('./models/user');
+const User = require('../../models/user');
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/inferno_cms', {
