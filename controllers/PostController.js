@@ -1,11 +1,31 @@
 const Post = require("../models/Post");
 const Category = require("../models/Category");
 const Author = require("../models/Author");
+const validationConfig = require('../config/validationConfig.json');
 
 
 const redis = require("../config/redis");
 const { body, validationResult } = require("express-validator");
 
+
+const getPostValidationRules = () => {
+  const rules = [];
+
+
+  if (validationConfig.post.author) {
+    rules.push(body('author').notEmpty().withMessage('Author is required'));
+  }
+
+  if (validationConfig.post.category) {
+    rules.push(body('category').notEmpty().withMessage('Category is required'));
+  }
+
+  if (validationConfig.post.tags) {
+    rules.push(body('tags').notEmpty().withMessage('Tags are required'));
+  }
+
+  return rules;
+};
 //view post page
 exports.getPostPage = async (req, res) => {
   try {
@@ -22,16 +42,20 @@ exports.getPostPage = async (req, res) => {
 
 //view post Create page
 exports.getPostCreatePage = async (req, res) => {
-  try {
-    // Fetch all categories to populate the dropdown
-    const categories = await Category.find({ status: "active" }).lean(); // Assuming you only want active categories
 
+  try {
+    // Fetch all categories  and authors to populate the dropdown
+    const categories = await Category.find({ status: "active" }).lean(); 
+    const authors = await Author.find({ status: "active" }).lean();
+
+    console.log(authors)
     res.render("posts/post/post_create_edit", {
       title: "Create Post",
       errorMessages: [],
       formData: {},
       post: null,
       categories,
+      authors
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -39,93 +63,104 @@ exports.getPostCreatePage = async (req, res) => {
   }
 };
 
-exports.createPost = async (req, res) => {
-  try {
-    // Extract form data from the request body
-    const {
-      title,
-      slug,
-      tag_line,
-      summary,
-      content,
-      category,
-      author,
-      tags,
-      photo_gallery,
-      published,
-      published_date,
-    } = req.body;
+exports.createPost = [
+  // Apply dynamic validation rules based on config
+  ...getPostValidationRules(),
 
-    // Handle featured image upload
-    const featured_image = req.files["featured_image"]
-      ? `/uploads/post/${req.files["featured_image"][0].filename}`
-      : "/images/default.jpg";
+  async (req, res) => {
+    try {
+      // Check validation results
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        // Fetch categories and authors again to render the form
+        const categories = await Category.find({ status: "active" }).lean();
+        const authors = await Author.find({ status: "active" }).lean();
 
-    // Handle gallery images upload
-    const gallery_images = req.files["gallery_images"]
-      ? req.files["gallery_images"].map(
-          (file) => `/uploads/post/gallery/${file.filename}`
-        )
-      : [];
-    // Create a new post object
-    const newPost = new Post({
-      title,
-      slug,
-      tag_line,
-      summary,
-      content,
-      category,
-      author,
-      tags,
-      photo_gallery: gallery_images.length > 0, // Set true if there are gallery images
-      gallery_images, // Store the array of gallery image paths
-      published: published === "on",
-      published_date: published_date || Date.now(),
-      featured_image,
-    });
+        return res.render("posts/post/post_create_edit", {
+          title: "Create Post",
+          errorMessages: errors.array().map(err => err.msg),
+          formData: req.body,
+          post: null,
+          categories,
+          authors,
+        });
+      }
 
-    // Save the post to the database
-    await newPost.save();
+      // Extract form data from the request body
+      const {
+        title,
+        slug,
+        tag_line,
+        summary,
+        content,
+        category,
+        author,
+        tags,
+        photo_gallery,
+        published,
+        published_date,
+      } = req.body;
 
-    // Invalidate the cached post list
-    await redis.del("/cms/post");
+      // Handle featured image upload
+      const featured_image = req.files["featured_image"]
+        ? `/uploads/post/${req.files["featured_image"][0].filename}`
+        : "/images/default.jpg";
 
-    // Redirect to the post listing page after successful creation
-    res.redirect("/cms/post");
-  } catch (err) {
-    if (err.name === "ValidationError") {
-      const errorMessages = Object.values(err.errors).map(
-        (error) => error.message
-      );
+      // Handle gallery images upload
+      const gallery_images = req.files["gallery_images"]
+        ? req.files["gallery_images"].map(
+            (file) => `/uploads/post/gallery/${file.filename}`
+          )
+        : [];
 
-      // Fetch categories again to render the form
-      const categories = await Category.find({ status: "active" }).lean();
-      res.render("posts/post/post_create_edit", {
-        title: "Create Post",
-        errorMessages,
-        formData: req.body,
-        post: null,
-        categories,
+      // Create a new post object
+      const newPost = new Post({
+        title,
+        slug,
+        tag_line,
+        summary,
+        content,
+        author: validationConfig.post.author ? author : undefined,
+        category: validationConfig.post.category ? category : undefined,
+        tags: validationConfig.post.tags ? tags : undefined,
+        photo_gallery: gallery_images.length > 0, // Set true if there are gallery images
+        gallery_images, // Store the array of gallery image paths
+        published: published === "on",
+        published_date: published_date || Date.now(),
+        featured_image,
       });
-    } else {
+
+      // Save the post to the database
+      await newPost.save();
+
+      // Invalidate the cached post list
+      await redis.del("/cms/post");
+
+      // Redirect to the post listing page after successful creation
+      res.redirect("/cms/post");
+    } catch (err) {
       console.error(err);
+
+      // In case of any other errors, show server error
       res.status(500).send("Server Error");
     }
-  }
-};
+  },
+];
 
 exports.deletePost = async (req, res) => {
   try {
     const post = await Post.findByIdAndDelete(req.params.postId);
 
+
     if (!post) {
       return res.status(404).send("Post not found");
     }
 
-    // Invalidate the cached post list
-    await redis.del("/cms/post");
+        // Invalidate the cached post list
+        await redis.del("/cms/post");
     // Handle deletion of associated files here if necessary
     res.redirect("/cms/post");
+    
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
@@ -139,6 +174,9 @@ exports.getPostEditPage = async (req, res) => {
 
     // Find the post by ID
     const post = await Post.findById(postId);
+    const authors = await Author.find({ status: "active" }).lean();
+    const categories = await Category.find({ status: "active" }).lean(); 
+
 
     if (!post) {
       return res.status(404).send("Post not found");
@@ -149,6 +187,8 @@ exports.getPostEditPage = async (req, res) => {
       title: "Edit Post",
       post, // Pass the post to EJS
       errorMessages: [], // Default to empty array
+      authors,
+      categories
     });
   } catch (err) {
     console.error(err);

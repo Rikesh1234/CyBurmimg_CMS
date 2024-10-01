@@ -7,7 +7,8 @@
 
     <!-- <title>CyBurning</title> -->
 
-    <title>CyBurning - <%= post ? 'Edit Post' : 'Add Post' %></title>
+    <title>CyBurning - <%= post ? 'Edit Post' : 'Add Post' %>
+    </title>
 
 </head>
 
@@ -74,7 +75,7 @@
                         <label for="title">Title</label><span class="important">*</span>
                       </div>
                       <input type="text" class="form-control" name="title" id="title"
-                      value="<%= post ? post.title : (formData.title || '') %>" />
+                        value="<%= post ? post.title : (formData.title || '') %>" />
 
                     </div>
 
@@ -114,11 +115,14 @@
                         <label for="category">Category</label>
                       </div>
                       <select name="category" class="select-category form-control" multiple="multiple">
-                        <% categories.forEach(category => { %>
-                          <option value="<%= category._id %>" <%= post && post.category && post.category.toString() === category._id.toString() ? 'selected' : '' %>><%= category.title %></option>
+                        <% categories.forEach(category=> { %>
+                          <option value="<%= category._id %>" <%=post && post.category &&
+                            post.category.toString()===category._id.toString() ? 'selected' : '' %>><%= category.title
+                              %>
+                          </option>
                           <% }) %>
                       </select>
-                      
+
                     </div>
 
                     <!-- Author -->
@@ -127,10 +131,14 @@
                         <label for="author">Author</label>
                       </div>
                       <select name="author" class="select-author form-control" multiple="multiple">
-                        <option value="1" <%= post && post.author === 'Author A' ? 'selected' : '' %>>Author A</option>
-                        <option value="2" <%= post && post.author === 'Author B' ? 'selected' : '' %>>Author B</option>
+                        <% authors.forEach(author=> { %>
+                          <option value="<%= author._id %>" <%=post && post.author &&
+                            post.author.toString()===author._id.toString() ? 'selected' : '' %>> <%= author.name %>
+                          </option>
+                          <% }) %>
+
                       </select>
-                      
+
                     </div>
 
                     <!-- Tags -->
@@ -186,14 +194,9 @@
                       <div class="form-label">
                         <label for="Published_date">Published Date</label>
                       </div>
-                      <input 
-                      type="datetime-local" 
-                      name="date" 
-                      id="date" 
-                      class="form-control" 
-                      value="<%= post && post.date ? new Date(post.date).toISOString().slice(0, 16) : '' %>" 
-                      placeholder="YYYY/MM/DD HH:MM" 
-                    />
+                      <input type="datetime-local" name="date" id="date" class="form-control"
+                        value="<%= post && post.date ? new Date(post.date).toISOString().slice(0, 16) : '' %>"
+                        placeholder="YYYY/MM/DD HH:MM" />
                     </div>
 
                     <!-- Featured Image -->
