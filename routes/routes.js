@@ -16,6 +16,7 @@ const productController = require('../controllers/ProductController');
 const dashboardController= require('../controllers/DashboardController');
 const staticPageController = require('../controllers/StaticPageController');
 const testomonialController = require('../controllers/TestominalController');
+const customFieldController = require('../controllers/CustomFieldController');
 
 
 
@@ -119,6 +120,10 @@ router.get('/cms/team-type/edit/:userId',teamController.getTeamTypeEditPage);
 //setting
 router.get('/cms/setting',settingController.getSettingPage);
 router.get('/cms/setting/create',settingController.getSettingCreatePage);
+
+//custom field
+router.get('/cms/custom-field',customFieldController.getCustomFieldPage);
+router.get('/cms/custom-field/create',customFieldController.getCustomFieldCreatePage);
 
 // router.use((req,res)=>{
 //     res.status(404).render('404',{title:'Page Not Found'});

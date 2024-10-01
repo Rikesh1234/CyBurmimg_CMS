@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <%- include('../layout/link') %>
+    <title>CyBurning</title>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <%- include('../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../layout/header') %>
+      <!-- NAVBAR -->
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>Custom Field</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/cms/dashboard">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a href="/cms/setting">Custom Field</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active">Add Field</a>
+              </li>
+            </ul>
+          </div>
+          <a href="/cms/custom-field" class="btn-create">
+            <i class="fas fa-arrow-left"></i>
+            <span class="text">Back</span>
+          </a>
+        </div>
+
+        <form action="#">
+          <div class="form-container">
+            <div class="post-right-container col-md-12">
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Title</label
+                  ><span class="important">*</span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="title"
+                  id="title"
+                />
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="model-name">Model Name</label>
+                </div>
+                <select
+                  name="model-name"
+                  class="model-name form-control"
+                  multiple="multiple"
+                >
+                  <option>Post</option>
+                  <option>Category</option>
+                </select>
+              </div>
+
+              <div class="setting-input">
+                <div class="setting-container">
+                  <div class="form-box" style="width: 25%">
+                    <div class="form-label">
+                      <label for="other_feature">Target Type</label>
+                    </div>
+                    <select
+                      name="targetType"
+                      class="select-target-type form-control"
+                    >
+                      <option>Cat A</option>
+                      <option>Cat B</option>
+                    </select>
+                  </div>
+
+                  <div class="form-box">
+                    <div class="form-label">
+                      <label for="title">Label Name</label
+                      ><span class="important">*</span>
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="title"
+                      id="title"
+                    />
+                  </div>
+
+                  <div class="form-box">
+                    <div class="form-label">
+                      <label for="title">Field Name</label
+                      ><span class="important">*</span>
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="title"
+                      id="title"
+                    />
+                  </div>
+                </div>
+
+                <div class="extra-setting"></div>
+
+                <div
+                  class="btn-container-add"
+                  style="display: flex; justify-content: flex-end"
+                >
+                  <button
+                    class="full-submit-button form-control"
+                    style="width: 200px; margin-top: 25px; float: right"
+                    id="field-repeator-btn"
+                  >
+                    <i class="fa-solid fa-plus"></i>Add Repeator
+                  </button>
+                </div>
+              </div>
+              <div class="btn-container" style="margin-top: 25px; display: flex; justify-content: flex-end; align-items: center; width: 100%; gap: 10px;">
+                <button class="submit-button form-control" style="height: 50px;">Submit</button>
+                <button class="cancel-button form-control" style="height: 50px; display: block;">Cancel</button>
+            </div>
+            </div>
+          </div>
+        </form>
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <%- include('../layout/script') %>
+
+    <script>
+      $(document).ready(function domReady() {
+        $(".select-target-type").select2({
+          placeholder: "Member Type",
+        });
+      });
+    </script>
+
+    <script>
+      $(document).ready(function domReady() {
+        $(".model-name").select2({
+          placeholder: "Model Name",
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        let itenaryRepetor = document.querySelector("#field-repeator-btn");
+
+        itenaryRepetor.addEventListener("click", (event) => {
+          event.preventDefault();
+          const container = document.querySelector(".extra-setting");
+
+          const newElement = document.createElement("div");
+          newElement.className = "setting-container";
+          newElement.innerHTML = `
+   <div class="form-box" style="width: 25%">
+                    <div class="form-label">
+                      <label for="other_feature">Target Type</label>
+                    </div>
+                    <select
+                      name="targetType"
+                      class="select-target-type form-control"
+                      style="width:100% !important"
+                    >
+                      <option>Cat A</option>
+                      <option>Cat B</option>
+                    </select>
+                  </div>
+
+                  <div class="form-box">
+                    <div class="form-label">
+                      <label for="title">Label Name</label
+                      ><span class="important">*</span>
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="title"
+                      id="title"
+                    />
+                  </div>
+
+                  <div class="form-box">
+                    <div class="form-label">
+                      <label for="title">Field Name</label
+                      ><span class="important">*</span>
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="title"
+                      id="title"
+                    />
+                  </div>
+  <div class="delete-btn" id="delete-btn" style="height:50px; width:50px;"><i class="fa-solid fa-minus"></i></div>
+`;
+
+          // Append the new element to the container
+          container.appendChild(newElement);
+
+          deleteButtons = document.querySelectorAll(".delete-btn");
+
+          deleteButtons.forEach((currentValue, index, array) => {
+            currentValue.addEventListener("click", () => {
+              currentValue.parentElement.remove();
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
