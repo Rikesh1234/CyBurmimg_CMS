@@ -270,11 +270,12 @@ router.post(
 );
 
 //PACKAGE MODULE
-router.get("/cms/package", packageController.getPackagePage);
+router.get("/cms/package",cacheMiddleware ,packageController.getPackagePage);
 router.get("/cms/package/create", packageController.getPackageCreatePage);
 router.post("/cms/package/create", packageController.createPackage);
 router.get("/cms/package/edit/:packageId", packageController.getPackageEditPage);
 router.post("/cms/package/edit/:packageId", packageController.updatePackage);
+router.post('/cms/package/delete/:id', packageController.deletePackage);
 
 
 
