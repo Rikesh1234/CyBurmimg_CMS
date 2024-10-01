@@ -1,6 +1,5 @@
 require('dotenv').config();
 const path = require('path');
-const csrf = require('csurf');
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes/routes');

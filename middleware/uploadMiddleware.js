@@ -1,6 +1,6 @@
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 // Helper function to ensure the directory exists
 const ensureDirectoryExistence = (dir) => {
@@ -10,16 +10,30 @@ const ensureDirectoryExistence = (dir) => {
 // Multer storage configuration for different paths
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let uploadPath = './public/uploads/';
-    
+    let uploadPath = "./public/uploads/";
+
     // Store featured image in 'uploads/post/'
-    if (file.fieldname === 'featured_image') {
-      uploadPath = './public/uploads/post/';
+    if (file.fieldname === "featured_image") {
+      uploadPath = "./public/uploads/post/";
     }
-    
+
     // Store gallery images in 'uploads/post/gallery/'
-    if (file.fieldname === 'gallery_images') {
-      uploadPath = './public/uploads/post/gallery/';
+    else if (file.fieldname === "gallery_images") {
+      uploadPath = "./public/uploads/post/gallery/";
+    }
+
+    // Store category images in 'uploads/category/'
+    else if (file.fieldname === "category_image") {
+      uploadPath = "./public/uploads/category/";
+    }
+
+    // Store author images in 'uploads/author/'
+    else if (file.fieldname === "author_image") {
+      uploadPath = "./public/uploads/author/";
+    }
+    // Store static page images in 'uploads/static_pages/'
+    else if (file.fieldname === "static_page_image") {
+      uploadPath = "./public/uploads/static_pages/";
     }
 
     // Ensure the directory exists
@@ -28,8 +42,9 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
+    // Using Date.now() to ensure unique filenames
     cb(null, `${Date.now()}-${file.originalname}`);
-  }
+  },
 });
 
 // File filter for image uploads
@@ -41,14 +56,15 @@ const fileFilter = (req, file, cb) => {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb('Error: Images Only!');
+    cb("Error: Images Only!");
   }
 };
 
+// Multer upload middleware
 const upload = multer({
   storage: storage,
   limits: { fileSize: 1024 * 1024 * 5 }, // 5MB limit per file
-  fileFilter: fileFilter
+  fileFilter: fileFilter,
 });
 
 module.exports = upload;

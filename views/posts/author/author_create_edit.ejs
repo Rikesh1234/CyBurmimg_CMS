@@ -43,61 +43,101 @@
           </a>
         </div>
 
-        <form action="#">
+        <form action="<%= author ? '/cms/author/edit/' + author._id : '/cms/author/create' %>" method="POST" enctype="multipart/form-data">
           <div class="form-container">
             <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
                 <div class="form-label">
                   <label for="name">Name</label><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="name" id="name" />
-              </div>
 
+                <input
+                  type="text"
+                  class="form-control"
+                  name="name"
+                  id="name"
+                  value="<%= author ? author.name : '' %>"
+                  required
+                />
+              </div>
+        
               <div class="form-box">
                 <div class="form-label">
                   <label for="slug">Slug</label><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="slug" id="slug" />
+                <input
+                  type="text"
+                  class="form-control"
+                  name="slug"
+                  id="slug"
+                  value="<%= author ? author.slug : '' %>"
+                  required
+                />
               </div>
-
+        
               <div class="form-box">
                 <div class="form-label">
-                  <label for="email">Email</label
-                  ><span class="important">*</span>
+                  <label for="email">Email</label><span class="important">*</span>
                 </div>
-                <input type="email" class="form-control" name="email" />
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  value="<%= author ? author.email : '' %>"
+                  required
+                />
               </div>
-
+        
               <div class="social-container">
                 <div class="form-box">
                   <div class="form-label">
                     <label for="facebook">Facebook</label>
                   </div>
-                  <input type="text" class="form-control" name="facebbok" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="facebook"
+                    value="<%= author && author.socialLinks && author.socialLinks.facebook ? author.socialLinks.facebook : '' %>"
+                    />
                 </div>
-
+        
                 <div class="form-box">
                   <div class="form-label">
                     <label for="instagram">Instagram</label>
                   </div>
-                  <input type="text" class="form-control" name="instagram" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="instagram"
+                    value="<%= author && author.socialLinks && author.socialLinks.instagram ? author.socialLinks.instagram : '' %>"
+                    />
                 </div>
-
+        
                 <div class="form-box">
                   <div class="form-label">
                     <label for="twitter">Twitter</label>
                   </div>
-                  <input type="text" class="form-control" name="twitter" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="twitter"
+                    value="<%= author && author.socialLinks && author.socialLinks.twitter ? author.socialLinks.twitter : '' %>"
+                    />
                 </div>
-
+        
                 <div class="form-box">
                   <div class="form-label">
-                    <label for="linkedin">Linkedin</label>
+                    <label for="linkedin">LinkedIn</label>
                   </div>
-                  <input type="text" class="form-control" name="linkedin" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="linkedin"
+                    value="<%= author && author.socialLinks && author.socialLinks.linkedin ? author.socialLinks.linkedin : '' %>"
+                    />
                 </div>
               </div>
-
+        
               <div class="form-box">
                 <div class="form-label">
                   <label for="content">Content</label>
@@ -109,10 +149,10 @@
                   rows="7"
                   cols="7"
                   id="description"
-                ></textarea>
+                ><%= author ? author.content : '' %></textarea>
               </div>
             </div>
-
+        
             <div class="post-left-container col-md-4 col-sm-12">
               <div class="form-box" style="margin-bottom: 15px">
                 <div class="form-label">
@@ -123,11 +163,13 @@
                       class="form-check-input"
                       type="checkbox"
                       id="status"
+                      name="status"
+                      <%= author && author.status === 'active' ? 'checked' : '' %>
                     />
                   </div>
                 </div>
               </div>
-
+        
               <div class="form-box">
                 <div class="form-label">
                   <label for="Published_date">Published Date</label>
@@ -138,46 +180,42 @@
                   id="date"
                   class="form-control"
                   placeholder="YYYY/MM/HH H:M:S"
+                  value="<%= author && author.published_date ? author.published_date.toISOString().slice(0,16) : '' %>"
                 />
               </div>
-
+        
               <div class="form-box">
                 <div class="form-label">
-                  <label for="Published_date">Featued Image</label>
+                  <label for="Published_date">Featured Image</label>
                 </div>
                 <div class="upload-container-one">
                   <input
                     id="upload-input-one"
                     type="file"
                     accept="image/*"
+                    name="author_image"
                     hidden
                   />
                   <div id="image-container-one">
                     <img
-                      src="/images/upload.png"
+                      src="<%= author && author.image ? '/uploads/author/' + author.image : '/images/upload.png' %>"
                       class="uploaded-image"
                     />
                   </div>
                   <label for="upload-input-one">Upload Image</label>
                 </div>
               </div>
+              
               <input type="submit" class="full-submit-button form-control" />
-              <input
-                type="button"
-                class="cancel-button form-control"
-                value="cancel"
-              />
+              <input type="button" class="cancel-button form-control" value="cancel" onclick="window.history.back();" />
               <div class="button-box">
                 <input type="submit" class="submit-button form-control" />
-                <input
-                  type="button"
-                  class="cancel-button form-control"
-                  value="cancel"
-                />
+                <input type="button" class="cancel-button form-control" value="cancel" onclick="window.history.back();" />
               </div>
             </div>
           </div>
         </form>
+        
       </main>
       <!-- MAIN -->
     </section>
@@ -450,5 +488,6 @@
         slugInput.val(theSlug);
       });
     </script>
+    
   </body>
 </html>

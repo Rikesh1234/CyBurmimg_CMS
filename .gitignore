@@ -3,6 +3,10 @@ package-lock.json
 yarn.lock
 .env
 
+#theme
+views/theme
+public/goodwill-cleaning
+
 
 # Logs
 logs

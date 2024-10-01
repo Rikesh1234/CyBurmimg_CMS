@@ -22,7 +22,7 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Page</h1>
+            <h1><%= page ? 'Edit' : 'Add' %> Page</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="/cms/dashboard">Dashboard</a>
@@ -33,7 +33,7 @@
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active">Add Page</a>
+                <a class="active"><%= page ? 'Edit' : 'Add' %> Page</a>
               </li>
             </ul>
           </div>
@@ -43,19 +43,21 @@
           </a>
         </div>
 
-        <form action="#">
+        <!-- Form for Create/Edit -->
+        <form action="<%= page ? '/cms/static-page/edit/' + page._id : '/cms/static-page/create' %>" method="POST" enctype="multipart/form-data">
           <div class="form-container">
             <div class="post-right-container col-md-7">
               <div class="form-box">
                 <div class="form-label">
-                  <label for="title">Title</label
-                  ><span class="important">*</span>
+                  <label for="title">Title</label><span class="important">*</span>
                 </div>
                 <input
                   type="text"
                   class="form-control"
                   name="title"
                   id="title"
+                  value="<%= page ? page.title : '' %>"
+                  required
                 />
               </div>
 
@@ -63,14 +65,26 @@
                 <div class="form-label">
                   <label for="slug">Slug</label><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="slug" id="slug" />
+                <input
+                  type="text"
+                  class="form-control"
+                  name="slug"
+                  id="slug"
+                  value="<%= page ? page.slug : '' %>"
+                  required
+                />
               </div>
 
               <div class="form-box">
                 <div class="form-label">
                   <label for="tag_line">Tag Line</label>
                 </div>
-                <input type="text" class="form-control" name="tag_line" />
+                <input
+                  type="text"
+                  class="form-control"
+                  name="tag_line"
+                  value="<%= page ? page.tag_line : '' %>"
+                />
               </div>
               <div class="form-box">
                 <div class="form-label">
@@ -82,7 +96,7 @@
                   name="summary"
                   rows="7"
                   cols="7"
-                ></textarea>
+                ><%= page ? page.summary : '' %></textarea>
               </div>
               <div class="form-box">
                 <div class="form-label">
@@ -95,7 +109,7 @@
                   rows="7"
                   cols="7"
                   id="description"
-                ></textarea>
+                ><%= page ? page.content : '' %></textarea>
               </div>
             </div>
 
@@ -109,6 +123,8 @@
                       class="form-check-input"
                       type="checkbox"
                       id="status"
+                      name="status"
+                      <%= page && page.status === 'active' ? 'checked' : '' %>
                     />
                   </div>
                 </div>
@@ -124,33 +140,39 @@
                   id="date"
                   class="form-control"
                   placeholder="YYYY/MM/HH H:M:S"
+                  value="<%= page && page.published_date ? page.published_date.toISOString().slice(0,16) : '' %>"
                 />
               </div>
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="Published_date">Featued Image</label>
+                  <label for="Published_date">Featured Image</label>
                 </div>
                 <div class="upload-container-one">
                   <input
                     id="upload-input-one"
                     type="file"
                     accept="image/*"
+                    name="featured_image"
                     hidden
                   />
                   <div id="image-container-one">
-                    <img src="/images/upload.png" class="uploaded-image" />
+                    <img
+                      src="<%= page && page.featured_image ? page.featured_image : '/images/upload.png' %>"
+                      class="uploaded-image"
+                    />
                   </div>
                   <label for="upload-input-one">Upload Image</label>
                 </div>
               </div>
-              <input type="submit" class="full-submit-button form-control" />
+              <input type="submit" class="full-submit-button form-control" value="<%= page ? 'Update Page' : 'Create Page' %>" />
               <div class="button-box">
-                <input type="submit" class="submit-button form-control" />
+                <input type="submit" class="submit-button form-control" value="<%= page ? 'Update' : 'Submit' %>" />
                 <input
                   type="button"
                   class="cancel-button form-control"
-                  value="cancel"
+                  value="Cancel"
+                  onclick="window.history.back();"
                 />
               </div>
             </div>
@@ -159,6 +181,7 @@
       </main>
       <!-- MAIN -->
     </section>
+
     <!-- CONTENT -->
 
     <%- include('../layout/script') %>

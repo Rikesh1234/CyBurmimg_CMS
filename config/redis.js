@@ -2,8 +2,7 @@ const redis = require('redis');
 
 // Create a Redis client
 const client = redis.createClient({
-  host: process.env.REDIS_HOST || '127.0.0.1',
-  port: process.env.REDIS_PORT || 6379,
+  url: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
 });
 
 // Handle Redis connection events
@@ -15,7 +14,18 @@ client.on('connect', () => {
   console.log('Redis client connected and ready');
 });
 
-// Connect to Redis (this step is essential)
+// Auto-reconnect on disconnect
+client.on('end', async () => {
+  console.warn('Redis connection ended, attempting to reconnect...');
+  try {
+    await client.connect();
+    console.log('Redis reconnected successfully');
+  } catch (err) {
+    console.error('Error reconnecting to Redis:', err);
+  }
+});
+
+// Connect to Redis
 (async () => {
   try {
     await client.connect();
