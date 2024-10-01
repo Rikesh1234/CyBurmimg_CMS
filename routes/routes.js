@@ -9,6 +9,9 @@ const cacheMiddleware = require("../middleware/cacheMiddleware");
 
 const teamController = require('../controllers/TeamController');
 const userController = require('../controllers/UserController');
+const packageController = require('../controllers/PackageController');
+
+
 const postController = require('../controllers/PostController');
 const loginController = require('../controllers/LoginController');
 // const settingController = require('../controllers/GlobalController');
@@ -19,7 +22,6 @@ const staticPageController = require('../controllers/StaticPageController');
 const testomonialController = require('../controllers/TestominalController');
 const customFieldController = require('../controllers/CustomFieldController');
 const sliderController = require('../controllers/SliderController');
-const packageController = require('../controllers/PackageController');
 
 
 
@@ -266,18 +268,19 @@ router.post(
   staticPageController.deleteStaticPage
 );
 
+//PACKAGE MODULE
+router.get("/cms/package", packageController.getPackagePage);
+router.get("/cms/package/create", packageController.getPackageCreatePage);
+router.post("/cms/package/create", packageController.createPackage);
+router.get("/cms/package/edit/:packageId", packageController.getPackageEditPage);
+router.post("/cms/package/edit/:packageId", packageController.updatePackage);
 
 
 
 
 
 
-
-
-
-
-
-router.get("/page/:pageSlug", homeController.getStaticPage);
+// router.get("/page/:pageSlug", homeController.getStaticPage);
 
 // router.use((req,res)=>{
 //     res.status(404).render('404',{title:'Page Not Found'});
