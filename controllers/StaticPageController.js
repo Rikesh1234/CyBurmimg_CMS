@@ -1,11 +1,13 @@
 // controllers/StaticPageController.js
 const StaticPage = require('../models/StaticPage');
 const { body, validationResult } = require('express-validator');
+const redis = require("../config/redis");
 
 // View static pages listing
 exports.getStaticPagePage = async (req, res) => {
   try {
     const pages = await StaticPage.find();
+    
     res.render('pages/page_listing', { title: 'Static-Page Page', pages });
   } catch (err) {
     console.error(err);
@@ -19,6 +21,7 @@ exports.getStaticPageCreatePage = (req, res) => {
 };
 
 // Create static page
+// Create static page with image upload handling
 exports.createStaticPage = [
   // Validation rules
   body('title').notEmpty().withMessage('Title is required'),
@@ -26,13 +29,12 @@ exports.createStaticPage = [
   body('content').notEmpty().withMessage('Content is required'),
 
   async (req, res) => {
-    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // Re-render form with errors and input values
       return res.render('pages/page_create_edit', {
         title: 'Create Static Page',
-        page: req.body, // Pass current form data
+        page: req.body,
         errors: errors.array().map(err => err.msg),
       });
     }
@@ -51,12 +53,25 @@ exports.createStaticPage = [
         });
       }
 
+      // Handle featured image upload
+      let featured_image = "/images/upload.png"; // Default image
+      if (req.file) {
+        featured_image = `/uploads/static_pages/${req.file.filename}`;
+      }
+
       // Create new static page object
-      const newPage = new StaticPage({ title, slug, content, status });
+      const newPage = new StaticPage({
+        title,
+        slug,
+        content,
+        status,
+        featured_image, // Save the uploaded image path
+      });
 
       // Save static page to database
       await newPage.save();
-
+        // Invalidate the cached post list
+        await redis.del("/cms/static-page");
       // Redirect to static page listing
       res.redirect('/cms/static-page');
     } catch (err) {
@@ -70,13 +85,10 @@ exports.createStaticPage = [
     }
   },
 ];
-
 // View static page edit form
 exports.getStaticPageEditPage = async (req, res) => {
   try {
     const page = await StaticPage.findById(req.params.pageId);
-    console.log(req.body)
-    console.log(req.parms)
     if (!page) return res.status(404).send('Page not found');
 
     res.render('pages/page_create_edit', { title: 'Edit Static Page', page, errors: [] });
@@ -128,6 +140,9 @@ exports.updateStaticPage = [
 
       if (!updatedPage) return res.status(404).send('Page not found');
 
+
+      await redis.del("/cms/static-page");
+
       // Redirect to static page listing
       res.redirect('/cms/static-page');
     } catch (err) {
@@ -146,6 +161,7 @@ exports.updateStaticPage = [
 exports.deleteStaticPage = async (req, res) => {
   try {
     const deletedPage = await StaticPage.findByIdAndDelete(req.params.pageId);
+    await redis.del("/cms/static-page");
 
     if (!deletedPage) {
       return res.status(404).json({ message: 'Page not found' });

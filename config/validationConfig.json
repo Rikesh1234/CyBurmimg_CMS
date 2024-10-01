@@ -3,7 +3,7 @@
       "title": true,
       "slug": true,
       "content": true,
-      "author": true,
+      "author": false,
       "category": true,
       "tags": false
     }

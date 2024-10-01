@@ -1,6 +1,6 @@
 const Post = require("../models/Post");
-const Category = require("../models/Category");
 const Author = require("../models/Author");
+const Category = require("../models/Category");
 const validationConfig = require('../config/validationConfig.json');
 
 
@@ -48,14 +48,15 @@ exports.getPostCreatePage = async (req, res) => {
     const categories = await Category.find({ status: "active" }).lean(); 
     const authors = await Author.find({ status: "active" }).lean();
 
-    console.log(authors)
     res.render("posts/post/post_create_edit", {
       title: "Create Post",
       errorMessages: [],
       formData: {},
       post: null,
       categories,
-      authors
+      authors,
+      formConfig: validationConfig.post
+
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -188,7 +189,9 @@ exports.getPostEditPage = async (req, res) => {
       post, // Pass the post to EJS
       errorMessages: [], // Default to empty array
       authors,
-      categories
+      categories,
+      formConfig: validationConfig.post
+
     });
   } catch (err) {
     console.error(err);
