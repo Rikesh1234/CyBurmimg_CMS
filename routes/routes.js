@@ -19,31 +19,24 @@ const staticPageController = require('../controllers/StaticPageController');
 const testomonialController = require('../controllers/TestominalController');
 const customFieldController = require('../controllers/CustomFieldController');
 const sliderController = require('../controllers/SliderController');
+const packageController = require('../controllers/PackageController');
 
 
 
 
-router.get("/", homeController.getPage);
 router.get("/", homeController.getPage);
 
 // login
 router.get("/admin/login", loginController.getLoginPage);
-router.post("/admin/login", loginController.getAuth);
-router.get("/logout", loginController.getLogout);
-router.get("/admin/login", loginController.getLoginPage);
-router.post("/admin/login", loginController.getAuth);
 router.get("/logout", loginController.getLogout);
 
 //dashboard
-router.get("/cms/dashboard", dashboardController.getPage);
 router.get("/cms/dashboard", dashboardController.getPage);
 
 //post
 // router.get('/cms/post',postController.getPostPage);
 router.get("/cms/post", cacheMiddleware, postController.getPostPage);
-router.get("/cms/post", cacheMiddleware, postController.getPostPage);
 
-router.get("/cms/post/create", postController.getPostCreatePage);
 router.get("/cms/post/create", postController.getPostCreatePage);
 // Route for handling the post creation
 router.post(
@@ -54,16 +47,7 @@ router.post(
   ]),
   postController.createPost
 );
-router.post(
-  "/cms/post/create",
-  upload.fields([
-    { name: "featured_image", maxCount: 1 },
-    { name: "gallery_images", maxCount: 10 },
-  ]),
-  postController.createPost
-);
 
-router.get("/cms/post/edit/:postId", postController.getPostEditPage);
 router.get("/cms/post/edit/:postId", postController.getPostEditPage);
 // Route to handle the edit (update) request
 
@@ -79,10 +63,6 @@ router.post(
 );
 
 router.post("/cms/post/delete/:postId", postController.deletePost);
-
-
-router.post("/cms/post/delete/:postId", postController.deletePost);
-
 
 
 
@@ -102,23 +82,6 @@ router.post(
 );
 router.post("/cms/author/delete/:authorId", postController.deleteAuthor);
 
-
-
-// Author
-router.get("/cms/author",cacheMiddleware, postController.getAuthorPage);
-router.get("/cms/author/create", postController.getAuthorCreatePage);
-router.post(
-  "/cms/author/create",
-  upload.single("author_image"),
-  postController.createAuthor
-);
-router.get("/cms/author/edit/:authorId", postController.getAuthorEditPage);
-router.post(
-  "/cms/author/edit/:authorId",
-  upload.single("author_image"),
-  postController.updateAuthor
-);
-router.post("/cms/author/delete/:authorId", postController.deleteAuthor);
 
 //categoey
 router.get("/cms/category", postController.getCategoryPage);
@@ -259,9 +222,13 @@ router.get("/cms/team-type/edit/:userId", teamController.getTeamTypeEditPage);
 router.get('/cms/custom-field',customFieldController.getCustomFieldPage);
 router.get('/cms/custom-field/create',customFieldController.getCustomFieldCreatePage);
 
-//custom field
+//slider
 router.get('/cms/slider',sliderController.getSliderPage);
 router.get('/cms/slider/create',sliderController.getSliderCreatePage);
+
+//package
+router.get('/cms/package',packageController.getPackagePage);
+router.get('/cms/package/create',packageController.getPackageCreatePage);
 
 
 // Static Page - Listing
@@ -298,6 +265,19 @@ router.post(
   "/cms/static-page/delete/:pageId",
   staticPageController.deleteStaticPage
 );
+
+
+
+
+
+
+
+
+
+
+
+
+router.get("/page/:pageSlug", homeController.getStaticPage);
 
 // router.use((req,res)=>{
 //     res.status(404).render('404',{title:'Page Not Found'});
