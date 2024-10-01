@@ -281,7 +281,7 @@ router.post("/cms/package/edit/:packageId", packageController.updatePackage);
 
 
 
-// router.get("/page/:pageSlug", homeController.getStaticPage);
+router.get("/page/:pageSlug", homeController.getStaticPage);
 
 // router.use((req,res)=>{
 //     res.status(404).render('404',{title:'Page Not Found'});

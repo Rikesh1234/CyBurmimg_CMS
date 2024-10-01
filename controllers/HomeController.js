@@ -34,3 +34,17 @@ exports.getPage = async (req, res) => {  // Mark the function as async
     }
 };
 
+exports.getStaticPage = async (req, res) => {
+    try {
+       
+        const static_page = await Post.findOneAndDelete({ slug: req.params.slug });
+
+        if (!static_page)  {
+            return res.status(404).send("Post not found");
+          }
+
+          res.render(`theme/${theme}/page/staic-page`, { title: 'Static Page', static_page });
+
+    } catch (err) {
+    }
+}

@@ -1,0 +1,36 @@
+    <!-- testomonial-section -->
+    <div class="testomonial-section">
+        <div class="container">
+          <span class="tagline" data-aos="fade-up">Testimonies</span>
+          <h2 class="title" data-aos="fade-up">Happy Customer</h2>
+          <div class="row py-5">
+            <div class="owl-carousel owl-theme" data-aos="fade-up">
+              <!-- Testimonial Card 1 -->
+              <% testomonial.forEach(test => { %>
+              <div class="test-card col-12">
+                <div class="test-profile">
+                  <div class="row">
+                    <div
+                      class="test-image col-2 col-md-2"
+                      style="background-image: url('<%= team.featured_image %>')"
+                    ></div>
+                    <div class="test-info col-md-5 col-7">
+                      <div class="name"><%= test.name %></div>
+                      <div class="designation"><%= test.designation %></div>
+                    </div>
+                    <div class="test-icon-container col-md-4 col-3">
+                      <i class="fa-solid fa-quote-right"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="test-contents">
+                  <p class="my-2">
+                    <%= test.content %>
+                  </p>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div>
