@@ -104,23 +104,20 @@ router.post("/cms/author/delete/:authorId", postController.deleteAuthor);
 
 
 // Author
-router.get("/cms/author", postController.getAuthorPage);
+router.get("/cms/author",cacheMiddleware, postController.getAuthorPage);
 router.get("/cms/author/create", postController.getAuthorCreatePage);
 router.post(
   "/cms/author/create",
-  upload.single("author_image"), 
+  upload.single("author_image"),
   postController.createAuthor
 );
 router.get("/cms/author/edit/:authorId", postController.getAuthorEditPage);
 router.post(
   "/cms/author/edit/:authorId",
-  upload.single("author_image"), 
+  upload.single("author_image"),
   postController.updateAuthor
 );
 router.post("/cms/author/delete/:authorId", postController.deleteAuthor);
-
-
-
 
 //categoey
 router.get("/cms/category", postController.getCategoryPage);
@@ -138,6 +135,7 @@ router.get(
 
 router.post("/cms/category/delete/:categoryId", postController.deleteCategory);
 router.get("/cms/category", postController.getCategoryPage);
+router.get("/cms/category",cacheMiddleware, postController.getCategoryPage);
 
 router.post(
   "/cms/category/create",
@@ -259,6 +257,43 @@ router.get("/cms/team-type/edit/:userId", teamController.getTeamTypeEditPage);
 //custom field
 router.get('/cms/custom-field',customFieldController.getCustomFieldPage);
 router.get('/cms/custom-field/create',customFieldController.getCustomFieldCreatePage);
+router.get("/cms/setting", settingController.getSettingPage);
+router.get("/cms/setting/create", settingController.getSettingCreatePage);
+
+// Static Page - Listing
+router.get("/cms/static-page",cacheMiddleware, staticPageController.getStaticPagePage);
+
+// Static Page - Create Page View
+router.get(
+  "/cms/static-page/create",
+  staticPageController.getStaticPageCreatePage
+);
+
+// Static Page - Create Action
+router.post(
+  "/cms/static-page/create",
+  upload.single("static_page_image"),
+  staticPageController.createStaticPage
+);
+
+// Static Page - Edit Page View
+router.get(
+  "/cms/static-page/edit/:pageId",
+  staticPageController.getStaticPageEditPage
+);
+
+// Static Page - Update Action
+router.post(
+  "/cms/static-page/edit/:pageId",
+  upload.single("static_page_image"), // Handle static page image upload
+  staticPageController.updateStaticPage
+);
+
+// Static Page - Delete Action
+router.post(
+  "/cms/static-page/delete/:pageId",
+  staticPageController.deleteStaticPage
+);
 
 // router.use((req,res)=>{
 //     res.status(404).render('404',{title:'Page Not Found'});

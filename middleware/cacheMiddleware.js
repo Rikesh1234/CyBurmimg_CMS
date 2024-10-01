@@ -4,7 +4,8 @@ const redisClient = require("../config/redis");
 // Cache middleware function
 const cacheMiddleware = async (req, res, next) => {
   // Define cacheable routes
-  const cacheableRoutes = ["/cms/post", "/cms/category"];
+  const cacheableRoutes = ["/cms/post", "/cms/category","/cms/static-page"];
+  // const cacheableRoutes = []
 
   // Check if environment is development
   if (process.env.NODE_ENV === "development") {
