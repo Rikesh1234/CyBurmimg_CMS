@@ -9,6 +9,9 @@ const cacheMiddleware = require("../middleware/cacheMiddleware");
 
 const teamController = require('../controllers/TeamController');
 const userController = require('../controllers/UserController');
+const packageController = require('../controllers/PackageController');
+
+
 const postController = require('../controllers/PostController');
 const loginController = require('../controllers/LoginController');
 // const settingController = require('../controllers/GlobalController');
@@ -257,8 +260,8 @@ router.get("/cms/team-type/edit/:userId", teamController.getTeamTypeEditPage);
 //custom field
 router.get('/cms/custom-field',customFieldController.getCustomFieldPage);
 router.get('/cms/custom-field/create',customFieldController.getCustomFieldCreatePage);
-router.get("/cms/setting", settingController.getSettingPage);
-router.get("/cms/setting/create", settingController.getSettingCreatePage);
+// router.get("/cms/setting", settingController.getSettingPage);
+// router.get("/cms/setting/create", settingController.getSettingCreatePage);
 
 // Static Page - Listing
 router.get("/cms/static-page",cacheMiddleware, staticPageController.getStaticPagePage);
@@ -295,9 +298,17 @@ router.post(
   staticPageController.deleteStaticPage
 );
 
-// router.use((req,res)=>{
-//     res.status(404).render('404',{title:'Page Not Found'});
-// });
+
+//PACKAGE MODULE
+router.get("/cms/package", packageController.getPackagePage);
+router.get("/cms/package/create", packageController.getPackageCreatePage);
+router.post("/cms/package/create", packageController.createPackage);
+router.get("/cms/package/edit/:packageId", packageController.getPackageEditPage);
+router.post("/cms/package/edit/:packageId", packageController.updatePackage);
+
+
+
+
 
 module.exports = router;
 module.exports = router;
