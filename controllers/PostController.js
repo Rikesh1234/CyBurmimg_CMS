@@ -70,6 +70,7 @@ exports.createPost = [
 
   async (req, res) => {
     try {
+      console.log(req.body)
       // Check validation results
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -113,7 +114,12 @@ exports.createPost = [
             (file) => `/uploads/post/gallery/${file.filename}`
           )
         : [];
+        console.log('------------------');
 
+      console.log(tag_line);
+      console.log('------------------');
+      
+      
       // Create a new post object
       const newPost = new Post({
         title,
