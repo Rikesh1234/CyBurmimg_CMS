@@ -26,6 +26,7 @@ exports.createStaticPage = [
   body('content').notEmpty().withMessage('Content is required'),
 
   async (req, res) => {
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // Re-render form with errors and input values
@@ -73,7 +74,9 @@ exports.createStaticPage = [
 // View static page edit form
 exports.getStaticPageEditPage = async (req, res) => {
   try {
-    const page = await StaticPage.findById(req.params.userId);
+    const page = await StaticPage.findById(req.params.pageId);
+    console.log(req.body)
+    console.log(req.parms)
     if (!page) return res.status(404).send('Page not found');
 
     res.render('pages/page_create_edit', { title: 'Edit Static Page', page, errors: [] });
@@ -106,7 +109,7 @@ exports.updateStaticPage = [
       const status = req.body.status === 'on' ? 'active' : 'inactive';
 
       // Check for duplicate slug, ignoring the current page being edited
-      const existingPage = await StaticPage.findOne({ slug, _id: { $ne: req.params.userId } });
+      const existingPage = await StaticPage.findOne({ slug, _id: { $ne: req.params.pageId } });
       if (existingPage) {
         return res.render('pages/page_create_edit', {
           title: 'Edit Static Page',
@@ -116,7 +119,7 @@ exports.updateStaticPage = [
       }
 
       // Update static page
-      const updatedPage = await StaticPage.findByIdAndUpdate(req.params.userId, {
+      const updatedPage = await StaticPage.findByIdAndUpdate(req.params.pageId, {
         title,
         slug,
         content,
@@ -142,7 +145,7 @@ exports.updateStaticPage = [
 // Delete static page
 exports.deleteStaticPage = async (req, res) => {
   try {
-    const deletedPage = await StaticPage.findByIdAndDelete(req.params.userId);
+    const deletedPage = await StaticPage.findByIdAndDelete(req.params.pageId);
 
     if (!deletedPage) return res.status(404).send('Page not found');
 

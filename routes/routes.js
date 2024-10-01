@@ -162,7 +162,6 @@ router.get("/cms/setting/create", settingController.getSettingCreatePage);
 
 
 
-// Static
 
 // Static Page - Listing
 router.get('/cms/static-page', staticPageController.getStaticPagePage);
