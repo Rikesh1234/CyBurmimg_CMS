@@ -38,7 +38,7 @@ exports.getPermissionPage=(req,res)=>{
 }
 
 //cruds for users
-exports.createPost = [
+exports.createUser = [
   async (req, res) => {
     try {
       console.log(req.body)
@@ -49,7 +49,7 @@ exports.createPost = [
           title: "Create User",
           errorMessages: errors.array().map(err => err.msg),
           formData: req.body,
-          post: null,
+          user: null,
           categories,
           authors,
         });
@@ -84,7 +84,7 @@ exports.createPost = [
         featured_image,
       });
 
-      // Save the post to the database
+      // Save the user to the database
       await newUser.save();
 
       // Invalidate the cached user list
@@ -122,7 +122,7 @@ exports.deleteUser = async (req, res) => {
 };
 
 
-// Handle updating a post
+// Handle updating a user
 exports.updateUser = async (req, res) => {
   const userId = req.params.userId;
   const {
@@ -145,13 +145,13 @@ exports.updateUser = async (req, res) => {
   
   // If there are validation errors, re-render the form with error messages
   if (errorMessages.length > 0) {
-    // Fetch the existing post to repopulate the form
+    // Fetch the existing user to repopulate the form
     const existingUser = await User.findById(userId);
     return res.render("users/user/user_create_edit", {
       title: "Edit User",
       errorMessages,
-      post: {
-        ...existingUser.toObject(), // Copy existing post details
+      user: {
+        ...existingUser.toObject(), // Copy existing user details
         name, // Preserve user’s current input
         email,
         published,
@@ -279,7 +279,7 @@ exports.updateRole = async (req, res) => {
   if (errorMessages.length > 0) {
     // Fetch the existing role to repopulate the form
     const existingRole = await Role.findById(roleId);
-    return res.render("posts/post/post_create_edit", {
+    return res.render("users/role/role_create_edit", {
       title: "Edit Role",
       errorMessages,
       role: {
