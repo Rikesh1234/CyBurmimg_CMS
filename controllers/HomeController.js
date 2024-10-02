@@ -1,9 +1,9 @@
 require('dotenv').config();
 
+const Team = require("../models/Team");
 const Post = require("../models/Post");
 const Category = require("../models/Category");
 const StaticPage = require('../models/StaticPage');
-const Team = require("../models/Team");
 const Testominal = require("../models/Testominal");
 
 //view home page
@@ -37,7 +37,7 @@ exports.getPage = async (req, res) => {  // Mark the function as async
 };
 
 
-// ---------STATIC PAGE------------------------------------------------------
+// ---------SELECTED STATIC PAGE------------------------------------------------------
 exports.getStaticPage = async (req, res) => {
   try {
     // Fetch the page data based on the slug in the URL
@@ -46,10 +46,12 @@ exports.getStaticPage = async (req, res) => {
     if (!staticPage) {
       return res.status(404).send('Page not found');
     }
+    console.log(staticPage);
+    
 
     // Define variables to be used in the view
     const pageTitle = staticPage.title || 'Static Page';
-    const background_image = staticPage.background_image || '/images/default-bg.jpg'; // default image if not set
+    const background_image = staticPage.featured_image || '/images/default-bg.jpg'; // default image if not set
     const content = staticPage.content || '';
 
     // Render the static page with its specific data
@@ -64,7 +66,7 @@ exports.getStaticPage = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
-// ---------STATIC PAGE END---------------------------------------------------
+// ---------SELECTED STATIC PAGE END---------------------------------------------------
 
 
 
@@ -88,3 +90,59 @@ exports.getHomePageSlider = async (req, res) => {
 };
 
 // ---------SLIDER END------------------------------------------------------
+
+// ---------LISTING PAGE END------------------------------------------------------
+
+// Fetch posts for a selected category by slug
+exports.getCategoryListingPage = async (req, res) => {
+  try {
+    // Get the category slug from request params
+    const categorySlug = req.params.slug;
+
+    // Find the category by slug
+    const category = await Category.findOne({ slug: categorySlug });
+
+    // If no category found, return 404
+    if (!category) {
+      return res.status(404).send("Category not found");
+    }
+
+    // Fetch all posts that belong to the selected category
+    const posts = await Post.find({ category: category._id }).populate("category");
+
+    // Render the category listing page with the fetched posts
+    res.render("theme/goodwill-cleaning/pages/postListing", {
+      posts,
+      category, // Pass the category data to the view
+    });
+  } catch (err) {
+    console.error("Error fetching posts for category:", err);
+    res.status(500).send("Server Error");
+  }
+};
+
+
+// ---------LISTING PAGE END------------------------------------------------------
+
+
+// ---------POST DETAIL PAGE ------------------------------------------------------
+exports.getPostDetailPage = async (req, res) => {
+  try {
+    // Fetch the post based on `postId` from the request params
+    const postId = req.params.postId;
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+
+    // Render the post detail view, passing the post data
+    res.render('theme/goodwill-cleaning/pages/postDetail', {
+      post,
+    });
+  } catch (err) {
+    console.error('Error fetching post detail:', err);
+    res.status(500).send('Server Error');
+  }
+};
+// ---------POST DETAIL PAGE END------------------------------------------------------

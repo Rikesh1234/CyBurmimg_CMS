@@ -38,6 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files (CSS, images, etc.) from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // Use session middleware for managing sessions (with Redis)
 app.use(sessionMiddleware);
 

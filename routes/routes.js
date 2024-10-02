@@ -29,6 +29,10 @@ const sliderController = require('../controllers/SliderController');
 // --------------FRONTEND ROUTES
 router.get("/", homeController.getPage);
 router.get("/page/:slug", homeController.getStaticPage);
+router.get("/category/:slug", homeController.getCategoryListingPage);
+router.get("/post/:postId", homeController.getPostDetailPage);
+
+
 
 // --------------FRONTEND ROUTES END
 
