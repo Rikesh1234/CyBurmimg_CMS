@@ -197,10 +197,31 @@ router.get(
   "/cms/testomonial/create",
   testomonialController.getTestomonialCreatePage
 );
+// Route for handling the testimonial creation
+router.post(
+  "/cms/testomonial/create",
+  upload.fields([
+    { name: "featured_image", maxCount: 1 },
+  ]),
+  testomonialController.createTestominal
+);
 router.get(
   "/cms/testomonial/edit/:userId",
   testomonialController.getTestomonialEditPage
 );
+// Route to handle the edit (update) request
+
+router.post(
+  "/cms/testomonial/edit/:testomonialId",
+  upload.fields([
+    { name: "featured_image", maxCount: 1 },
+    { name: "featured_image", maxCount: 1 },
+  ]),
+  testomonialController.updateTestominal
+);
+
+router.post("/cms/testomonial/delete/:testomonialId", testomonialController.deleteTestominal);
+
 
 //partners
 router.get("/cms/partner", partnerController.getPartnerPage);
