@@ -141,7 +141,7 @@ router.get("/cms/user/create", userController.getUserCreatePage);
 router.post(
   "/cms/user/create",
   upload.fields([
-    { name: "featured_image", maxCount: 1 },
+    { name: "user_image", maxCount: 1 },
   ]),
   userController.createUser
 );
@@ -152,7 +152,7 @@ router.get("/cms/user/edit/:userId", userController.getUserEditPage);
 router.post(
   "/cms/user/edit/:userId",
   upload.fields([
-    { name: "featured_image", maxCount: 1 },
+    { name: "user_image", maxCount: 1 },
   ]),
   userController.updateUser
 );
@@ -185,8 +185,12 @@ router.post("/cms/role/delete/:roleId", userController.deleteRole);
 
 
 
-//permission
-router.get("/cms/permission/:roleId", userController.getPermissionPage);
+//Permission
+router.get('/cms/permissions/:roleId', userController.getRolePermissions);
+// Update permissions for a specific role
+router.post('/cms/permissions/:roleId', userController.updateRolePermissions);
+
+
 
 //staticpage
 router.get("/cms/static-page", staticPageController.getStaticPagePage);

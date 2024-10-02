@@ -25,6 +25,8 @@ exports.getTeamCreatePage = (req, res) => {
       title: 'Team Create Page',
       team: null,
       errorMessages: [],
+      formConfig:validationConfig.team
+
   });
 };
 
@@ -46,6 +48,8 @@ exports.getTeamEditPage = async (req, res) => {
           title: 'Team Edit Page',
           team, 
           errorMessages: [],
+          formConfig:validationConfig.team
+
       });
   } catch (err) {
       console.error(err);

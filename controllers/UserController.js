@@ -1,6 +1,106 @@
 const redis = require("../config/redis");
 const Role = require("../models/Role");
 const User = require("../models/user");
+const Permission = require("../models/Permission");
+const Model = require("../models/Model");
+
+const { validationResult } = require('express-validator');
+
+
+
+
+
+exports.getRolePermissions = async (req, res) => {
+  try {
+    const { roleId } = req.params;
+
+    // Fetch the role by ID
+    const role = await Role.findById(roleId);
+
+    if (!role) {
+      return res.status(404).send('Role not found');
+    }
+
+    // Fetch all permissions (with model names populated)
+    const allPermissions = await Permission.find().populate('model');
+
+    // Fetch current permissions assigned to the role
+    const rolePermissions = await Permission.find({ _id: { $in: role.permissions } });
+
+    // Transform rolePermissions into a map for easy lookup
+    const rolePermissionMap = new Set(rolePermissions.map(perm => `${perm.model._id}:${perm.type}`));
+
+    // Pass necessary data to the view
+    res.render('users/permission/permission', {
+      title: 'Manage Permissions',
+      role,
+      allPermissions,
+      rolePermissionMap // Map of role's permissions for easy lookup
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+};
+
+
+
+// Update permissions for a role
+exports.updateRolePermissions = async (req, res) => {
+  try {
+    const { roleId } = req.params; // The ID of the role to update
+    const permissions = req.body.permissions || []; // Permissions submitted by the form
+
+    // Ensure permissions is always an array
+    const permissionsArray = Array.isArray(permissions) ? permissions : [permissions];
+
+    // Fetch the role to be updated
+    const role = await Role.findById(roleId).populate('permissions');
+
+    if (!role) {
+      return res.status(404).send('Role not found');
+    }
+
+    // Create a new set of permissions based on the submitted data
+    const newPermissions = await Promise.all(
+      permissionsArray.map(async (permission) => {
+        const [modelId, type] = permission.split(':');
+
+        // Find or create a permission based on model and type
+        let perm = await Permission.findOne({ model: modelId, type });
+        if (!perm) {
+          perm = new Permission({ model: modelId, type });
+          await perm.save();
+        }
+
+        return perm._id;
+      })
+    );
+
+    // Update the role's permissions
+    role.permissions = newPermissions;
+
+    // Save the updated role
+    await role.save();
+
+    // Redirect back to the role listing page
+    res.redirect('/cms/role');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+};
+// Controller to handle the form submission
+exports.savePermissions = (req, res) => {
+  // Get all the permissions from the request body
+  const permissions = req.body;
+
+  // You can process these permissions as needed, for example, save them to a database
+  console.log('Selected Permissions:', permissions);
+
+  // Redirect back to the permissions page or any other page as needed
+  res.redirect('/cms/permissions');
+};
 
 //view user page
 exports.getUserPage = async (req,res)=>{
@@ -17,15 +117,49 @@ exports.getUserPage = async (req,res)=>{
     }
 }
 
+
 //view user Create page
-exports.getUserCreatePage=(req,res)=>{
-    res.render('users/user/user_create_edit',{title:'User Create Page'});
-}
+exports.getUserCreatePage = async (req, res) => {
+  const activeRoles = await Role.find();
+  console.log(activeRoles);
+  
+  console.log(activeRoles)
+  res.render('users/user/user_create_edit', {
+    title: 'User Create Page',
+    user: null,
+    errorMessages:[],
+    roles: activeRoles, 
+
+  });
+};
+
 
 //view user Edit page
-exports.getUserEditPage=(req,res)=>{
-    res.render('users/user/user_create_edit',{title:'User Edit Page'});
-}
+//view user Edit page
+exports.getUserEditPage = async (req, res) => {
+  try {
+    // Get the user ID from the request params
+    const userId = req.params.userId;
+
+    // Fetch the user from the database
+    const user = await User.findById(userId);
+
+    // If user not found, return a 404 error
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Render the edit view with the fetched user data
+    res.render('users/user/user_create_edit', {
+      title: 'User Edit Page',
+      user: user // Pass the user object
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
+
 
 //view role page
 exports.getRolePage= async (req,res)=>{
@@ -39,19 +173,38 @@ exports.getRolePage= async (req,res)=>{
 }
 
 //view role Create page
-exports.getRoleCreatePage=(req,res)=>{
-    res.render('users/role/role_create_edit',{title:'Role Create Page'});
-}
+exports.getRoleCreatePage = (req, res) => {
+  res.render('users/role/role_create_edit', {
+    title: 'Role Create Page',
+    role: null,
+    errorMessages: []
+  });
+};
+
 
 //view role Edit page
-exports.getRoleEditPage=(req,res)=>{
-    res.render('users/role/role_create_edit',{title:'Role Edit Page'});
-}
+exports.getRoleEditPage = async (req, res) => {
+  try {
+    // Find the role by its ID
+    const role = await Role.findById(req.params.roleId);
 
-//view permission page
-exports.getPermissionPage=(req,res)=>{
-    res.render('users/permission/permission',{title:'Permission Page'});
-}
+    if (!role) {
+      return res.status(404).send("Role not found");
+    }
+
+    // Render the edit page with the existing role data
+    res.render('users/role/role_create_edit', {
+      title: 'Role Edit Page',
+      role, // Pass the role object to the template
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
+
+
+
 
 //cruds for users
 exports.createUser = [
@@ -82,8 +235,8 @@ exports.createUser = [
       } = req.body;
 
       // Handle featured image upload
-      const featured_image = req.files["featured_image"]
-        ? `/uploads/user/${req.files["featured_image"][0].filename}`
+      const featured_image = req.files["user_image"]
+        ? `/uploads/user/${req.files["user_image"][0].filename}`
         : "/images/default.jpg";
       
       
@@ -218,8 +371,7 @@ exports.createRole = async (req, res) => {
       published,
     } = req.body;
 
-    
-
+  
     // Create a new role object
     const newRole = new Role({
       name,
