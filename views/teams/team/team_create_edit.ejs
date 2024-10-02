@@ -64,6 +64,7 @@
         <form
           action="<%= team ? '/cms/team/edit/' + team._id : '/cms/team/create' %>"
           method="post"
+          enctype="multipart/form-data"
         >
           <div class="form-container">
             <div class="post-right-container col-md-7 col-sm-12">
@@ -219,13 +220,13 @@
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="featured_image">Featured Image</label>
+                  <label for="team_image">Featured Image</label>
                 </div>
                 <div class="upload-container-one">
                   <input
                     id="upload-input-one"
                     type="file"
-                    name="featured_image"
+                    name="team_image"
                     accept="image/*"
                     hidden
                   />

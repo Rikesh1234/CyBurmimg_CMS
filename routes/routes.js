@@ -272,24 +272,41 @@ router.get("/cms/partner/edit/:userId", partnerController.getPartnerEditPage);
 
 // Team Routes
 router.get("/cms/team", teamController.getTeamPage);
-router.get("/cms/team/create", teamController.getTeamCreatePage);
-router.get("/cms/team/edit/:teamId", teamController.getTeamEditPage);
+router.get("/cms/team/create", teamController.getTeamCreatePage,);
+router.get("/cms/team/edit/:teamId", teamController.getTeamEditPage,
+  upload.fields([
+    { name: "team_image", maxCount: 1 },
+  ]),
+);
 
 // Create team with image upload
 router.post(
   "/cms/team/create",
-  upload.fields([
-    { name: "featured_image", maxCount: 1 },
-  ]),
+  (req, res, next) => {
+    upload.fields([{ name: "team_image", maxCount: 1 }])(req, res, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(400).send('File upload error');
+      }
+      next();
+    });
+  },
   teamController.createTeam
 );
+
 
 // Edit team with image upload
 router.post(
   "/cms/team/edit/:teamId",
-  upload.fields([
-    { name: "featured_image", maxCount: 1 },
-  ]),
+  (req, res, next) => {
+    upload.fields([{ name: "team_image", maxCount: 1 }])(req, res, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(400).send('File upload error');
+      }
+      next();
+    });
+  },
   teamController.updateTeam
 );
 

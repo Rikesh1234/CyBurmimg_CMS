@@ -61,7 +61,7 @@
                 class="card author author-img-one position-relative overflow-hidden hover-img">
                 <div class="position-relative" style="top: 28px; left: 22px;">
                   <img
-                    src="<%= team.featured_image ? team.featured_image : '/images/icons/profile.png' %>"
+                    src="<%= team.featured_image  ? team.featured_image : '/images/icons/profile.png' %>"
                     alt="spike-img"
                     class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
                     width="40"
@@ -70,7 +70,7 @@
                     data-bs-placement="top"
                     data-bs-title="<%= team.name %>"
                   />
-                  <span class="card-author-name" style="position: relative; top: -6px; left: 49px; font-size: 17px; font-weight: 500;">Author Name</span>
+                  <span class="card-author-name" style="position: relative; top: -6px; left: 49px; font-size: 17px; font-weight: 500;"><%= team.name %></span>
                 </div>
                 <div class="card-body p-4">
                   <div class="category-published" style="justify-content: flex-end;">
@@ -102,10 +102,6 @@
                         data-id="<%= team._id %>"
                         ><i class="fas fa-trash-alt"></i
                       ></a>
-                    </div>
-                    <div
-                    class="d-flex align-items-center ms-auto default-btn active">
-                    Set as Default
                     </div>
                   </div>
                 </div>

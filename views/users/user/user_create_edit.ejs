@@ -22,7 +22,7 @@
         <div class="head-title">
           <div class="left">
             <h1>
-              <%= user ? 'Edit User' : 'Add User' %>
+              <%= typeof user !== 'undefined' ? 'Edit User' : 'Add User' %>
             </h1>
             <ul class="breadcrumb">
               <li>
@@ -36,7 +36,7 @@
               <li>
                 <!-- <a class="active">Add User</a> -->
                 <h1>
-                  <%= user ? 'Edit User' : 'Add User' %>
+                  <%= typeof user !== 'undefined' ? 'Edit User' : 'Add User' %>
                 </h1>
               </li>
             </ul>

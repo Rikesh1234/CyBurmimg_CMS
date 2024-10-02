@@ -84,6 +84,7 @@ exports.getTeamEditPage = async (req, res) => {
           title: 'Team Edit Page',
           team, 
           errorMessages: [],
+          formConfig: validationConfig.team
       });
   } catch (err) {
       console.error(err);
@@ -127,8 +128,11 @@ exports.createTeam = async (req, res) => {
     } = req.body;
 
     // Handle featured image upload
-    const featured_image = req.files["featured_image"]
-      ? `/uploads/team/${req.files["featured_image"][0].filename}`
+
+    console.log(req.files);
+
+    const featured_image = req.files["team_image"]
+      ? `/uploads/teams/${req.files["team_image"][0].filename}`
       : "/images/default.jpg";
 
     
@@ -213,11 +217,11 @@ exports.updateTeam = async (req, res) => {
   // Perform manual validation on required fields
   if (!name || name.trim() === "") errorMessages.push("Title is required");
   if (!email || email.trim() === "") errorMessages.push("Email is required");
-  if (!content || content.trim() === "")
-    errorMessages.push("Content is required");
-  if (!category || category.length === 0)
-    errorMessages.push("At least one category is required");
-  if (!author || author.trim() === "") errorMessages.push("Author is required");
+  // if (!content || content.trim() === "")
+  //   errorMessages.push("Content is required");
+  // if (!category || category.length === 0)
+  //   errorMessages.push("At least one category is required");
+  // if (!author || author.trim() === "") errorMessages.push("Author is required");
 
   // If there are validation errors, re-render the form with error messages
   if (errorMessages.length > 0) {
@@ -243,8 +247,8 @@ exports.updateTeam = async (req, res) => {
 
   try {
     // Handle featured image update if provided
-    const featured_image = req.files["featured_image"]
-      ? `/uploads/team/${req.files["featured_image"][0].filename}`
+    const featured_image = req.files["team_image"]
+      ? `/uploads/teams/${req.files["team_image"][0].filename}`
       : req.body.existing_featured_image;
 
     

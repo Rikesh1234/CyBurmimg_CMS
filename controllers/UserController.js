@@ -19,7 +19,7 @@ exports.getUserPage = async (req,res)=>{
 
 //view user Create page
 exports.getUserCreatePage=(req,res)=>{
-    res.render('users/user/user_create_edit',{title:'User Create Page'});
+    res.render('users/user/user_create_edit',{title:'User Create Page', errorMessages: [],});
 }
 
 //view user Edit page
@@ -29,16 +29,16 @@ exports.getUserEditPage=(req,res)=>{
 
 //view role page
 exports.getRolePage= async (req,res)=>{
-    try{
+  try{
       // Fetch all roles from the database
       const roles= await Role.find();
 
       //Render the view and pass the users to the EJS template
       res.render('users/role/role_listing',{title:'Role Page', roles});
     }catch (err) {
-      console.error(err);
-      res.status(500).send("Server Error");
-    }
+        console.error(err);
+        res.status(500).send("Server Error");
+      }
 }
 
 //view role Create page
