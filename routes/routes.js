@@ -32,6 +32,16 @@ router.get("/page/:slug", homeController.getStaticPage);
 router.get("/category/:slug", homeController.getCategoryListingPage);
 router.get("/post/:postId", homeController.getPostDetailPage);
 
+router.get('/contact', (req, res) => {
+  res.render('theme/goodwill-cleaning/pages/contactPage'); 
+});
+
+router.get('/price', (req, res) => {
+  res.render('theme/goodwill-cleaning/pages/pricePage'); 
+});
+
+router.get("/price", homeController.getPackage);
+
 // --------------FRONTEND ROUTES END
 
 
