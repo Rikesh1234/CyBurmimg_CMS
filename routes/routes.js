@@ -140,8 +140,7 @@ router.get("/cms/role/create", userController.getRoleCreatePage);
 router.get("/cms/role/edit/:userId", userController.getRoleEditPage);
 
 //permission
-router.get("/cms/permission", userController.getPermissionPage);
-router.get("/cms/permission", userController.getPermissionPage);
+router.get("/cms/permission/:roleId", userController.getPermissionPage);
 
 //staticpage
 router.get("/cms/static-page", staticPageController.getStaticPagePage);

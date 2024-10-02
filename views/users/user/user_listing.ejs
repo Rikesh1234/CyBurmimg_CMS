@@ -61,37 +61,35 @@
                 class="card author author-img-one position-relative overflow-hidden hover-img">
                 <div class="position-relative" style="top: 28px; left: 22px;">
                   <img
-                    src="/images/icons/profile.png"
+                    src="<%= user.featured_image ? user.featured_image : '/images/icons/profile.png' %>"
                     alt="spike-img"
                     class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
+                    style="bottom: -15px !important;"
                     width="40"
                     height="40"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
-                    data-bs-title="Addie Keller"
+                    data-bs-title="<%= user.name %>"
                   />
-                  <span class="card-author-name" style="position: relative; top: -6px; left: 49px; font-size: 17px; font-weight: 500;">User Name</span>
+                  <span class="card-author-name" style="position: relative; top: -6px; left: 49px; font-size: 17px; font-weight: 500;"><%= user.name %></span>
                 </div>
                 <div class="card-body p-4">
                   <div class="category-published" style="align-items: center;">
-                    <span class="card-email">abc@gmail.com</span>
+                    <span class="card-email" style="padding-top: 15px;"><%= user.email %></span>
                     <label class="wraper" for="something">
                       <span class="label-text">Published</span>
                       <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
+                        <input type="checkbox" checked id="<%= user._id %>" />
                         <div class="switch"></div>
                       </div>
                     </label>
                   </div>
                
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
+                  
                   <div class="d-flex align-items-center gap-4 icon-container">
                  
                     <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/user/edit/1" class="text-black"
+                      <a href="/cms/user/edit/<%= user._id %>" class="text-black"
                         ><i class="fas fa-edit"></i
                       ></a>
                     </div>
