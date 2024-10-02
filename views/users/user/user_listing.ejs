@@ -94,8 +94,11 @@
                       ></a>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
+                      <a
+                        href="#"
+                        class="text-black delete-user"
+                        data-id="<%= user._id %>"
+                      ><i class="fas fa-trash-alt"></i
                       ></a>
                     </div>
                   </div>
@@ -138,5 +141,55 @@
     <!-- CONTENT -->
 
     <%- include('../../layout/script') %>
+    
+      <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+          // Handle delete button functionality
+          const deleteButtons = document.querySelectorAll('.delete-user');
+          deleteButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+              event.preventDefault(); // Prevent default link behavior
+              const userId = this.getAttribute('data-id'); // Get user ID
+              // Trigger SweetAlert2 modal
+              Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you really want to delete this user? This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Delete',
+                cancelButtonText: 'Cancel'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // If confirmed, send POST request to delete the user
+                  fetch(`/cms/user/delete/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    }
+                  })
+                  .then(response => {
+                    if (response.ok) {
+                      // Show success message and reload the page
+                      Swal.fire('Deleted!', 'The user has been deleted.', 'success').then(() => {
+                        location.reload(); // Reload the page after successful deletion
+                      });
+                    } else {
+                      Swal.fire('Error!', 'There was an issue deleting the user.', 'error');
+                    }
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error!', 'There was an issue deleting the user.', 'error');
+                  });
+                }
+              });
+            });
+          });
+        });
+        
+      </script>
   </body>
 </html>
