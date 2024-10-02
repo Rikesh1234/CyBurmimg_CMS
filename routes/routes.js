@@ -26,7 +26,7 @@ const sliderController = require('../controllers/SliderController');
 
 
 
-// --------------FRONTEND ROUTES
+// --------------FRONTEND ROUTES-------------------------------------
 router.get("/", homeController.getPage);
 router.get("/page/:slug", homeController.getStaticPage);
 router.get("/category/:slug", homeController.getCategoryListingPage);
@@ -42,7 +42,7 @@ router.get('/price', (req, res) => {
 
 router.get("/price", homeController.getPackage);
 
-// --------------FRONTEND ROUTES END
+// --------------FRONTEND ROUTES END---------------------------------
 
 
 

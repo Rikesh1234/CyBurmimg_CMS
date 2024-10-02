@@ -70,9 +70,6 @@ exports.createPost = [
         ? `/uploads/user/${req.files["featured_image"][0].filename}`
         : "/images/default.jpg";
       
-
-
-      
       
       // Create a new user object
       const newUser = new User({
