@@ -43,8 +43,8 @@ exports.createSlider = async (req, res) => {
       : "/images/default.jpg";
 
     
-    // Create a new team object
-    const newSlider = new Team({
+    // Create a new slider object
+    const newSlider = new Slider({
       title,
       subtitle,
       published: published === "on",
@@ -52,13 +52,13 @@ exports.createSlider = async (req, res) => {
       featured_image,
     });
 
-    // Save the team to the database
+    // Save the slider to the database
     await newSlider.save();
 
-    // Invalidate the cached team list
+    // Invalidate the cached slider list
     await redis.del("/cms/slider");
 
-    // Redirect to the team listing page after successful creation
+    // Redirect to the slider listing page after successful creation
     res.redirect("/cms/slider");
   } catch (err) {
     if (err.name === "ValidationError") {
@@ -69,7 +69,7 @@ exports.createSlider = async (req, res) => {
         title: "Create Slider",
         errorMessages,
         formData: req.body,
-        team: null,
+        slider: null,
       });
     } else {
       console.error(err);
@@ -113,13 +113,13 @@ exports.updateSlider = async (req, res) => {
   
   // If there are validation errors, re-render the form with error messages
   if (errorMessages.length > 0) {
-    // Fetch the existing team to repopulate the form
+    // Fetch the existing slider to repopulate the form
     const existingSlider = await Slider.findById(sliderId);
     return res.render("slider/slider_create_edit", {
       title: "Edit Slider",
       errorMessages,
-      team: {
-        ...existingSlider.toObject(), // Copy existing team details
+      slider: {
+        ...existingSlider.toObject(), // Copy existing slider details
         title, // Preserve user’s current input
         subtitle,
         published,
@@ -135,7 +135,7 @@ exports.updateSlider = async (req, res) => {
       : req.body.existing_featured_image;
 
     
-    // Update the team
+    // Update the slider
     const updatedSlider = await Slider.findByIdAndUpdate(
       sliderId,
       {
@@ -152,7 +152,7 @@ exports.updateSlider = async (req, res) => {
       return res.status(404).send("Slider not found");
     }
 
-    // Invalidate the cached team list
+    // Invalidate the cached slider list
     await redis.del("/cms/slider");
 
     // Redirect after successful update
