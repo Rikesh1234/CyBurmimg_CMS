@@ -36,6 +36,7 @@ router.get("/page/:slug", homeController.getStaticPage);
 
 // login
 router.get("/admin/login", loginController.getLoginPage);
+router.post("/admin/login", loginController.getAuth);
 router.get("/logout", loginController.getLogout);
 
 //dashboard
