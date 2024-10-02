@@ -1,0 +1,16 @@
+    <!-- video section -->
+    <% posts.forEach(post => { %> <% if (post.category.name === 'video') {
+      %>
+    <div
+      class="video-section w-100"
+      style="background-image: url('<%= post.featured_image %>')"
+    >
+      <div class="overlay" data-aos="fade-up">
+        <div class="title"><%= post.title %></div>
+        <a href="video-detail.html">
+          <i class="fa fa-play animate__slideOutUp" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+    <% } %>
+    <% }) %>

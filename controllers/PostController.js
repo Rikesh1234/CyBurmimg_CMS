@@ -114,10 +114,7 @@ exports.createPost = [
             (file) => `/uploads/post/gallery/${file.filename}`
           )
         : [];
-        console.log('------------------');
 
-      console.log(tag_line);
-      console.log('------------------');
       
       
       // Create a new post object

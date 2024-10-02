@@ -21,18 +21,18 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Custom Field</h1>
+            <h1>Add Package</h1>
             <ul class="breadcrumb">
               <li>
                 <a href="/cms/dashboard">Dashboard</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a href="/cms/setting">Custom Field</a>
+                <a href="/cms/setting">Package</a>
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active">Add Field</a>
+                <a class="active">Add Package</a>
               </li>
             </ul>
           </div>
@@ -42,9 +42,13 @@
           </a>
         </div>
 
-        <form action="#">
+        <form
+          action="<%= package ? '/cms/package/edit/' + package._id : '/cms/package/create' %>"
+          method="POST"
+        >
           <div class="form-container">
             <div class="post-right-container col-md-12">
+              <!-- Title Input -->
               <div class="form-box">
                 <div class="form-label">
                   <label for="title">Title</label
@@ -55,13 +59,16 @@
                   class="form-control"
                   name="title"
                   id="title"
+                  value="<%= package ? package.title : '' %>"
+                  required
                 />
               </div>
 
+              <!-- Currency and Price Inputs -->
               <div class="d-flex justify-content-between">
                 <div class="form-box col-5">
                   <div class="form-label">
-                    <label for="title">Currency</label
+                    <label for="currency">Currency</label
                     ><span class="important">*</span>
                   </div>
                   <input
@@ -69,12 +76,14 @@
                     class="form-control"
                     name="currency"
                     id="currency"
+                    value="<%= package ? package.currency : '' %>"
+                    required
                   />
                 </div>
 
                 <div class="form-box col-5">
                   <div class="form-label">
-                    <label for="title">Price</label
+                    <label for="price">Price</label
                     ><span class="important">*</span>
                   </div>
                   <input
@@ -82,53 +91,102 @@
                     class="form-control"
                     name="price"
                     id="price"
+                    value="<%= package ? package.price : '' %>"
+                    required
                   />
                 </div>
               </div>
 
+              <!-- Includes Repeater -->
               <div class="includes-repeater">
                 <div class="form-box">
                   <div class="form-label">
-                    <label for="title">Price includes</label
+                    <label for="includes">Price includes</label
                     ><span class="important">*</span>
                   </div>
                 </div>
+
+                <!-- Loop through 'includes' if editing, otherwise show one empty input -->
+                <% if (package && package.includes && package.includes.length >
+                0) { %> <% package.includes.forEach(function(include) { %>
+                <div class="d-flex gap-3">
+                  <div class="form-box col-8">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="includes"
+                      value="<%= include %>"
+                      required
+                    />
+                  </div>
+                  <div class="delete-btn" style="height: 37px; width: 39px">
+                    <i class="fa-solid fa-minus"></i>
+                  </div>
+                </div>
+                <% }) %> <% } else { %>
+                <!-- Empty input for adding new includes -->
+                <div class="d-flex gap-3">
+                  <div class="form-box col-8">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="includes"
+                      required
+                    />
+                  </div>
+                  <div class="delete-btn" style="height: 37px; width: 39px">
+                    <i class="fa-solid fa-minus"></i>
+                  </div>
+                </div>
+                <% } %>
               </div>
 
+              <!-- Add Repeater Button -->
               <div
                 class="btn-container-add"
                 style="display: flex; justify-content: flex-end"
               >
                 <button
+                  type="button"
                   class="full-submit-button form-control"
-                  style="width: 200px; margin-top: 25px; float: right"
+                  style="width: 200px; margin-top: 25px"
                   id="field-repeator-btn"
                 >
-                  <i class="fa-solid fa-plus"></i>Add Repeator
+                  <i class="fa-solid fa-plus"></i>Add Repeater
                 </button>
               </div>
-            </div>
+              <!-- Submit and Cancel Buttons -->
             <div
-              class="btn-container"
-              style="
-                margin-top: 25px;
-                display: flex;
-                justify-content: flex-end;
-                align-items: center;
-                width: 100%;
-                gap: 10px;
-              "
+            class="btn-container"
+            style="
+              margin-top: 25px;
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              width: 100%;
+              gap: 10px;
+            "
+          >
+            <button
+              type="submit"
+              class="submit-button form-control"
+              style="height: 50px"
             >
-              <button class="submit-button form-control" style="height: 50px">
-                Submit
-              </button>
-              <button
-                class="cancel-button form-control"
-                style="height: 50px; display: block"
-              >
-                Cancel
-              </button>
+              <%= package ? 'Update' : 'Submit' %>
+            </button>
+
+            <button
+              type="button"
+              class="cancel-button form-control"
+              style="height: 50px"
+              onclick="window.location.href='/cms/package'"
+            >
+              Cancel
+            </button>
+          </div>
             </div>
+
+            
           </div>
         </form>
       </main>
@@ -139,8 +197,6 @@
     <%- include('../layout/script') %>
 
     <script>
-    
-
       document.addEventListener("DOMContentLoaded", function () {
         let itenaryRepetor = document.querySelector("#field-repeator-btn");
 

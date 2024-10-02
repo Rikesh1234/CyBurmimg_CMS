@@ -9,6 +9,9 @@ const cacheMiddleware = require("../middleware/cacheMiddleware");
 
 const teamController = require('../controllers/TeamController');
 const userController = require('../controllers/UserController');
+const packageController = require('../controllers/PackageController');
+
+
 const postController = require('../controllers/PostController');
 const loginController = require('../controllers/LoginController');
 // const settingController = require('../controllers/GlobalController');
@@ -48,7 +51,6 @@ router.post(
   postController.createPost
 );
 
-
 router.get("/cms/post/edit/:postId", postController.getPostEditPage);
 // Route to handle the edit (update) request
 
@@ -64,7 +66,6 @@ router.post(
 );
 
 router.post("/cms/post/delete/:postId", postController.deletePost);
-
 
 
 
@@ -224,9 +225,14 @@ router.get("/cms/team-type/edit/:userId", teamController.getTeamTypeEditPage);
 router.get('/cms/custom-field',customFieldController.getCustomFieldPage);
 router.get('/cms/custom-field/create',customFieldController.getCustomFieldCreatePage);
 
-//custom field
+//slider
 router.get('/cms/slider',sliderController.getSliderPage);
 router.get('/cms/slider/create',sliderController.getSliderCreatePage);
+
+//package
+router.get('/cms/package',packageController.getPackagePage);
+router.get('/cms/package/create',packageController.getPackageCreatePage);
+
 
 // Static Page - Listing
 router.get("/cms/static-page",cacheMiddleware, staticPageController.getStaticPagePage);
@@ -262,6 +268,21 @@ router.post(
   "/cms/static-page/delete/:pageId",
   staticPageController.deleteStaticPage
 );
+
+//PACKAGE MODULE
+router.get("/cms/package",cacheMiddleware ,packageController.getPackagePage);
+router.get("/cms/package/create", packageController.getPackageCreatePage);
+router.post("/cms/package/create", packageController.createPackage);
+router.get("/cms/package/edit/:packageId", packageController.getPackageEditPage);
+router.post("/cms/package/edit/:packageId", packageController.updatePackage);
+router.post('/cms/package/delete/:id', packageController.deletePackage);
+
+
+
+
+
+
+router.get("/page/:pageSlug", homeController.getStaticPage);
 
 // router.use((req,res)=>{
 //     res.status(404).render('404',{title:'Page Not Found'});

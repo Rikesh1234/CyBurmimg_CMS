@@ -1,0 +1,39 @@
+
+<script src="./goodwill-cleaning/vendor/jquery/jquery.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+  integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+  crossorigin="anonymous"
+></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<!-- Masonry.js -->
+<script src="https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
+
+<!-- LightGallery.js -->
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/lightgallery.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/thumbnail/lg-thumbnail.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/zoom/lg-zoom.umd.min.js"></script>
+
+<script src="./goodwill-cleaning/js/app.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const jacketAd = document.getElementById("jacket-ad");
+    const closeAdButton = document.getElementById("close-ad");
+
+    // Set a timeout to hide the jacket ad after 3 seconds
+    setTimeout(function () {
+      jacketAd.classList.add("hide");
+    }, 3000); // 3 seconds
+
+    // Add event listener to the close button
+    closeAdButton.addEventListener("click", function () {
+      jacketAd.classList.add("hide");
+    });
+  });
+</script>
+</body>
+</html>
