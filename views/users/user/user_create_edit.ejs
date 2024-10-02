@@ -21,7 +21,9 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add User</h1>
+            <h1>
+              <%= user ? 'Edit User' : 'Add User' %>
+            </h1>
             <ul class="breadcrumb">
               <li>
                 <a href="/cms/dashboard">Dashboard</a>
@@ -32,7 +34,10 @@
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active">Add User</a>
+                <!-- <a class="active">Add User</a> -->
+                <h1>
+                  <%= user ? 'Edit User' : 'Add User' %>
+                </h1>
               </li>
             </ul>
           </div>
@@ -41,8 +46,20 @@
             <span class="text">Back</span>
           </a>
         </div>
+        <!-- Display Validation Errors -->
+          <% if (errorMessages && errorMessages.length> 0) { %>
+            <div class="alert alert-danger">
+              <ul>
+                <% errorMessages.forEach(function(error) { %>
+                  <li>
+                    <%= error %>
+                  </li>
+                  <% }); %>
+              </ul>
+            </div>
+            <% } %>
 
-        <form action="/cms/post/create" method="post">
+        <form action="<%= user ? '/cms/user/edit/' + user._id : '/cms/user/create' %>" method="post">
           <div class="form-container">
             <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
@@ -118,20 +135,21 @@
                 <div class="form-label">
                   <label for="Published_date">Published Date</label>
                 </div>
-                <input type="datetime-local" name="date" id="date" class="form-control"
+                <input type="datetime-local" name="published_date" id="date" class="form-control"
                   value="#"
                   placeholder="YYYY/MM/DD HH:MM" />
               </div>
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="Published_date">Featued Image</label>
+                  <label for="Featued_image">Featued Image</label>
                 </div>
                 <div class="upload-container-one">
                   <input
                     id="upload-input-one"
                     type="file"
                     accept="image/*"
+                    name="featued_image"
                     hidden
                   />
                   <div id="image-container-one">

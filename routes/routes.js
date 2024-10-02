@@ -137,7 +137,29 @@ router.get("/cms/user/create", userController.getUserCreatePage);
 router.get("/cms/user/edit/:userId", userController.getUserEditPage);
 router.get("/cms/user", userController.getUserPage);
 router.get("/cms/user/create", userController.getUserCreatePage);
+// Route for handling the user creation
+router.post(
+  "/cms/user/create",
+  upload.fields([
+    { name: "featured_image", maxCount: 1 },
+  ]),
+  userController.createUser
+);
+
+
 router.get("/cms/user/edit/:userId", userController.getUserEditPage);
+//user edit
+router.post(
+  "/cms/user/edit/:userId",
+  upload.fields([
+    { name: "featured_image", maxCount: 1 },
+  ]),
+  userController.updateUser
+);
+
+//user delete
+router.post("/cms/user/delete/:userId", userController.deleteUser);
+
 
 //role
 router.get("/cms/role", userController.getRolePage);
@@ -145,7 +167,23 @@ router.get("/cms/role/create", userController.getRoleCreatePage);
 router.get("/cms/role/edit/:userId", userController.getRoleEditPage);
 router.get("/cms/role", userController.getRolePage);
 router.get("/cms/role/create", userController.getRoleCreatePage);
-router.get("/cms/role/edit/:userId", userController.getRoleEditPage);
+// Route for handling the user creation
+router.post(
+  "/cms/role/create",
+  userController.createRole
+);
+
+router.get("/cms/role/edit/:roleId", userController.getRoleEditPage);
+//role edit
+router.post(
+  "/cms/role/edit/:roleId",
+  userController.updateRole
+);
+
+//role delete
+router.post("/cms/role/delete/:roleId", userController.deleteRole);
+
+
 
 //permission
 router.get("/cms/permission/:roleId", userController.getPermissionPage);
