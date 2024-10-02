@@ -52,17 +52,18 @@
             </a>
           </div>
           <!-- Display Validation Errors -->
-          <% if (errorMessages && errorMessages.length> 0) { %>
-            <div class="alert alert-danger">
-              <ul>
-                <% errorMessages.forEach(function(error) { %>
-                  <li>
-                    <%= error %>
-                  </li>
-                  <% }); %>
-              </ul>
-            </div>
-            <% } %>
+          <% if (errorMessages && errorMessages.length > 0) { %>
+            <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Validation Error',
+                  html: '<ul><% errorMessages.forEach(function(error) { %><li><%= error %></li><% }); %></ul>',
+                  confirmButtonText: 'Okay'
+                });
+              });
+            </script>
+          <% } %>
               <form action="<%= post ? '/cms/post/edit/' + post._id : '/cms/post/create' %>" method="POST"
                 enctype="multipart/form-data">
 

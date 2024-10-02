@@ -39,7 +39,6 @@ router.get('/contact', (req, res) => {
 router.get('/price', (req, res) => {
   res.render('theme/goodwill-cleaning/pages/pricePage'); 
 });
-
 router.get("/price", homeController.getPackage);
 
 // --------------FRONTEND ROUTES END---------------------------------
