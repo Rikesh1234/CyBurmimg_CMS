@@ -67,7 +67,7 @@
                   <label for="Role">Role</label><span class="important">*</span>
                 </div>
                 <input type="text" class="form-control" name="name" id="role" 
-                value="<%= role ? role.name : (formData.name || '') %>" />
+                value="<%= role ? role.name : (typeof formData !== 'undefined' && formData.nane || '') %>" />
               </div>
 
               <div class="form-box">
