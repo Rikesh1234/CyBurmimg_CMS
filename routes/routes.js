@@ -26,8 +26,17 @@ const sliderController = require('../controllers/SliderController');
 
 
 
-
+// --------------FRONTEND ROUTES
 router.get("/", homeController.getPage);
+router.get("/page/:slug", homeController.getStaticPage);
+router.get("/category/:slug", homeController.getCategoryListingPage);
+router.get("/post/:postId", homeController.getPostDetailPage);
+
+
+
+// --------------FRONTEND ROUTES END
+
+
 
 // login
 router.get("/admin/login", loginController.getLoginPage);
@@ -311,6 +320,11 @@ router.get("/page/:pageSlug", homeController.getStaticPage);
 // router.use((req,res)=>{
 //     res.status(404).render('404',{title:'Page Not Found'});
 // });
+
+// ----------------------------------------------------------------------------------------------
+// FRONTEND ROUTES
+
+
 
 module.exports = router;
 module.exports = router;
