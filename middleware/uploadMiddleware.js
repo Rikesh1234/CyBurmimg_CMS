@@ -48,6 +48,10 @@ const storage = multer.diskStorage({
       uploadPath = "./public/uploads/teams/";
     }
 
+    else if (file.fieldname === "user_image") {
+      uploadPath = "./public/uploads/users/";
+    }
+
     // Ensure the directory exists
     ensureDirectoryExistence(uploadPath);
 

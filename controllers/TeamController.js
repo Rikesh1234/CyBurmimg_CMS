@@ -36,6 +36,8 @@ exports.getTeamCreatePage = (req, res) => {
       errorMessages: [],
       formConfig:validationConfig.team
 
+      formConfig:validationConfig.team
+
   });
 };
 
