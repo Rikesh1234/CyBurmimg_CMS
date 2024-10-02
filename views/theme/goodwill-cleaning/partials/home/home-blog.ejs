@@ -5,10 +5,10 @@
           <div class="title" data-aos="fade-up">Latest News</div>
           <div class="row">
             <% let blogCount = 0; %>
-            <% posts.forEach(post => { %> <% if (post.category.name === 'blog' && blogCount < 3) {
+            <% posts.forEach(post => { %> <% if (post.category[0].slug === 'blog' && blogCount < 3) {
               %>
             <div class="blog-card col-12 col-md-4" data-aos="fade-up">
-              <a href="detail.html">
+              <a href="/post/<%= post._id %>">
                 <div class="image-container">
                   <img class="w-100" src="<%= post.featured_image ? post.featured_image : './goodwill-cleaning/images/default.png' %>" alt="" />
                 </div>
@@ -16,7 +16,7 @@
                   <div class="heading"><%= post.title %></div>
                   <span class="date-line"><%= post.createdAt.toDateString() %></span>
                   <p class="dark-gray-text">
-                    <%- post.content.substring(0, 25) %>
+                    <%- post.content %>
                   </p>
                 </div>
               </a>

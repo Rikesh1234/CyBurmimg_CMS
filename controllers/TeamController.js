@@ -16,6 +16,7 @@ const getPostValidationRules = () => {
 
 //view member page
 exports.getTeamPage=(req,res)=>{
+    
     res.render('teams/team/team_listing',{title:'Team Page'});
 }
 
