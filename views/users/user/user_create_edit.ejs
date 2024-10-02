@@ -67,7 +67,8 @@
                   <label for="name">Full Name</label
                   ><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="name" />
+                <input type="text" class="form-control" name="name" 
+                value="<%= user ? user.name : (formData.name || '') %>" />
               </div>
 
               <div class="form-box">
@@ -85,7 +86,8 @@
                   <label for="email">Email</label
                   ><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="email" />
+                <input type="text" class="form-control" name="email" 
+                value="<%= user ? user.email : (formData.email || '') %>" />
               </div>
 
               <div class="form-box">
@@ -126,6 +128,8 @@
                       class="form-check-input"
                       type="checkbox"
                       id="status"
+                      name="published"
+                      <%= user && user.published ? 'checked' : '' %>
                     />
                   </div>
                 </div>
@@ -136,25 +140,25 @@
                   <label for="Published_date">Published Date</label>
                 </div>
                 <input type="datetime-local" name="published_date" id="date" class="form-control"
-                  value="#"
+                  value="<%= user && user.date ? new Date(user.published_date).toISOString().slice(0, 16) : '' %>"
                   placeholder="YYYY/MM/DD HH:MM" />
               </div>
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="Featued_image">Featued Image</label>
+                  <label for="Featured_image">Featured Image</label>
                 </div>
                 <div class="upload-container-one">
                   <input
                     id="upload-input-one"
                     type="file"
                     accept="image/*"
-                    name="featued_image"
+                    name="featured_image"
                     hidden
                   />
                   <div id="image-container-one">
                     <img
-                      src="/images/upload.png"
+                      src="<%= user ? user.featured_image : '/images/upload.png' %>"
                       class="uploaded-image"
                     />
                   </div>

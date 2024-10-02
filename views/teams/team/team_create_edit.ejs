@@ -173,7 +173,7 @@
                         type="checkbox"
                         id="status"
                         name="published"
-                        <%= team && team.status ? 'checked' : '' %>
+                        <%= team && team.published ? 'checked' : '' %>
                       />
                     </div>
                   </div>
@@ -188,7 +188,7 @@
                     name="published_date"
                     id="date"
                     class="form-control"
-                    value="<%= team && team.date ? new Date(team.date).toISOString().slice(0, 16) : '' %>"
+                    value="<%= team && team.date ? new Date(team.published_date).toISOString().slice(0, 16) : '' %>"
                     placeholder="YYYY/MM/HH H:M:S"
                   />
                 </div>
