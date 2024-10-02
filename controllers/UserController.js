@@ -1,10 +1,19 @@
 const redis = require("../config/redis");
 const Role = require("../models/Role");
-const User = require("../models/User");
+const User = require("../models/user");
 
 //view user page
-exports.getUserPage=(req,res)=>{
-    res.render('users/user/user_listing',{title:'User Page'});
+exports.getUserPage = async (req,res)=>{
+    try{
+      // Fetch all users from the database
+      const users= await User.find();
+
+      //Render the view and pass the users to the EJS template
+      res.render('users/user/user_listing',{title:'User Page', users });
+    }catch(err){
+      console.error(err);
+      res.status(500).send("Server Error");
+    }
 }
 
 //view user Create page
@@ -18,8 +27,14 @@ exports.getUserEditPage=(req,res)=>{
 }
 
 //view role page
-exports.getRolePage=(req,res)=>{
-    res.render('users/role/role_listing',{title:'Role Page'});
+exports.getRolePage= async (req,res)=>{
+    {
+      // Fetch all roles from the database
+      const roles= await Role.find();
+
+      //Render the view and pass the users to the EJS template
+      res.render('users/role/role_listing',{title:'Role Page'});
+    }
 }
 
 //view role Create page
