@@ -151,6 +151,7 @@ exports.updateSlider = async (req, res) => {
       ? `/uploads/sliders/${req.files["slider_image"][0].filename}`
       : req.body.existing_featured_image;
 
+    
     // Update the slider
     const updatedSlider = await Slider.findByIdAndUpdate(
       sliderId,

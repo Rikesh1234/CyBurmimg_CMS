@@ -42,15 +42,25 @@
           </a>
         </div>
 
-        <form action="#">
+        <form action="/cms/post/create" method="post">
           <div class="form-container">
             <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
                 <div class="form-label">
-                  <label for="title">Full Name</label
+                  <label for="name">Full Name</label
                   ><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="title" />
+                <input type="text" class="form-control" name="name" />
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="role">Role</label>
+                </div>
+                <select name="role" class="select-tags form-control" multiple="multiple">
+                  <option value="Role A">Tag A</option>
+                  <option value="Role B">Tag B</option>
+                </select>
               </div>
 
               <div class="form-box">
@@ -82,10 +92,10 @@
  
               <div class="form-box">
                 <div class="form-label">
-                  <label for="re-password">Rewrite Password</label
+                  <label for="confirm">Rewrite Password</label
                   ><span class="important">*</span>
                 </div>
-                <input type="password" class="form-control" name="re-password" />
+                <input type="password" class="form-control" name="confirm" />
               </div>
             </div>
 
@@ -104,6 +114,14 @@
                 </div>
               </div>
 
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="Published_date">Published Date</label>
+                </div>
+                <input type="datetime-local" name="date" id="date" class="form-control"
+                  value="#"
+                  placeholder="YYYY/MM/DD HH:MM" />
+              </div>
 
               <div class="form-box">
                 <div class="form-label">
@@ -149,6 +167,11 @@
 
     <%- include('../../layout/script') %>
     <script>
+
+      $(".select-tags").select2({
+            placeholder: "Tags",
+          });
+
      const passwordBox = document.querySelector('.password');
      const upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
      const lowerCase = "abcdefghijklmnopqrstuvwxyz"

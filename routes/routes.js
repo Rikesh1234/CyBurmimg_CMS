@@ -48,6 +48,7 @@ router.get("/price", homeController.getPackage);
 
 // login
 router.get("/admin/login", loginController.getLoginPage);
+router.post("/admin/login", loginController.getAuth);
 router.get("/logout", loginController.getLogout);
 
 //dashboard
@@ -75,8 +76,6 @@ router.post(
   upload.fields([
     { name: "featured_image", maxCount: 1 },
     { name: "gallery_images", maxCount: 10 },
-    { name: "featured_image", maxCount: 1 },
-    { name: "gallery_images", maxCount: 10 }, 
   ]),
   postController.updatePost
 );
@@ -150,8 +149,7 @@ router.get("/cms/role/create", userController.getRoleCreatePage);
 router.get("/cms/role/edit/:userId", userController.getRoleEditPage);
 
 //permission
-router.get("/cms/permission", userController.getPermissionPage);
-router.get("/cms/permission", userController.getPermissionPage);
+router.get("/cms/permission/:roleId", userController.getPermissionPage);
 
 //staticpage
 router.get("/cms/static-page", staticPageController.getStaticPagePage);
