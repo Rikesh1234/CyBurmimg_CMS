@@ -10,7 +10,6 @@ module.exports = async (req, res, next) => {
     const pages = await Page.find();
     const packages = await Package.find();
 
-    console.log(packages);
     
     
     // Replace with your actual contact details fetching logic

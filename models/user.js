@@ -59,6 +59,5 @@ userSchema.methods.comparePassword = function (enteredPassword) {
     return bcrypt.compare(enteredPassword, this.password);
 };
 
-// Create the model from the schema
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+// Conditionally export the model to avoid OverwriteModelError
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);

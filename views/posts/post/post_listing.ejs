@@ -97,74 +97,74 @@
 
     <%- include('../../layout/script') %>
 
-    <script>
+      <script>
 
-      document.addEventListener('DOMContentLoaded', () => {
-        // Function to strip HTML tags from a string
-        function stripHTMLTags(str) {
-          let div = document.createElement('div');
-          div.innerHTML = str;
-          return div.textContent || div.innerText || '';
-        }
-      
-        // Function to truncate the text with an ellipsis
-        function truncateText(str, length) {
-          return str.length > length ? str.substring(0, length) + '...' : str;
-        }
-      
-        // Select all post content elements and apply truncation
-        document.querySelectorAll('.post-content').forEach(element => {
-          const rawContent = element.innerHTML;
-          const plainTextContent = stripHTMLTags(rawContent);
-          const truncatedContent = truncateText(plainTextContent, 100); // Adjust the length as needed
-          element.innerText = truncatedContent;
-        });
-      
-        // Handle delete button functionality
-        const deleteButtons = document.querySelectorAll('.delete-post');
-        deleteButtons.forEach(button => {
-          button.addEventListener('click', function (event) {
-            event.preventDefault(); // Prevent default link behavior
-            const postId = this.getAttribute('data-id'); // Get post ID
-            // Trigger SweetAlert2 modal
-            Swal.fire({
-              title: 'Are you sure?',
-              text: 'Do you really want to delete this post? This action cannot be undone.',
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#d33',
-              cancelButtonColor: '#3085d6',
-              confirmButtonText: 'Delete',
-              cancelButtonText: 'Cancel'
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // If confirmed, send POST request to delete the post
-                fetch(`/cms/post/delete/${postId}`, {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  }
-                })
-                .then(response => {
-                  if (response.ok) {
-                    // Show success message and reload the page
-                    Swal.fire('Deleted!', 'Your post has been deleted.', 'success').then(() => {
-                      location.reload(); // Reload the page after successful deletion
-                    });
-                  } else {
+        document.addEventListener('DOMContentLoaded', () => {
+          // Function to strip HTML tags from a string
+          function stripHTMLTags(str) {
+            let div = document.createElement('div');
+            div.innerHTML = str;
+            return div.textContent || div.innerText || '';
+          }
+        
+          // Function to truncate the text with an ellipsis
+          function truncateText(str, length) {
+            return str.length > length ? str.substring(0, length) + '...' : str;
+          }
+        
+          // Select all post content elements and apply truncation
+          document.querySelectorAll('.post-content').forEach(element => {
+            const rawContent = element.innerHTML;
+            const plainTextContent = stripHTMLTags(rawContent);
+            const truncatedContent = truncateText(plainTextContent, 100); // Adjust the length as needed
+            element.innerText = truncatedContent;
+          });
+        
+          // Handle delete button functionality
+          const deleteButtons = document.querySelectorAll('.delete-post');
+          deleteButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+              event.preventDefault(); // Prevent default link behavior
+              const postId = this.getAttribute('data-id'); // Get post ID
+              // Trigger SweetAlert2 modal
+              Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you really want to delete this post? This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Delete',
+                cancelButtonText: 'Cancel'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // If confirmed, send POST request to delete the post
+                  fetch(`/cms/post/delete/${postId}`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    }
+                  })
+                  .then(response => {
+                    if (response.ok) {
+                      // Show success message and reload the page
+                      Swal.fire('Deleted!', 'Your post has been deleted.', 'success').then(() => {
+                        location.reload(); // Reload the page after successful deletion
+                      });
+                    } else {
+                      Swal.fire('Error!', 'There was an issue deleting the post.', 'error');
+                    }
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
                     Swal.fire('Error!', 'There was an issue deleting the post.', 'error');
-                  }
-                })
-                .catch(error => {
-                  console.error('Error:', error);
-                  Swal.fire('Error!', 'There was an issue deleting the post.', 'error');
-                });
-              }
+                  });
+                }
+              });
             });
           });
         });
-      });
-      
-    </script>
+        
+      </script>
   </body>
 </html>

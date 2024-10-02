@@ -1,41 +1,65 @@
 const redis = require("../config/redis");
 const Testominal = require("../models/Testominal");
 
-
 //view testomonial page
-exports.getTestomonialPage=(req,res)=>{
-    res.render('testomonial/testomonial_listing',{title:'Testomonial Page'});
-}
+exports.getTestomonialPage = async (req, res) => {
+  try {
+    // Fetch all testimonials from the database
+    const testimonials = await Testominal.find();
+    
+    res.render("testomonial/testomonial_listing", {
+      title: "Testimonial Page",
+      testimonials,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
 
-//view testomonial Create page
-exports.getTestomonialCreatePage=(req,res)=>{
-    res.render('testomonial/testomonial_create_edit',{title:'Testomonial Create Page'});
-}
+// View testimonial Create page
+exports.getTestomonialCreatePage = (req, res) => {
+  res.render("testomonial/testomonial_create_edit", {
+    title: "Testimonial Create Page",
+    testominal: null,
+  });
+};
 
 //view testomonial Edit page
-exports.getTestomonialEditPage=(req,res)=>{
-    res.render('testomonial/testomonial_create_edit',{title:'Testomonial Edit Page'});
-}
+// Fetch and render the edit page for a specific testimonial
+exports.getTestomonialEditPage = async (req, res) => {
+  try {
+    const testomonialId = req.params.userId; // Assuming `userId` is the correct parameter name
 
+    // Fetch the testimonial from the database using its ID
+    const testominal = await Testominal.findById(testomonialId);
+
+    if (!testominal) {
+      return res.status(404).send("Testimonial not found");
+    }
+
+    // Render the edit page and pass the testimonial data to the template
+    res.render("testomonial/testomonial_create_edit", {
+      title: "Edit Testimonial",
+      testominal, // Pass the testominal object here
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
 
 //cruds for testominal
 exports.createTestominal = async (req, res) => {
   try {
     // Extract form data from the request body
-    const {
-      name,
-      designation,
-      content,
-      published,
-      published_date,
-    } = req.body;
+    const { name, designation, content, published, published_date } = req.body;
 
     // Handle featured image upload
-    const featured_image = req.files["featured_image"]
-      ? `/uploads/testominal/${req.files["featured_image"][0].filename}`
+    const featured_image = req.files["testimonials_image"]
+      ? `/uploads/testominal/${req.files["testimonials_image"][0].filename}`
       : "/images/default.jpg";
 
-    
     // Create a new testominal object
     const newTestominal = new Testominal({
       name,
@@ -74,7 +98,9 @@ exports.createTestominal = async (req, res) => {
 
 exports.deleteTestominal = async (req, res) => {
   try {
-    const testominal = await Testominal.findByIdAndDelete(req.params.testomonialId);
+    const testominal = await Testominal.findByIdAndDelete(
+      req.params.testomonialId
+    );
 
     if (!testominal) {
       return res.status(404).send("Testominal not found");
@@ -93,20 +119,15 @@ exports.deleteTestominal = async (req, res) => {
 // Handle updating a testominal
 exports.updateTestominal = async (req, res) => {
   const testimonialId = req.params.testomonialId;
-  const {
-    name,
-    designation,
-    content,
-    published,
-    published_date,
-  } = req.body;
+  const { name, designation, content, published, published_date } = req.body;
 
   // Array to collect validation errors
   const errorMessages = [];
 
   // Perform manual validation on required fields
   if (!name || name.trim() === "") errorMessages.push("Name is required");
-  if (!designation || designation.trim() === "") errorMessages.push("Designation is required");
+  if (!designation || designation.trim() === "")
+    errorMessages.push("Designation is required");
   if (!content || content.trim() === "")
     errorMessages.push("Content is required");
 
@@ -130,10 +151,9 @@ exports.updateTestominal = async (req, res) => {
 
   try {
     // Handle featured image update if provided
-    const featured_image = req.files["featured_image"]
-      ? `/uploads/testominal/${req.files["featured_image"][0].filename}`
+    const featured_image = req.files["testimonials_image"]
+      ? `/uploads/testominal/${req.files["testimonials_image"][0].filename}`
       : req.body.existing_featured_image;
-
 
     // Update the testominal
     const updatedTestominal = await Testominal.findByIdAndUpdate(

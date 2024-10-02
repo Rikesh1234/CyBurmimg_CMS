@@ -19,7 +19,7 @@ exports.getPage = async (req, res) => {  // Mark the function as async
 
         const teams = await Team.find().limit(3);
 
-        const testomonial = await Testominal.find();
+        const testomonials = await Testominal.find();
 
         const sliders = await Slider.find({ published: true });
 
@@ -29,7 +29,7 @@ exports.getPage = async (req, res) => {  // Mark the function as async
         }
 
         // Pass the posts data to the template along with the title
-        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonial,sliders });
+        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonials,sliders });
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
