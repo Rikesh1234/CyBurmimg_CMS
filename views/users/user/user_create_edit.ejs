@@ -42,24 +42,24 @@
           </a>
         </div>
 
-        <form action="#">
+        <form action="/cms/post/create" method="post">
           <div class="form-container">
             <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
                 <div class="form-label">
-                  <label for="title">Full Name</label
+                  <label for="name">Full Name</label
                   ><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="title" />
+                <input type="text" class="form-control" name="name" />
               </div>
 
               <div class="form-box">
                 <div class="form-label">
-                  <label for="tags">Tags</label>
+                  <label for="role">Role</label>
                 </div>
-                <select name="tags" class="select-tags form-control" multiple="multiple">
-                  <option value="Tag A">Tag A</option>
-                  <option value="Tag B">Tag B</option>
+                <select name="role" class="select-tags form-control" multiple="multiple">
+                  <option value="Role A">Tag A</option>
+                  <option value="Role B">Tag B</option>
                 </select>
               </div>
 
@@ -92,10 +92,10 @@
  
               <div class="form-box">
                 <div class="form-label">
-                  <label for="re-password">Rewrite Password</label
+                  <label for="confirm">Rewrite Password</label
                   ><span class="important">*</span>
                 </div>
-                <input type="password" class="form-control" name="re-password" />
+                <input type="password" class="form-control" name="confirm" />
               </div>
             </div>
 
