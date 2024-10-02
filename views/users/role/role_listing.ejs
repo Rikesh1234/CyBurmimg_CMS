@@ -54,6 +54,8 @@
 
         <div class="row">
           <div class="card-container">
+
+            <% roles.forEach(role => { %>
             <div class="col-md-6 col-lg-4">
               <div
                 class="card author author-img-one position-relative overflow-hidden hover-img"
@@ -68,14 +70,14 @@
                       font-size: 17px;
                       font-weight: 500;
                     "
-                    >Role Name</span
+                    ><%= role.name %></span
                   >
                 </div>
                 <div class="card-body p-4">
                   <div class="category-published">
                     <div class="d-flex align-items-center gap-4 icon-container">
                       <div class="d-flex align-items-center gap-2">
-                        <a href="/cms/role/edit/1" class="text-black"
+                        <a href="/cms/role/edit/<%= role._id %>" class="text-black"
                           ><i class="fas fa-edit"></i
                         ></a>
                       </div>
@@ -88,7 +90,7 @@
                     <label class="wraper" for="something">
                       <span class="label-text">Published</span>
                       <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
+                        <input type="checkbox" checked id="<%= role._id %>" />
                         <div class="switch"></div>
                       </div>
                     </label>
@@ -102,7 +104,7 @@
                       margin-top: 20px;
                     "
                   >
-                    <a href="/cms/permission" style="color: black;">
+                    <a href="/cms/Permission/<%= role._id %>" style="color: black;">
                       <div
                         class="d-flex align-items-center ms-auto default-btn"
                       >
@@ -113,286 +115,7 @@
                 </div>
               </div>
             </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card author author-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative" style="top: 28px; left: 15px">
-                  <span
-                    class="card-author-name"
-                    style="
-                      position: relative;
-                      top: -6px;
-                      left: 10px;
-                      font-size: 17px;
-                      font-weight: 500;
-                    "
-                    >Role Name</span
-                  >
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <div class="d-flex align-items-center gap-4 icon-container">
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-edit"></i
-                        ></a>
-                      </div>
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-trash-alt"></i
-                        ></a>
-                      </div>
-                    </div>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div
-                    class="d-flex align-items-center gap-4 icon-container"
-                    style="
-                      display: flex;
-                      justify-content: flex-end;
-                      margin-top: 20px;
-                    "
-                  >
-                    <div class="d-flex align-items-center ms-auto default-btn">
-                      Permission
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card author author-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative" style="top: 28px; left: 15px">
-                  <span
-                    class="card-author-name"
-                    style="
-                      position: relative;
-                      top: -6px;
-                      left: 10px;
-                      font-size: 17px;
-                      font-weight: 500;
-                    "
-                    >Role Name</span
-                  >
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <div class="d-flex align-items-center gap-4 icon-container">
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-edit"></i
-                        ></a>
-                      </div>
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-trash-alt"></i
-                        ></a>
-                      </div>
-                    </div>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div
-                    class="d-flex align-items-center gap-4 icon-container"
-                    style="
-                      display: flex;
-                      justify-content: flex-end;
-                      margin-top: 20px;
-                    "
-                  >
-                    <div class="d-flex align-items-center ms-auto default-btn">
-                      Permission
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card author author-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative" style="top: 28px; left: 15px">
-                  <span
-                    class="card-author-name"
-                    style="
-                      position: relative;
-                      top: -6px;
-                      left: 10px;
-                      font-size: 17px;
-                      font-weight: 500;
-                    "
-                    >Role Name</span
-                  >
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <div class="d-flex align-items-center gap-4 icon-container">
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-edit"></i
-                        ></a>
-                      </div>
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-trash-alt"></i
-                        ></a>
-                      </div>
-                    </div>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div
-                    class="d-flex align-items-center gap-4 icon-container"
-                    style="
-                      display: flex;
-                      justify-content: flex-end;
-                      margin-top: 20px;
-                    "
-                  >
-                    <div class="d-flex align-items-center ms-auto default-btn">
-                      Permission
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card author author-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative" style="top: 28px; left: 15px">
-                  <span
-                    class="card-author-name"
-                    style="
-                      position: relative;
-                      top: -6px;
-                      left: 10px;
-                      font-size: 17px;
-                      font-weight: 500;
-                    "
-                    >Role Name</span
-                  >
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <div class="d-flex align-items-center gap-4 icon-container">
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-edit"></i
-                        ></a>
-                      </div>
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-trash-alt"></i
-                        ></a>
-                      </div>
-                    </div>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div
-                    class="d-flex align-items-center gap-4 icon-container"
-                    style="
-                      display: flex;
-                      justify-content: flex-end;
-                      margin-top: 20px;
-                    "
-                  >
-                    <div class="d-flex align-items-center ms-auto default-btn">
-                      Permission
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card author author-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative" style="top: 28px; left: 15px">
-                  <span
-                    class="card-author-name"
-                    style="
-                      position: relative;
-                      top: -6px;
-                      left: 10px;
-                      font-size: 17px;
-                      font-weight: 500;
-                    "
-                    >Role Name</span
-                  >
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <div class="d-flex align-items-center gap-4 icon-container">
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-edit"></i
-                        ></a>
-                      </div>
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-trash-alt"></i
-                        ></a>
-                      </div>
-                    </div>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div
-                    class="d-flex align-items-center gap-4 icon-container"
-                    style="
-                      display: flex;
-                      justify-content: flex-end;
-                      margin-top: 20px;
-                    "
-                  >
-                    <div class="d-flex align-items-center ms-auto default-btn">
-                      Permission
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <% }) %>
           </div>
         </div>
         <div class="pagination-container">

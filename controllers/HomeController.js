@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const Team = require("../models/Team");
 const Post = require("../models/Post");
+const Package = require('../models/Package');
 const Category = require("../models/Category");
 const StaticPage = require('../models/StaticPage');
 const Testominal = require("../models/Testominal");
@@ -146,3 +147,25 @@ exports.getPostDetailPage = async (req, res) => {
   }
 };
 // ---------POST DETAIL PAGE END------------------------------------------------------
+
+
+// ---------PRICE------------------------------------------------------
+
+exports.getPackage = async (req, res) => {
+  try {
+    // Fetch packages from the database
+    const packages = await Package.find();
+
+    
+
+    // Render the EJS view, passing packages data
+    res.render('theme/goodwill-cleaning/pages/pricePage', {
+      title: 'Package Prices',
+      packages: packages,
+    });
+  } catch (error) {
+    console.error('Error fetching packages:', error);
+    res.status(500).send('Server Error');
+  }
+};
+// ---------END PRICE------------------------------------------------------

@@ -1,0 +1,84 @@
+<!-- Meta tags and title -->
+<%- include('../partials/header/meta_tags') %>
+<title>Goodwill Cleaning</title>
+
+<!-- Include stylesheets and links -->
+<%- include('../partials/header/links') %>
+
+<!-- Desktop Navigation -->
+<%- include('../partials/header/desktop_navigation') %>
+
+<!-- Mobile Navigation -->
+<%- include('../partials/header/mobile_navigation') %>
+
+<div class="inner-list-hero my-3">
+    <div class="list-overlay">
+      <div class="container">
+        <div class="list-contains">
+          <div class="title" data-aos="fade-up">Package</div>
+          <ul class="breadcrumb" data-aos="fade-up">
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <li><i class="bx bx-chevron-right"></i></li>
+            <li>
+              <a class="active">Package</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Package Section -->
+<div class="package-section">
+    <div class="container">
+      <div class="tagline" data-aos="fade-up">Price & Plans</div>
+      <div class="title" data-aos="fade-up">Choose Your Perfect Plans</div>
+      <div class="row gap-6">
+        <% if (packages && packages.length > 0) { %>
+          <% packages.forEach(function(package) { %>
+            <div class="package-card col-12 col-md-2 pb-4 mb-3" data-aos="fade-up">
+              <div class="icon-container">
+                <!-- Replace with the correct image path if applicable -->
+                <img class="w-100" src='/images/small_logo.png' alt="<%= package.title %>" />
+              </div>
+              <div class="package-info">
+                <div class="heading"><%= package.title %></div>
+                <div class="price"><%= package.currency %> <%= package.price %></div>
+                <ul>
+                  <!-- Iterate over 'includes' instead of 'features' -->
+                  <% if (Array.isArray(package.includes)) { %>
+                    <% package.includes.forEach(function(item) { %>
+                      <li><i class="fa-solid fa-check"></i> <%= item %></li>
+                    <% }) %>
+                  <% } else { %>
+                    <li>No includes available.</li>
+                  <% } %>
+                </ul>
+                <a href="#" class="btn btn-primary btn-round mr-md-4 py-2 px-4">
+                  Get Started <span class="ion-ios-arrow-forward"></span>
+                </a>
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p>No packages available.</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+    <div class="pagination" data-aos="fade-up">
+      <a href="#">&laquo;</a>
+      <a href="#" class="active">1</a>
+      <a href="#">2</a>
+      <a href="#">3</a>
+      <a href="#">4</a>
+      <a href="#">5</a>
+      <a href="#">&raquo;</a>
+    </div>
+
+<!-- Include Footer -->
+<%- include('../partials/footer/footer') %>
+
+<!-- Include Scripts -->
+<%- include('../partials/footer/scripts') %>

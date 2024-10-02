@@ -6,7 +6,8 @@
             We have done many latest cleaning project
           </div>
           <div class="row">
-            <% posts.forEach(post => { %> <% if (post.category.name === 'project') {
+            <% posts.forEach(post => { %> 
+              <% if (post.category[0].slug === 'project') {
               %>
             <div class="project-card col-12 col-md-3" data-aos="fade-up">
               <div class="project-image-container">

@@ -6,6 +6,7 @@ const User = require("../models/user");
 exports.getUserPage = async (req,res)=>{
     try{
       // Fetch all users from the database
+      
       const users= await User.find();
 
       //Render the view and pass the users to the EJS template

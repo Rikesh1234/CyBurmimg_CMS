@@ -32,6 +32,16 @@ router.get("/page/:slug", homeController.getStaticPage);
 router.get("/category/:slug", homeController.getCategoryListingPage);
 router.get("/post/:postId", homeController.getPostDetailPage);
 
+router.get('/contact', (req, res) => {
+  res.render('theme/goodwill-cleaning/pages/contactPage'); 
+});
+
+router.get('/price', (req, res) => {
+  res.render('theme/goodwill-cleaning/pages/pricePage'); 
+});
+
+router.get("/price", homeController.getPackage);
+
 // --------------FRONTEND ROUTES END
 
 
@@ -45,7 +55,6 @@ router.get("/logout", loginController.getLogout);
 router.get("/cms/dashboard", dashboardController.getPage);
 
 //post
-// router.get('/cms/post',postController.getPostPage);
 router.get("/cms/post", cacheMiddleware, postController.getPostPage);
 
 router.get("/cms/post/create", postController.getPostCreatePage);
@@ -178,8 +187,7 @@ router.post("/cms/role/delete/:roleId", userController.deleteRole);
 
 
 //permission
-router.get("/cms/permission", userController.getPermissionPage);
-router.get("/cms/permission", userController.getPermissionPage);
+router.get("/cms/permission/:roleId", userController.getPermissionPage);
 
 //staticpage
 router.get("/cms/static-page", staticPageController.getStaticPagePage);

@@ -917,6 +917,9 @@ footer li {
 .inner-hero{
   height: 85vh;
   position: relative;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-attachment: fixed;
 }
 
 .inner-hero .overlay{
@@ -925,6 +928,7 @@ footer li {
   height: 100%;
   background-attachment: fixed;
   background-size: cover;
+  
 }
 
 .inner-hero .overlay .page-contains{
