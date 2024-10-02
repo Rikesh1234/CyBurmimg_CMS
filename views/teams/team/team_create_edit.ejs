@@ -186,32 +186,36 @@
               </div>
             </div>
 
-            <div class="post-left-container col-md-4 col-sm-12">
-              <div class="form-box" style="margin-bottom: 15px">
-                <div class="form-label">
-                  <label for="Published">Published</label>
-                  <div class="form-check form-switch" style="margin-top: 10px">
-                    <label class="form-check-label" for="Status">Status</label>
-                    <input class="form-check-input" type="checkbox" id="status"
-                    name="published" <%= team && team.status ? 'checked' : '' %>
-                    />
+              <div class="post-left-container col-md-4 col-sm-12">
+                <div class="form-box" style="margin-bottom: 15px">
+                  <div class="form-label">
+                    <label for="Published">Published</label>
+                    <div class="form-check form-switch" style="margin-top: 10px">
+                      <label class="form-check-label" for="Status">Status</label>
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="status"
+                        name="published"
+                        <%= team && team.published ? 'checked' : '' %>
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="Published_date">Published Date</label>
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="Published_date">Published Date</label>
+                  </div>
+                  <input
+                    type="datetime-local"
+                    name="published_date"
+                    id="date"
+                    class="form-control"
+                    value="<%= team && team.date ? new Date(team.published_date).toISOString().slice(0, 16) : '' %>"
+                    placeholder="YYYY/MM/HH H:M:S"
+                  />
                 </div>
-                <input
-                  type="datetime-local"
-                  name="published_date"
-                  id="date"
-                  class="form-control"
-                  value="<%= team && team.date ? new Date(team.date).toISOString().slice(0, 16) : '' %>"
-                  placeholder="YYYY/MM/HH H:M:S"
-                />
-              </div>
 
               <div class="form-box">
                 <div class="form-label">
