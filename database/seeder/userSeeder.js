@@ -2,10 +2,13 @@ const mongoose = require('mongoose');
 const User = require('../../models/user');
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/inferno_cms', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+// mongoose.connect('mongodb://localhost:27017/inferno_cms', {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+// });
+uri ='mongodb://localhost:27017/inferno_cms'
+mongoose.connect(uri);
+
 
 // Insert a new user
 async function createDummyUser() {

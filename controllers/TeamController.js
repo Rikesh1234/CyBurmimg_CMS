@@ -1,5 +1,17 @@
 const Team = require("../models/Team");
 const redis = require("../config/redis");
+const validationConfig = require('../config/validationConfig.json');
+
+
+const getPostValidationRules = () => {
+  const rules = [];
+
+
+  if (validationConfig.team.teamType) {
+    rules.push(body('teamType').notEmpty().withMessage('Team type is required'));
+  }
+  return rules;
+};
 
 
 //view member page
@@ -49,12 +61,12 @@ exports.getTeamTypePage=(req,res)=>{
 
 //view member-type Create page
 exports.getTeamTypeCreatePage=(req,res)=>{
-    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Create Page'});
+    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Create Page',formConfig: validationConfig.team});
 }
 
 //view member-type Edit page
 exports.getTeamTypeEditPage=(req,res)=>{
-    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page'});
+    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page',formConfig: validationConfig.team});
 }
 
 
