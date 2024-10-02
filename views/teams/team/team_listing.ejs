@@ -150,26 +150,6 @@
       <script>
 
         document.addEventListener('DOMContentLoaded', () => {
-          // Function to strip HTML tags from a string
-          function stripHTMLTags(str) {
-            let div = document.createElement('div');
-            div.innerHTML = str;
-            return div.textContent || div.innerText || '';
-          }
-        
-          // Function to truncate the text with an ellipsis
-          function truncateText(str, length) {
-            return str.length > length ? str.substring(0, length) + '...' : str;
-          }
-        
-          // Select all post content elements and apply truncation
-          document.querySelectorAll('.post-content').forEach(element => {
-            const rawContent = element.innerHTML;
-            const plainTextContent = stripHTMLTags(rawContent);
-            const truncatedContent = truncateText(plainTextContent, 100); // Adjust the length as needed
-            element.innerText = truncatedContent;
-          });
-        
           // Handle delete button functionality
           const deleteButtons = document.querySelectorAll('.delete-team');
           deleteButtons.forEach(button => {
