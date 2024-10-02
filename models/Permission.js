@@ -1,11 +1,13 @@
 // models/Permission.js
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-// Permission Schema
-const permissionSchema = new mongoose.Schema({
-  type: { type: String, required:true},
-  model_id: { type: mongoose.Schema.Types.ObjectId, ref:'Model', required:true},
-  createdAt: { type: Date, default: Date.now}
+const permissionSchema = new Schema({
+    type: { type: String, required: true, enum: ['Create', 'Read', 'Update', 'Delete'] },
+    model: { type: Schema.Types.ObjectId, ref: 'Model', required: true }, 
+    createdAt: { type: Date, default: Date.now}
+
+
 });
 
 module.exports = mongoose.model('Permission', permissionSchema);

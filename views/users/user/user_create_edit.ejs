@@ -55,6 +55,16 @@
 
               <div class="form-box">
                 <div class="form-label">
+                  <label for="tags">Tags</label>
+                </div>
+                <select name="tags" class="select-tags form-control" multiple="multiple">
+                  <option value="Tag A">Tag A</option>
+                  <option value="Tag B">Tag B</option>
+                </select>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
                   <label for="email">Email</label
                   ><span class="important">*</span>
                 </div>
@@ -149,6 +159,11 @@
 
     <%- include('../../layout/script') %>
     <script>
+
+      $(".select-tags").select2({
+            placeholder: "Tags",
+          });
+
      const passwordBox = document.querySelector('.password');
      const upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
      const lowerCase = "abcdefghijklmnopqrstuvwxyz"

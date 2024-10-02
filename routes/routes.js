@@ -67,8 +67,6 @@ router.post(
   upload.fields([
     { name: "featured_image", maxCount: 1 },
     { name: "gallery_images", maxCount: 10 },
-    { name: "featured_image", maxCount: 1 },
-    { name: "gallery_images", maxCount: 10 }, 
   ]),
   postController.updatePost
 );

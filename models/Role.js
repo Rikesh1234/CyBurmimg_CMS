@@ -1,12 +1,14 @@
+
 // models/Role.js
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-// Role Schema
-const roleSchema = new mongoose.Schema({
-  name: { type: String, required: [true, 'Name is required'] },
-  slug: { type: String, required: [true, 'Slug is required'], unique: true },
-  published: { type: Boolean, default: false},
-  createdAt: { type: Date, default: Date.now}
+const roleSchema = new Schema({
+    name: { type: String, required: true, unique: true }, // E.g., 'Admin', 'Editor', 'User'
+    slug: { type: String, required: [true, 'Slug is required'], unique: true },
+    permissions: [{ type: Schema.Types.ObjectId, ref: 'Permission' }] ,// Array of permission references
+    published: { type: Boolean, default: false},
+    createdAt: { type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('Role', roleSchema);
