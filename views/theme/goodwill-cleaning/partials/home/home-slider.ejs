@@ -3,9 +3,11 @@
     <div class="swiper-container">
       <div class="swiper-wrapper">
         <!-- First Slide -->
+        <% sliders.forEach(function(slider) { %>
+
         <div
           class="swiper-slide"
-          style="background-image: url('./goodwill-cleaning/images/slider-01.png')"
+          style="background-image: url('<%= slider.featured_image %>')"
         >
           <div class="container">
             <div
@@ -17,9 +19,9 @@
                 data-aos="fade-up"
               >
                 <h1 class="mb-4 big-heading" data-aos-delay="100">
-                  Goodwill Cleaning Pvt Ltd
+                  <%= slider.title %>
                 </h1>
-                <h2 class="subheading">"Cleaning With Care"</h2>
+                <h2 class="subheading"><%= slider.subtitle %></h2>
               </div>
             </div>
           </div>
@@ -58,6 +60,7 @@
         </div> -->
 
         <!-- Add more slides as needed -->
+        <% }) %>
       </div>
 
       <!-- Add Pagination -->

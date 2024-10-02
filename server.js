@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes/routes');
 const cookieParser = require('cookie-parser');
+const globalData = require('./middleware/globalData');
 const cacheMiddleware = require('./middleware/cacheMiddleware');
 const sessionMiddleware = require('./middleware/sessionMiddleware');
 
@@ -42,6 +43,9 @@ app.use(sessionMiddleware);
 
 // Cache middleware applied to all routes
 app.use(cacheMiddleware);
+
+// Use globalData middleware to make categories and pages available to all views
+app.use(globalData);
 
 // Set the view engine to EJS for rendering templates
 app.set('view engine', 'ejs');
