@@ -5,6 +5,8 @@ const router = express.Router();
 const upload = require("../middleware/uploadMiddleware");
 const homeController = require("../controllers/HomeController");
 const cacheMiddleware = require("../middleware/cacheMiddleware");
+const authorize = require("../middleware/authorize");
+
 
 
 const teamController = require('../controllers/TeamController');
@@ -44,6 +46,12 @@ router.get("/price", homeController.getPackage);
 // --------------FRONTEND ROUTES END---------------------------------
 
 
+// error route
+router.get('/forbidden', (req, res) => {
+  res.status(403).render('forbidden', { title: 'Access Denied' });
+});
+
+
 
 // login
 router.get("/admin/login", loginController.getLoginPage);
@@ -54,7 +62,9 @@ router.get("/logout", loginController.getLogout);
 router.get("/cms/dashboard", dashboardController.getPage);
 
 //post
-router.get("/cms/post", cacheMiddleware, postController.getPostPage);
+router.get("/cms/post", cacheMiddleware,authorize('Post', 'Read'), postController.getPostPage);
+// router.get("/cms/post", authorize('Post', 'Read'), postController.getPostPage);
+
 
 router.get("/cms/post/create", postController.getPostCreatePage);
 // Route for handling the post creation
