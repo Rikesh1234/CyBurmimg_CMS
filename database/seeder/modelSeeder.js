@@ -7,7 +7,7 @@ mongoose.connect('mongodb://localhost:27017/inferno_cms', {
     useUnifiedTopology: true,
 });
 
-// Insert a new user
+// Insert a new model
 async function createModel(name,path) {
     try {
         const newModel = new Model({
@@ -24,4 +24,21 @@ async function createModel(name,path) {
     }
 }
 
-createModel();
+createModel('Post','../models/Post');
+createModel('Category','../models/Caegory');
+createModel('StaticPage','../models/StaticPage');
+createModel('Slider','../models/Slider');
+createModel('Team','../models/Team');
+createModel('TeamType','../models/TeamType');
+createModel('Testimonial','../models/Testominal');
+createModel('User','../models/user');
+createModel('Package','../models/Package');
+createModel('CustomField','../models/CustomField');
+
+
+
+
+
+
+
+
