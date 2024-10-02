@@ -85,6 +85,7 @@ exports.createPost = [
           post: null,
           categories,
           authors,
+          formConfig: validationConfig.post,
         });
       }
 
@@ -492,7 +493,9 @@ exports.createCategory = [
     }
 
     try {
-      const { title, slug, tag_line, parent, content, status } = req.body;
+      const { title, slug, tag_line, parent, content } = req.body;
+
+      const status = req.body.status === 'on' ? 'active' : 'inactive';
 
       // Correctly handle "None" as parent
       const parentCategory = parent === "None" ? null : parent;
