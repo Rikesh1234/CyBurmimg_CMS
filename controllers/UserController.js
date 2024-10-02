@@ -28,12 +28,15 @@ exports.getUserEditPage=(req,res)=>{
 
 //view role page
 exports.getRolePage= async (req,res)=>{
-    {
+    try{
       // Fetch all roles from the database
       const roles= await Role.find();
 
       //Render the view and pass the users to the EJS template
-      res.render('users/role/role_listing',{title:'Role Page'});
+      res.render('users/role/role_listing',{title:'Role Page', roles});
+    }catch (err) {
+      console.error(err);
+      res.status(500).send("Server Error");
     }
 }
 
