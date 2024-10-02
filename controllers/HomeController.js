@@ -10,8 +10,8 @@ const Testominal = require("../models/Testominal");
 exports.getPage = async (req, res) => {  // Mark the function as async
     try {
         const posts = await Post.find()
-        .sort({ createdAt: -1 })  // Sort by createdAt descending (latest first)
-        .populate('category');  // Populate the category data
+        .sort({ createdAt: -1 })
+        .populate('category'); 
 
         const categories = await Category.find().populate("parent");
 
@@ -21,30 +21,70 @@ exports.getPage = async (req, res) => {  // Mark the function as async
 
         const testomonial = await Testominal.find();
 
+        const sliders = await Slider.find({ published: true });
+
         const theme = process.env.THEME;
         if (!theme) {
             return res.status(500).send('Theme is not defined');
         }
 
         // Pass the posts data to the template along with the title
-        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonial });
+        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonial,sliders });
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
     }
 };
 
+
+// ---------STATIC PAGE------------------------------------------------------
 exports.getStaticPage = async (req, res) => {
-    try {
-       
-        const static_page = await Post.findOneAndDelete({ slug: req.params.slug });
+  try {
+    // Fetch the page data based on the slug in the URL
+    const staticPage = await StaticPage.findOne({ slug: req.params.slug });
 
-        if (!static_page)  {
-            return res.status(404).send("Post not found");
-          }
-
-          res.render(`theme/${theme}/page/staic-page`, { title: 'Static Page', static_page });
-
-    } catch (err) {
+    if (!staticPage) {
+      return res.status(404).send('Page not found');
     }
-}
+
+    // Define variables to be used in the view
+    const pageTitle = staticPage.title || 'Static Page';
+    const background_image = staticPage.background_image || '/images/default-bg.jpg'; // default image if not set
+    const content = staticPage.content || '';
+
+    // Render the static page with its specific data
+    res.render(`theme/${process.env.THEME}/pages/static-page`, {
+      pageTitle,
+      background_image,
+      content
+    });
+
+  } catch (err) {
+    console.error("Error fetching static page:", err);
+    res.status(500).send("Server Error");
+  }
+};
+// ---------STATIC PAGE END---------------------------------------------------
+
+
+
+
+// ---------SLIDER------------------------------------------------------
+const Slider = require("../models/Slider");
+
+exports.getHomePageSlider = async (req, res) => {
+  try {
+    // Fetch all sliders marked as published
+    const sliders = await Slider.find({ published: true });
+
+    // Render the homepage view with sliders data
+    res.render("theme/goodwill-cleaning/index", { sliders });
+    console.log(sliders);
+    
+  } catch (err) {
+    console.error("Error fetching sliders:", err);
+    res.status(500).send("Server Error");
+  }
+};
+
+// ---------SLIDER END------------------------------------------------------

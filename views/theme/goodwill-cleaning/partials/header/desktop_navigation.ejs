@@ -23,7 +23,6 @@
   </div>
   <div class="navbar p-0">
     <div class="container" style="height: 100%">
-      <!-- <div class="row"> -->
       <div class="nav-contain d-flex align-items-center justify-content-between">
         <div class="logo-section">
           <a href="#"><img src="./goodwill-cleaning/images/logo.png" /></a>
@@ -35,6 +34,15 @@
           <% pages.forEach(page => { %> 
             <% if (page.slug === 'about-us' && pageCount < 1) { %>
               <li><a href="/page/<%= page.slug %>">About</a></li>
+              <% pageCount++; %>
+            <% } %>
+          <% }) %>
+
+
+          <% let staticPageCount = 0; %>
+          <% pages.forEach(page => { %> 
+            <% if (staticPageCount < 1) { %>
+              <li><a href="/page/<%= page.slug %>"><%= page.title %></a></li>
               <% pageCount++; %>
             <% } %>
           <% }) %>
