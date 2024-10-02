@@ -21,7 +21,9 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Role</h1>
+            <h1>
+              <%= role ? 'Edit Role' : 'Add Role' %>
+            </h1>
             <ul class="breadcrumb">
               <li>
                 <a href="/cms/dashboard">Dashboard</a>
@@ -32,7 +34,10 @@
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active">Add Role</a>
+                <!-- <a class="active">Add Role</a> -->
+                <h1>
+                  <%= role ? 'Edit Role' : 'Add Role' %>
+                </h1>
               </li>
             </ul>
           </div>
@@ -41,15 +46,27 @@
             <span class="text">Back</span>
           </a>
         </div>
+        <!-- Display Validation Errors -->
+          <% if (errorMessages && errorMessages.length> 0) { %>
+            <div class="alert alert-danger">
+              <ul>
+                <% errorMessages.forEach(function(error) { %>
+                  <li>
+                    <%= error %>
+                  </li>
+                  <% }); %>
+              </ul>
+            </div>
+            <% } %>
 
-        <form action="#">
+        <form action="<%= role ? '/cms/role/edit/' + role._id : '/cms/role/create' %>" method="post">
           <div class="form-container">
             <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
                 <div class="form-label">
                   <label for="Role">Role</label><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="role" id="role" />
+                <input type="text" class="form-control" name="name" id="role" />
               </div>
 
               <div class="form-box">

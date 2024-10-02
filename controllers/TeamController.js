@@ -15,10 +15,18 @@ const getPostValidationRules = () => {
 
 
 //view member page
-exports.getTeamPage=(req,res)=>{
-    
-    res.render('teams/team/team_listing',{title:'Team Page'});
-}
+exports.getTeamPage= async (req,res)=>{
+    try{
+      // Fetch all team from the database
+      const teams= await Team.find();
+
+      //Render the view and pass the users to the EJS template
+      res.render('teams/team/team_listing',{title:'Team Page', teams});
+    }catch (err) {
+      console.error(err);
+      res.status(500).send("Server Error");
+    }
+  }
 
 //view member Create page
 exports.getTeamCreatePage = (req, res) => {
