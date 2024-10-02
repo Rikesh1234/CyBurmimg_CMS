@@ -279,7 +279,7 @@ router.get("/cms/team/edit/:teamId", teamController.getTeamEditPage);
 router.post(
   "/cms/team/create",
   upload.fields([
-    { name: "team_image", maxCount: 1 },
+    { name: "featured_image", maxCount: 1 },
   ]),
   teamController.createTeam
 );
@@ -288,7 +288,7 @@ router.post(
 router.post(
   "/cms/team/edit/:teamId",
   upload.fields([
-    { name: "team_image", maxCount: 1 },
+    { name: "featured_image", maxCount: 1 },
   ]),
   teamController.updateTeam
 );
