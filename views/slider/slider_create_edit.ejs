@@ -43,77 +43,64 @@
           </a>
         </div>
 
-        <form action="#">
+        <form action="<%= slider ? `/cms/slider/edit/${slider._id}` : '/cms/slider/create' %>" method="POST" enctype="multipart/form-data">
           <div class="form-container">
             <div class="post-right-container col-md-7">
               <div class="form-box">
                 <div class="form-label">
-                  <label for="title">Title</label
-                  ><span class="important">*</span>
+                  <label for="title">Title</label><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="title" id="title" />
+                <input type="text" class="form-control" name="title" id="title" value="<%= slider ? slider.title : '' %>" />
               </div>
-
-
-              
+        
               <div class="form-box">
                 <div class="form-label">
                   <label for="subtitle">Subtitle</label>
                 </div>
-                <input type="text" class="form-control" name="sub-title" id="sub-title" />
+                <input type="text" class="form-control" name="subtitle" id="subtitle" value="<%= slider ? slider.subtitle : '' %>" />
               </div>
-            
-        
-           
-           
-              
-
-             
             </div>
-
+        
             <div class="post-left-container col-md-4 col-sm-12">
               <div class="form-box" style="margin-bottom: 15px">
                 <div class="form-label">
                   <label for="Published">Published</label>
                   <div class="form-check form-switch" style="margin-top: 10px">
                     <label class="form-check-label" for="Status">Status</label>
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="status"
-                    />
+                    <input class="form-check-input" type="checkbox" name="published" id="status" <%= slider && slider.published ? 'checked' : '' %> />
                   </div>
                 </div>
               </div>
-
+        
               <div class="form-box">
                 <div class="form-label">
                   <label for="Published_date">Published Date</label>
                 </div>
                 <input
                   type="datetime-local"
-                  name="date"
-                  id="date"
+                  name="published_date"
+                  id="published_date"
                   class="form-control"
-                  placeholder="YYYY/MM/HH H:M:S"
+                  value="<%= slider ? slider.published_date.toISOString().slice(0,16) : '' %>"
+                  placeholder="YYYY/MM/DD HH:MM"
                 />
               </div>
-
-              
+        
               <div class="form-box">
                 <div class="form-label">
-                  <label for="Published_date">Featued Image</label>
+                  <label for="Published_date">Featured Image</label>
                 </div>
                 <div class="upload-container-one">
                   <input
                     id="upload-input-one"
                     type="file"
+                    name="slider_image"
                     accept="image/*"
                     hidden
                   />
                   <div id="image-container-one">
                     <img
-                      src="/images/upload.png"
+                      src="<%= slider && slider.featured_image ? slider.featured_image : '/images/upload.png' %>"
                       class="uploaded-image"
                     />
                   </div>
@@ -132,6 +119,7 @@
             </div>
           </div>
         </form>
+        
       </main>
       <!-- MAIN -->
     </section>

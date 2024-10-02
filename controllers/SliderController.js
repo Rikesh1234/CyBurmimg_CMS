@@ -6,6 +6,7 @@ exports.getSliderPage = async (req, res) => {
   try {
     // Fetch all sliders from the database
     const sliders = await Slider.find();
+    
 
     // Render the view and pass the sliders to the EJS template
     res.render("slider/slider_listing", { title: "Slider Page", sliders });
@@ -17,32 +18,52 @@ exports.getSliderPage = async (req, res) => {
 
 
 //view slider Create page
-exports.getSliderCreatePage=(req,res)=>{
-    res.render('slider/slider_create_edit',{title:'Slider Create Page'});
-}
+// view slider Create page
+exports.getSliderCreatePage = (req, res) => {
+  // Pass a null slider object when creating
+  res.render("slider/slider_create_edit", {
+    title: "Slider Create Page",
+    slider: null, // Make sure this is set to `null` for create
+  });
+};
+
 
 //view slider Edit page
-exports.getSliderEditPage=(req,res)=>{
-    res.render('slider/slider_create_edit',{title:'Slider Edit Page'});
-}
+// view slider Edit page
+exports.getSliderEditPage = async (req, res) => {
+  try {
+    const sliderId = req.params.sliderId;
+    // Fetch the slider using its ID
+    const slider = await Slider.findById(sliderId);
+
+    if (!slider) {
+      return res.status(404).send("Slider not found");
+    }
+
+    // Pass the fetched slider data to the template for editing
+    res.render("slider/slider_create_edit", {
+      title: "Slider Edit Page",
+      slider,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
+
 
 //cruds for slider
 exports.createSlider = async (req, res) => {
   try {
+
     // Extract form data from the request body
-    const {
-      title,
-      subtitle,
-      published,
-      published_date,
-    } = req.body;
+    const { title, subtitle, published, published_date } = req.body;
 
     // Handle featured image upload
-    const featured_image = req.files["featured_image"]
-      ? `/uploads/slider/${req.files["featured_image"][0].filename}`
+    const featured_image = req.files["slider_image"]
+      ? `/uploads/sliders/${req.files["slider_image"][0].filename}`
       : "/images/default.jpg";
 
-    
     // Create a new slider object
     const newSlider = new Slider({
       title,
@@ -78,6 +99,7 @@ exports.createSlider = async (req, res) => {
   }
 };
 
+
 exports.deleteSlider = async (req, res) => {
   try {
     const slider = await Slider.findByIdAndDelete(req.params.sliderId);
@@ -98,19 +120,14 @@ exports.deleteSlider = async (req, res) => {
 
 exports.updateSlider = async (req, res) => {
   const sliderId = req.params.sliderId;
-  const {
-    title,
-    subtitle,
-    published,
-    published_date,
-  } = req.body;
+  const { title, subtitle, published, published_date } = req.body;
 
   // Array to collect validation errors
   const errorMessages = [];
 
   // Perform manual validation on required fields
   if (!title || title.trim() === "") errorMessages.push("Title is required");
-  
+
   // If there are validation errors, re-render the form with error messages
   if (errorMessages.length > 0) {
     // Fetch the existing slider to repopulate the form
@@ -130,8 +147,8 @@ exports.updateSlider = async (req, res) => {
 
   try {
     // Handle featured image update if provided
-    const featured_image = req.files["featured_image"]
-      ? `/uploads/slider/${req.files["featured_image"][0].filename}`
+    const featured_image = req.files["slider_image"]
+      ? `/uploads/sliders/${req.files["slider_image"][0].filename}`
       : req.body.existing_featured_image;
 
     
@@ -162,4 +179,5 @@ exports.updateSlider = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+
 //end of cruds for slider

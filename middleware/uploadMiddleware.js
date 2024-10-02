@@ -35,6 +35,18 @@ const storage = multer.diskStorage({
     else if (file.fieldname === "static_page_image") {
       uploadPath = "./public/uploads/static_pages/";
     }
+    // Store static page images in 'uploads/static_pages/'
+    else if (file.fieldname === "testimonials_image") {
+      uploadPath = "./public/uploads/testominal/";
+    }
+    // Store static page images in 'uploads/sliders/'
+    else if (file.fieldname === "slider_image") {
+      uploadPath = "./public/uploads/sliders/";
+    }
+    // Store static page images in 'uploads/static_pages/'
+    else if (file.fieldname === "team_image") {
+      uploadPath = "./public/uploads/teams/";
+    }
 
     // Ensure the directory exists
     ensureDirectoryExistence(uploadPath);

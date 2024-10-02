@@ -57,238 +57,58 @@
         <div class="row">
           <div class="card-container">
 
+            <% if (sliders.length > 0) { %>
+              <% sliders.forEach(slider => { %>
 
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a>
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                 
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Slider</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
+                <div class="col-md-6 col-lg-4">
+                  <div class="card post post-img-one position-relative overflow-hidden hover-img">
+                    <div class="position-relative">
+                      <a>
+                        <% console.log(slider.featured_image); %>
+
+                        <img
+                          src="<%= slider.featured_image %>"
+                          class="card-img-top"
+                          alt="slider-img"
+                        />
+                      </a>
+                    </div>
+                    <div class="card-body p-4">
+                      <div class="category-published">
+                        <span class="badge category-name px-2 mt-3">Slider</span>
+                        <label class="wraper" for="status-<%= slider._id %>">
+                          <span class="label-text">Published</span>
+                          <div class="switch-wrap">
+                            <input type="checkbox" id="status-<%= slider._id %>" <%= slider.published ? 'checked' : '' %> />
+                            <div class="switch"></div>
+                          </div>
+                        </label>
                       </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                 
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4 icon-container">
-                   
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/post/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div
-                      class="d-flex align-items-center ms-auto post-calender"
-                    >
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a>
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                 
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Slider</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
+                      <a class="d-block my-2 text-dark fw-semibold link-primary"><%= slider.title %></a>
+                      <a class="d-block my-2 text-dark link-primary"><%= slider.subtitle %></a>
+                      <div class="d-flex align-items-center gap-4 icon-container">
+                        <div class="d-flex align-items-center gap-2">
+                          <a href="/cms/slider/edit/<%= slider._id %>" class="text-black"><i class="fas fa-edit"></i></a>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                          <a href="#" class="text-black delete-slider" data-id="<%= slider._id %>">
+                            <i class="fas fa-trash-alt"></i>
+                          </a>
+                        </div>
+                        
+                        <div class="d-flex align-items-center ms-auto post-calender">
+                          <i class="fas fa-calendar-check px-1 text-dark"></i>
+                          <%= slider.published_date.toDateString() %>
+                        </div>
                       </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                 
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4 icon-container">
-                   
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/post/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div
-                      class="d-flex align-items-center ms-auto post-calender"
-                    >
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a>
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                 
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Slider</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                 
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4 icon-container">
-                   
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/post/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div
-                      class="d-flex align-items-center ms-auto post-calender"
-                    >
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card post post-img-one position-relative overflow-hidden hover-img"
-              >
-                <div class="position-relative">
-                  <a>
-                    <img
-                      src="/images/default.jpg"
-                      class="card-img-top"
-                      alt="spike-img"
-                    />
-                  </a>
-                 
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge category-name px-2 mt-3">Slider</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-                  <a
-                    class="d-block my-2 text-dark fw-semibold link-primary"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                 
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4 icon-container">
-                   
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/post/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    <div
-                      class="d-flex align-items-center ms-auto post-calender"
-                    >
-                      <i class="fas fa-calendar-check px-1 text-dark"></i>Mon,
-                      Jan 16
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+              <% }) %>
+            <% } else { %>
+              <p>No sliders found.</p>
+            <% } %>
+            
 
           </div>
         </div>
@@ -382,5 +202,56 @@
         });
       });
     </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Handle delete button functionality
+        const deleteButtons = document.querySelectorAll('.delete-slider');
+        
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+    
+            const sliderId = this.getAttribute('data-id'); // Get slider ID
+            
+            // Trigger SweetAlert2 modal
+            Swal.fire({
+              title: 'Are you sure?',
+              text: 'Do you really want to delete this slider? This action cannot be undone.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Delete',
+              cancelButtonText: 'Cancel'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // If confirmed, send POST request to delete the slider
+                fetch(`/cms/slider/delete/${sliderId}`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  }
+                })
+                .then(response => {
+                  if (response.ok) {
+                    // Show success message and reload the page
+                    Swal.fire('Deleted!', 'Your slider has been deleted.', 'success').then(() => {
+                      location.reload(); // Reload the page after successful deletion
+                    });
+                  } else {
+                    Swal.fire('Error!', 'There was an issue deleting the slider.', 'error');
+                  }
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  Swal.fire('Error!', 'There was an issue deleting the slider.', 'error');
+                });
+              }
+            });
+          });
+        });
+      });
+    </script>
+    
   </body>
 </html>
