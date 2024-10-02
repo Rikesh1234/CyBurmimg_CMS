@@ -34,11 +34,3 @@ createModel('Testimonial','../models/Testominal');
 createModel('User','../models/user');
 createModel('Package','../models/Package');
 createModel('CustomField','../models/CustomField');
-
-
-
-
-
-
-
-

@@ -29,6 +29,8 @@ const sliderController = require('../controllers/SliderController');
 // --------------FRONTEND ROUTES
 router.get("/", homeController.getPage);
 router.get("/page/:slug", homeController.getStaticPage);
+router.get("/category/:slug", homeController.getCategoryListingPage);
+router.get("/post/:postId", homeController.getPostDetailPage);
 
 // --------------FRONTEND ROUTES END
 
@@ -66,7 +68,7 @@ router.post(
     { name: "featured_image", maxCount: 1 },
     { name: "gallery_images", maxCount: 10 },
     { name: "featured_image", maxCount: 1 },
-    { name: "gallery_images", maxCount: 10 },
+    { name: "gallery_images", maxCount: 10 }, 
   ]),
   postController.updatePost
 );
@@ -194,10 +196,27 @@ router.get(
   "/cms/testomonial/create",
   testomonialController.getTestomonialCreatePage
 );
+// Route for handling the testimonial creation
+router.post(
+  "/cms/testomonial/create",
+  upload.fields([{ name: "testimonials_image", maxCount: 1 }]),
+  testomonialController.createTestominal
+);
+
 router.get(
   "/cms/testomonial/edit/:userId",
   testomonialController.getTestomonialEditPage
 );
+// Route to handle the edit (update) request
+
+router.post(
+  "/cms/testomonial/edit/:testomonialId",
+  upload.fields([{ name: "testimonials_image", maxCount: 1 }]),
+  testomonialController.updateTestominal
+);
+
+router.post("/cms/testomonial/delete/:testomonialId", testomonialController.deleteTestominal);
+
 
 //partners
 router.get("/cms/partner", partnerController.getPartnerPage);
@@ -207,13 +226,31 @@ router.get("/cms/partner", partnerController.getPartnerPage);
 router.get("/cms/partner/create", partnerController.getPartnerCreatePage);
 router.get("/cms/partner/edit/:userId", partnerController.getPartnerEditPage);
 
-//team
+// Team Routes
 router.get("/cms/team", teamController.getTeamPage);
 router.get("/cms/team/create", teamController.getTeamCreatePage);
-router.get("/cms/team/edit/:userId", teamController.getTeamEditPage);
-router.get("/cms/team", teamController.getTeamPage);
-router.get("/cms/team/create", teamController.getTeamCreatePage);
-router.get("/cms/team/edit/:userId", teamController.getTeamEditPage);
+router.get("/cms/team/edit/:teamId", teamController.getTeamEditPage);
+
+// Create team with image upload
+router.post(
+  "/cms/team/create",
+  upload.fields([
+    { name: "team_image", maxCount: 1 },
+  ]),
+  teamController.createTeam
+);
+
+// Edit team with image upload
+router.post(
+  "/cms/team/edit/:teamId",
+  upload.fields([
+    { name: "team_image", maxCount: 1 },
+  ]),
+  teamController.updateTeam
+);
+
+// Delete team
+router.post("/cms/team/delete/:teamId", teamController.deleteTeam);
 
 //teamType
 router.get("/cms/team-type", teamController.getTeamTypePage);
@@ -234,6 +271,29 @@ router.get('/cms/custom-field/create',customFieldController.getCustomFieldCreate
 //slider
 router.get('/cms/slider',sliderController.getSliderPage);
 router.get('/cms/slider/create',sliderController.getSliderCreatePage);
+// Route for handling the slider creation
+router.post(
+  "/cms/slider/create",
+  upload.fields([
+    { name: "slider_image", maxCount: 1 },
+  ]),
+  sliderController.createSlider
+);
+
+
+router.get('/cms/slider/edit/:sliderId',sliderController.getSliderEditPage);
+
+//slider edit
+router.post(
+  "/cms/slider/edit/:sliderId",
+  upload.fields([
+    { name: "slider_image", maxCount: 1 },
+  ]),
+  sliderController.updateSlider
+);
+
+//slider delete
+router.post("/cms/slider/delete/:sliderId", sliderController.deleteSlider);
 
 //package
 router.get('/cms/package',packageController.getPackagePage);

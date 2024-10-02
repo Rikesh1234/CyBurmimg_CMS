@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { Schema } = mongoose;
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
     username: {
         type: String,
         required: true,
@@ -22,9 +23,9 @@ const userSchema = new mongoose.Schema({
         minlength: 6,
     },
     role: {
-        type: String,
-        enum: ['user', 'admin'],
-        default: 'user',
+        type: Schema.Types.ObjectId,
+        ref: 'Role',
+        required: true,
     },
     status: {
         type: String,
@@ -59,6 +60,5 @@ userSchema.methods.comparePassword = function (enteredPassword) {
     return bcrypt.compare(enteredPassword, this.password);
 };
 
-// Create the model from the schema
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+// Conditionally export the model to avoid OverwriteModelError
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);

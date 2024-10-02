@@ -1,5 +1,17 @@
 const Team = require("../models/Team");
 const redis = require("../config/redis");
+const validationConfig = require('../config/validationConfig.json');
+
+
+const getPostValidationRules = () => {
+  const rules = [];
+
+
+  if (validationConfig.team.teamType) {
+    rules.push(body('teamType').notEmpty().withMessage('Team type is required'));
+  }
+  return rules;
+};
 
 
 //view member page
@@ -8,14 +20,39 @@ exports.getTeamPage=(req,res)=>{
 }
 
 //view member Create page
-exports.getTeamCreatePage=(req,res)=>{
-    res.render('teams/team/team_create_edit',{title:'Team Create Page'});
-}
+exports.getTeamCreatePage = (req, res) => {
+  res.render('teams/team/team_create_edit', {
+      title: 'Team Create Page',
+      team: null,
+      errorMessages: [],
+  });
+};
+
 
 //view member Edit page
-exports.getTeamEditPage=(req,res)=>{
-    res.render('teams/team/team_create_edit',{title:'Team Edit Page'});
-}
+exports.getTeamEditPage = async (req, res) => {
+  try {
+      const teamId = req.params.teamId; // Use the correct parameter name from the route
+      // Fetch the existing team
+      const team = await Team.findById(teamId);
+
+      // If team not found, return a 404 status
+      if (!team) {
+          return res.status(404).send("Team not found");
+      }
+
+      // Render the edit form with the existing team data
+      res.render('teams/team/team_create_edit', {
+          title: 'Team Edit Page',
+          team, 
+          errorMessages: [],
+      });
+  } catch (err) {
+      console.error(err);
+      res.status(500).send("Server Error");
+  }
+};
+
 
 //view member-type page
 exports.getTeamTypePage=(req,res)=>{
@@ -24,12 +61,12 @@ exports.getTeamTypePage=(req,res)=>{
 
 //view member-type Create page
 exports.getTeamTypeCreatePage=(req,res)=>{
-    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Create Page'});
+    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Create Page',formConfig: validationConfig.team});
 }
 
 //view member-type Edit page
 exports.getTeamTypeEditPage=(req,res)=>{
-    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page'});
+    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page',formConfig: validationConfig.team});
 }
 
 

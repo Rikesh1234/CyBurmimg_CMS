@@ -1,11 +1,16 @@
 // globalData middleware
 const Category = require('../models/Category');
 const Page = require('../models/StaticPage');
+const Package = require('../models/Package');
+
 
 module.exports = async (req, res, next) => {
   try {
     const categories = await Category.find();
     const pages = await Page.find();
+    const packages = await Package.find();
+
+    
     
     // Replace with your actual contact details fetching logic
     const contact = {
@@ -23,6 +28,8 @@ module.exports = async (req, res, next) => {
     res.locals.categories = categories;
     res.locals.pages = pages;
     res.locals.contact = contact;
+    res.locals.packages = packages;
+
 
     next();
   } catch (err) {

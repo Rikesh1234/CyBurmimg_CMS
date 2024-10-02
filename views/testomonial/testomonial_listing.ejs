@@ -54,323 +54,67 @@
 
         <div class="row">
           <div class="card-container">
-            <div class="col-md-6 col-lg-4">
-              <div
-                class="card author author-img-one position-relative overflow-hidden hover-img">
-                <div class="position-relative" style="top: 28px; left: 22px;">
-                  <img
-                    src="/images/icons/profile.png"
-                    alt="spike-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                    width="40"
-                    height="40"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    data-bs-title="Addie Keller"
-                  />
-                  <div class="author-card" style="display: flex; flex-direction: column; position: relative; top: 8px; left: 49px; ">
-                  <span class="card-author-name" style="font-size: 17px; font-weight: 500;">Author Name</span>
-                  <span class="card-author-name" style="font-size: 12px; font-weight: 100; color: gray;">Degisnation</span>
-                  </div>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published" style="justify-content: flex-end;">
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
+            <% if (testimonials.length > 0) { %>
+              <% testimonials.forEach((testimonial) => { %>
+                
+                <div class="col-md-6 col-lg-4">
+                  <div
+                    class="card author author-img-one position-relative overflow-hidden hover-img">
+                    <div class="position-relative" style="top: 28px; left: 22px;">
+                      <img
+                      src="<%= testimonial.featured_image ? testimonial.featured_image : '/images/default.jpg' %>"
+                      alt="profile-img"
+                        class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
+                        width="40"
+                        height="40"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-title="<%= testimonial.name %>"
+                      />
+                      <div class="author-card" style="display: flex; flex-direction: column; position: relative; top: 8px; left: 49px;">
+                        <span class="card-author-name" style="font-size: 17px; font-weight: 500;">
+                          <%= testimonial.name %>
+                        </span>
+                        <span class="card-author-name" style="font-size: 12px; font-weight: 100; color: gray;">
+                          <%= testimonial.designation %>
+                        </span>
                       </div>
-                    </label>
-                  </div>
-               
-                  <a
-                    class="d-block my-2 text-dark link-primary"
-                    >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                  >
-                  <div class="d-flex align-items-center gap-4 icon-container">
-                 
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms.testomonial/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div
-                  class="card author author-img-one position-relative overflow-hidden hover-img">
-                  <div class="position-relative" style="top: 28px; left: 22px;">
-                    <img
-                      src="/images/icons/profile.png"
-                      alt="spike-img"
-                      class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                      width="40"
-                      height="40"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      data-bs-title="Addie Keller"
-                    />
-                    <span class="card-author-name" style="position: relative; top: -6px; left: 49px; font-size: 17px; font-weight: 500;">Author Name</span>
-                  </div>
-                  <div class="card-body p-4">
-                    <div class="category-published" style="justify-content: flex-end;">
-                      <label class="wraper" for="something">
-                        <span class="label-text">Published</span>
-                        <div class="switch-wrap">
-                          <input type="checkbox" checked id="something" />
-                          <div class="switch"></div>
+                    <div class="card-body p-4">
+                      <div class="category-published" style="justify-content: flex-end;">
+                        <label class="wraper" for="status-<%= testimonial._id %>">
+                          <span class="label-text">Published</span>
+                          <div class="switch-wrap">
+                            <input type="checkbox" id="status-<%= testimonial._id %>" <%= testimonial.published ? 'checked' : '' %> />
+                            <div class="switch"></div>
+                          </div>
+                        </label>
+                      </div>
+        
+                      <a class="d-block my-2 text-dark link-primary">
+                        <%- testimonial.content %>
+                      </a>
+        
+                      <div class="d-flex align-items-center gap-4 icon-container">
+                        <div class="d-flex align-items-center gap-2">
+                          <a href="/cms/testomonial/edit/<%= testimonial._id %>" class="text-black">
+                            <i class="fas fa-edit"></i>
+                          </a>
                         </div>
-                      </label>
-                    </div>
-                 
-                    <a
-                      class="d-block my-2 text-dark link-primary"
-                      href="../main/blog-detail.html"
-                      >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                    >
-                    <div class="d-flex align-items-center gap-4 icon-container">
-                   
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-edit"></i
-                        ></a>
-                      </div>
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-trash-alt"></i
-                        ></a>
-                      </div>
-                      <div
-                      class="d-flex align-items-center ms-auto default-btn active">
-                      Set as Default
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-6 col-lg-4">
-                <div
-                  class="card author author-img-one position-relative overflow-hidden hover-img">
-                  <div class="position-relative" style="top: 28px; left: 22px;">
-                    <img
-                      src="/images/icons/profile.png"
-                      alt="spike-img"
-                      class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                      width="40"
-                      height="40"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      data-bs-title="Addie Keller"
-                    />
-                    <span class="card-author-name" style="position: relative; top: -6px; left: 49px; font-size: 17px; font-weight: 500;">Author Name</span>
-                  </div>
-                  <div class="card-body p-4">
-                    <div class="category-published" style="justify-content: flex-end;">
-                      <label class="wraper" for="something">
-                        <span class="label-text">Published</span>
-                        <div class="switch-wrap">
-                          <input type="checkbox" checked id="something" />
-                          <div class="switch"></div>
+                        <div class="d-flex align-items-center gap-2">
+                          <a href="#" class="text-black delete-testimonial" data-id="<%= testimonial._id %>">
+                            <i class="fas fa-trash-alt"></i>
+                          </a>
                         </div>
-                      </label>
-                    </div>
-                 
-                    <a
-                      class="d-block my-2 text-dark link-primary"
-                      href="../main/blog-detail.html"
-                      >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                    >
-                    <div class="d-flex align-items-center gap-4 icon-container">
-                   
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-edit"></i
-                        ></a>
-                      </div>
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-trash-alt"></i
-                        ></a>
-                      </div>
-                      <div
-                      class="d-flex align-items-center ms-auto default-btn active">
-                      Set as Default
+                        
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="col-md-6 col-lg-4">
-                <div
-                  class="card author author-img-one position-relative overflow-hidden hover-img">
-                  <div class="position-relative" style="top: 28px; left: 22px;">
-                    <img
-                      src="/images/icons/profile.png"
-                      alt="spike-img"
-                      class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                      width="40"
-                      height="40"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      data-bs-title="Addie Keller"
-                    />
-                    <span class="card-author-name" style="position: relative; top: -6px; left: 49px; font-size: 17px; font-weight: 500;">Author Name</span>
-                  </div>
-                  <div class="card-body p-4">
-                    <div class="category-published" style="justify-content: flex-end;">
-                      <label class="wraper" for="something">
-                        <span class="label-text">Published</span>
-                        <div class="switch-wrap">
-                          <input type="checkbox" checked id="something" />
-                          <div class="switch"></div>
-                        </div>
-                      </label>
-                    </div>
-                 
-                    <a
-                      class="d-block my-2 text-dark link-primary"
-                      href="../main/blog-detail.html"
-                      >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                    >
-                    <div class="d-flex align-items-center gap-4 icon-container">
-                   
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-edit"></i
-                        ></a>
-                      </div>
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-trash-alt"></i
-                        ></a>
-                      </div>
-                      <div
-                      class="d-flex align-items-center ms-auto default-btn active">
-                      Set as Default
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-6 col-lg-4">
-                <div
-                  class="card author author-img-one position-relative overflow-hidden hover-img">
-                  <div class="position-relative" style="top: 28px; left: 22px;">
-                    <img
-                      src="/images/icons/profile.png"
-                      alt="spike-img"
-                      class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                      width="40"
-                      height="40"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      data-bs-title="Addie Keller"
-                    />
-                    <span class="card-author-name" style="position: relative; top: -6px; left: 49px; font-size: 17px; font-weight: 500;">Author Name</span>
-                  </div>
-                  <div class="card-body p-4">
-                    <div class="category-published" style="justify-content: flex-end;">
-                      <label class="wraper" for="something">
-                        <span class="label-text">Published</span>
-                        <div class="switch-wrap">
-                          <input type="checkbox" checked id="something" />
-                          <div class="switch"></div>
-                        </div>
-                      </label>
-                    </div>
-                 
-                    <a
-                      class="d-block my-2 text-dark link-primary"
-                      href="../main/blog-detail.html"
-                      >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                    >
-                    <div class="d-flex align-items-center gap-4 icon-container">
-                   
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-edit"></i
-                        ></a>
-                      </div>
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-trash-alt"></i
-                        ></a>
-                      </div>
-                      <div
-                      class="d-flex align-items-center ms-auto default-btn active">
-                      Set as Default
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-6 col-lg-4">
-                <div
-                  class="card author author-img-one position-relative overflow-hidden hover-img">
-                  <div class="position-relative" style="top: 28px; left: 22px;">
-                    <img
-                      src="/images/icons/profile.png"
-                      alt="spike-img"
-                      class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
-                      width="40"
-                      height="40"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      data-bs-title="Addie Keller"
-                    />
-                    <span class="card-author-name" style="position: relative; top: -6px; left: 49px; font-size: 17px; font-weight: 500;">Author Name</span>
-                  </div>
-                  <div class="card-body p-4">
-                    <div class="category-published" style="justify-content: flex-end;">
-                      <label class="wraper" for="something">
-                        <span class="label-text">Published</span>
-                        <div class="switch-wrap">
-                          <input type="checkbox" checked id="something" />
-                          <div class="switch"></div>
-                        </div>
-                      </label>
-                    </div>
-                 
-                    <a
-                      class="d-block my-2 text-dark link-primary"
-                      href="../main/blog-detail.html"
-                      >As yen tumbles, gadget-loving Japan goes for iPhones</a
-                    >
-                    <div class="d-flex align-items-center gap-4 icon-container">
-                   
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-edit"></i
-                        ></a>
-                      </div>
-                      <div class="d-flex align-items-center gap-2">
-                        <a href="#" class="text-black"
-                          ><i class="fas fa-trash-alt"></i
-                        ></a>
-                      </div>
-                      <div
-                      class="d-flex align-items-center ms-auto default-btn active">
-                      Set as Default
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+              <% }) %>
+            <% } else { %>
+              <p>No testimonials found.</p>
+            <% } %>
 
           </div>
         </div>
@@ -405,5 +149,74 @@
     <!-- CONTENT -->
 
     <%- include('../layout/script') %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Function to strip HTML tags from a string
+    function stripHTMLTags(str) {
+      let div = document.createElement('div');
+      div.innerHTML = str;
+      return div.textContent || div.innerText || '';
+    }
+
+    // Function to truncate the text with an ellipsis
+    function truncateText(str, length) {
+      return str.length > length ? str.substring(0, length) + '...' : str;
+    }
+
+    // Select all testimonial content elements and apply truncation
+    document.querySelectorAll('.post-content').forEach(element => {
+      const rawContent = element.innerHTML;
+      const plainTextContent = stripHTMLTags(rawContent);
+      const truncatedContent = truncateText(plainTextContent, 100); // Adjust the length as needed
+      element.innerText = truncatedContent;
+    });
+
+    // Handle delete button functionality
+    const deleteButtons = document.querySelectorAll('.delete-testimonial');
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent default link behavior
+        const testimonialId = this.getAttribute('data-id'); // Get testimonial ID
+        // Trigger SweetAlert2 modal
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'Do you really want to delete this testimonial? This action cannot be undone.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Delete',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // If confirmed, send POST request to delete the testimonial
+            fetch(`/cms/testomonial/delete/${testimonialId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            })
+            .then(response => {
+              if (response.ok) {
+                // Show success message and reload the page
+                Swal.fire('Deleted!', 'Your testimonial has been deleted.', 'success').then(() => {
+                  location.reload(); // Reload the page after successful deletion
+                });
+              } else {
+                Swal.fire('Error!', 'There was an issue deleting the testimonial.', 'error');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              Swal.fire('Error!', 'There was an issue deleting the testimonial.', 'error');
+            });
+          }
+        });
+      });
+    });
+  });
+</script>
+
   </body>
 </html>

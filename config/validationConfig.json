@@ -6,6 +6,9 @@
       "author": false,
       "category": true,
       "tags": false
+    },
+    "team":{
+      "teamType":false
     }
   }
   
