@@ -29,7 +29,9 @@
         <main>
           <div class="head-title">
             <div class="left">
-              <h1>Add Team</h1>
+              <h1>
+                <%= team ? 'Edit Team' : 'Add Team' %>
+              </h1>
               <ul class="breadcrumb">
                 <li>
                   <a href="/cms/dashboard">Dashboard</a>
@@ -40,7 +42,10 @@
                 </li>
                 <li><i class="bx bx-chevron-right"></i></li>
                 <li>
-                  <a class="active">Add Team</a>
+                  <!-- <a class="active">Add Team</a> -->
+                  <h1>
+                    <%= team ? 'Edit Team' : 'Add Team' %>
+                  </h1>
                 </li>
               </ul>
             </div>
@@ -49,15 +54,29 @@
               <span class="text">Back</span>
             </a>
           </div>
+          <!-- Display Validation Errors -->
+          <% if (errorMessages && errorMessages.length> 0) { %>
+            <div class="alert alert-danger">
+              <ul>
+                <% errorMessages.forEach(function(error) { %>
+                  <li>
+                    <%= error %>
+                  </li>
+                  <% }); %>
+              </ul>
+            </div>
+            <% } %>
 
-          <form action="#">
+          <form action="<%= team ? '/cms/team/edit/' + team._id : '/cms/team/create' %>" method="post">
             <div class="form-container">
+
               <div class="post-right-container col-md-7 col-sm-12">
                 <div class="form-box">
                   <div class="form-label">
                     <label for="name">Name</label><span class="important">*</span>
                   </div>
-                  <input type="text" class="form-control" name="name" id="name" />
+                  <input type="text" class="form-control" name="name" id="name" 
+                  value="<%= team ? team.name : (formData.name || '') %>" />
                 </div>
 
                 <div class="form-box">
@@ -65,7 +84,8 @@
                     <label for="designation">Designation</label
                     ><span class="important">*</span>
                   </div>
-                  <input type="designation" class="form-control" name="designation" />
+                  <input type="designation" class="form-control" name="designation" 
+                  value="<%= team ? team.designation : (formData.designation || '') %>" />
                 </div>
                 <% if (formConfig.team) { %>
 
@@ -89,7 +109,8 @@
                     <label for="email">Email</label
                     ><span class="important">*</span>
                   </div>
-                  <input type="email" class="form-control" name="email" />
+                  <input type="email" class="form-control" name="email" 
+                  value="<%= team ? team.email : (formData.email || '') %>" />
                 </div>
 
                 <div class="social-container">
@@ -97,28 +118,32 @@
                     <div class="form-label">
                       <label for="facebook">Facebook</label>
                     </div>
-                    <input type="text" class="form-control" name="facebbok" />
+                    <input type="text" class="form-control" name="facebbok" 
+                    value="<%= team ? team.facebbok : (formData.facebbok || '') %>" />
                   </div>
 
                   <div class="form-box">
                     <div class="form-label">
                       <label for="instagram">Instagram</label>
                     </div>
-                    <input type="text" class="form-control" name="instagram" />
+                    <input type="text" class="form-control" name="instagram" 
+                    value="<%= team ? team.instagram : (formData.instagram || '') %>" />
                   </div>
 
                   <div class="form-box">
                     <div class="form-label">
                       <label for="twitter">Twitter</label>
                     </div>
-                    <input type="text" class="form-control" name="twitter" />
+                    <input type="text" class="form-control" name="twitter" 
+                    value="<%= team ? team.twitter : (formData.twitter || '') %>" />
                   </div>
 
                   <div class="form-box">
                     <div class="form-label">
                       <label for="linkedin">Linkedin</label>
                     </div>
-                    <input type="text" class="form-control" name="linkedin" />
+                    <input type="text" class="form-control" name="linkedin" 
+                    value="<%= team ? team.linkedin : (formData.linkedin || '') %>" />
                   </div>
                 </div>
 
@@ -147,6 +172,8 @@
                         class="form-check-input"
                         type="checkbox"
                         id="status"
+                        name="published"
+                        <%= team && team.status ? 'checked' : '' %>
                       />
                     </div>
                   </div>
@@ -158,27 +185,29 @@
                   </div>
                   <input
                     type="datetime-local"
-                    name="date"
+                    name="published_date"
                     id="date"
                     class="form-control"
+                    value="<%= team && team.date ? new Date(team.date).toISOString().slice(0, 16) : '' %>"
                     placeholder="YYYY/MM/HH H:M:S"
                   />
                 </div>
 
                 <div class="form-box">
                   <div class="form-label">
-                    <label for="Published_date">Featued Image</label>
+                    <label for="featured_image">Featured Image</label>
                   </div>
                   <div class="upload-container-one">
                     <input
                       id="upload-input-one"
                       type="file"
+                      name="featured_image"
                       accept="image/*"
                       hidden
                     />
                     <div id="image-container-one">
                       <img
-                        src="/images/upload.png"
+                        src="<%= team ? team.featured_image : '/images/upload.png' %>"
                         class="uploaded-image"
                       />
                     </div>

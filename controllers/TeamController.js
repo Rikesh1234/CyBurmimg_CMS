@@ -85,13 +85,14 @@ exports.createTeam = async (req, res) => {
     // Extract form data from the request body
     const {
       name,
+      designation,
       content,
       category,
       email,
       facebook,
       instagram,
       twitter,
-      linkedln,
+      linkedin,
       published,
       published_date,
     } = req.body;
@@ -105,13 +106,14 @@ exports.createTeam = async (req, res) => {
     // Create a new team object
     const newTeam = new Team({
       name,
+      designation,
       content,
       category,
       email,
       facebook,
       instagram,
       twitter,
-      linkedln,
+      linkedin,
       published: published === "on",
       published_date: published_date || Date.now(),
       featured_image,
@@ -171,7 +173,7 @@ exports.updateTeam = async (req, res) => {
     facebook,
     instagram,
     twitter,
-    linkedln,
+    linkedin,
     published,
     published_date,
   } = req.body;
@@ -203,7 +205,7 @@ exports.updateTeam = async (req, res) => {
         facebook,
         instagram,
         twitter,
-        linkedln,
+        linkedin,
         published,
         published_date,
       },
@@ -231,7 +233,7 @@ exports.updateTeam = async (req, res) => {
         facebook,
         instagram,
         twitter,
-        linkedln,
+        linkedin,
         featured_image,
         published: published === "on",
         published_date: published_date || Date.now(),
