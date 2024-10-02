@@ -228,6 +228,30 @@ router.get('/cms/custom-field/create',customFieldController.getCustomFieldCreate
 //slider
 router.get('/cms/slider',sliderController.getSliderPage);
 router.get('/cms/slider/create',sliderController.getSliderCreatePage);
+// Route for handling the slider creation
+router.post(
+  "/cms/slider/create",
+  upload.fields([
+    { name: "featured_image", maxCount: 1 },
+  ]),
+  sliderController.createSlider
+);
+
+
+router.get('/cms/slider/edit/:sliderId',sliderController.getSliderEditPage);
+
+//slider edit
+router.post(
+  "/cms/slider/edit/:sliderId",
+  upload.fields([
+    { name: "featured_image", maxCount: 1 },
+    { name: "featured_image", maxCount: 1 },
+  ]),
+  sliderController.updateSlider
+);
+
+//slider delete
+router.post("/cms/slider/delete/:sliderId", sliderController.deleteSlider);
 
 //package
 router.get('/cms/package',packageController.getPackagePage);

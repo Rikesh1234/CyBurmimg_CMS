@@ -4,7 +4,7 @@ const redis = require("../config/redis");
 //view slider page
 exports.getSliderPage = async (req, res) => {
   try {
-    // Fetch all posts from the database
+    // Fetch all sliders from the database
     const sliders = await Slider.find();
 
     // Render the view and pass the sliders to the EJS template
