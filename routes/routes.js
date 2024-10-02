@@ -44,7 +44,6 @@ router.get("/logout", loginController.getLogout);
 router.get("/cms/dashboard", dashboardController.getPage);
 
 //post
-// router.get('/cms/post',postController.getPostPage);
 router.get("/cms/post", cacheMiddleware, postController.getPostPage);
 
 router.get("/cms/post/create", postController.getPostCreatePage);
