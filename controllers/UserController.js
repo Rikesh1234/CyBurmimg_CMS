@@ -135,7 +135,7 @@ exports.getUserCreatePage = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
-
+  
 
 //view user Edit page
 exports.getUserEditPage = async (req, res) => {

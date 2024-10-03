@@ -28,7 +28,7 @@ async function createAdminRole() {
     } catch (error) {
         console.error('Error creating Admin role:', error.message);
     } finally {
-        mongoose.connection.close(); // Close the database connection
+        mongoose.connection.close();
     }
 }
 
