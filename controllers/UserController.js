@@ -119,17 +119,23 @@ exports.getUserPage = async (req, res) => {
 
 //view user Create page
 exports.getUserCreatePage = async (req, res) => {
-  const activeRoles = await Role.find();
-  console.log(activeRoles);
+  try {
+    // Fetch active roles for dropdown
+    const activeRoles = await Role.find();
 
-  console.log(activeRoles);
-  res.render("users/user/user_create_edit", {
-    title: "User Create Page",
-    user: null,
-    errorMessages: [],
-    roles: activeRoles,
-  });
+    res.render("users/user/user_create_edit", {
+      title: "User Create Page",
+      user: null,
+      errorMessages: [],
+      roles: activeRoles, // Pass active roles for the form
+      formData: {} // Ensure formData is always an object
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
 };
+
 
 //view user Edit page
 exports.getUserEditPage = async (req, res) => {
@@ -163,7 +169,7 @@ exports.getUserEditPage = async (req, res) => {
 
 //view role page
 exports.getRolePage = async (req, res) => {
-  {
+  try{
     // Fetch all roles from the database
     const roles = await Role.find();
 
@@ -207,47 +213,47 @@ exports.getRoleEditPage = async (req, res) => {
 
 //cruds for users
 exports.createUser = [
+  // Validation for required fields
+  (req, res, next) => {
+    const { username, role, email, password, confirm } = req.body;
+
+    const errorMessages = [];
+
+    // Check for required fields
+    if (!username || username.trim() === "") errorMessages.push("Username is required.");
+    if (!role || role.length === 0) errorMessages.push("Role is required.");
+    if (!email || email.trim() === "") errorMessages.push("Email is required.");
+    if (!password || password.trim() === "") errorMessages.push("Password is required.");
+    if (!confirm || confirm.trim() === "") errorMessages.push("Confirm Password is required.");
+    if (password !== confirm) errorMessages.push("Passwords do not match.");
+
+    // If there are errors, re-render the form with error messages
+    if (errorMessages.length > 0) {
+      return res.render("users/user/user_create_edit", {
+        title: "Create User",
+        errorMessages,
+        formData: req.body, // Repopulate form data
+        user: null,
+        roles: [], // Pass roles if needed
+      });
+    }
+
+    next();
+  },
+
   async (req, res) => {
     try {
-      console.log(req.body);
-      // Check validation results
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.render("users/user/user_create_edit", {
-          title: "Create User",
-          errorMessages: errors.array().map((err) => err.msg),
-          formData: req.body,
-          user: null,
-          categories,
-          authors,
-        });
-      }
-
       // Extract form data from the request body
-      const {
-        username,
-        email,
-        password,
-        confirm,
-        role,
-        published,
-        published_date,
-      } = req.body;
-
-      // Handle featured image upload
-      // const featured_image = req.files["user_image"]
-      //   ? `/uploads/user/${req.files["user_image"][0].filename}`
-      //   : "/images/default.jpg";
+      const { username, email, password, role, published, published_date } = req.body;
 
       // Create a new user object
       const newUser = new User({
-        username, // Include username
+        username,
         email,
         password,
-        role, // Include role
+        role, // Make sure this is set correctly
         published: published === "on",
         published_date: published_date || Date.now(),
-        // featured_image,
       });
 
       // Save the user to the database
@@ -260,6 +266,18 @@ exports.createUser = [
       res.redirect("/cms/user");
     } catch (err) {
       console.error(err);
+
+      // In case of validation errors from Mongoose, handle them
+      if (err.name === 'ValidationError') {
+        const errorMessages = Object.values(err.errors).map(error => error.message);
+        return res.render("users/user/user_create_edit", {
+          title: "Create User",
+          errorMessages,
+          formData: req.body,
+          user: null,
+          roles: [], // Pass roles if needed
+        });
+      }
 
       // In case of any other errors, show server error
       res.status(500).send("Server Error");

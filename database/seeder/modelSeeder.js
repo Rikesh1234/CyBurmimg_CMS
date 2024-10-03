@@ -25,12 +25,14 @@ async function createModel(name,path) {
 }
 
 createModel('Post','../models/Post');
-createModel('Category','../models/Caegory');
+createModel('Category','../models/Category');
+createModel('Author','../models/Author');
 createModel('StaticPage','../models/StaticPage');
 createModel('Slider','../models/Slider');
 createModel('Team','../models/Team');
 createModel('TeamType','../models/TeamType');
 createModel('Testimonial','../models/Testominal');
 createModel('User','../models/user');
+createModel('Role','../models/Role');
 createModel('Package','../models/Package');
 createModel('CustomField','../models/CustomField');

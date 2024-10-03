@@ -8,7 +8,7 @@ mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
-
+    
 // Insert a new user
 async function createDummyUser() {
     try {

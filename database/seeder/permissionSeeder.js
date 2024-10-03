@@ -119,12 +119,14 @@ async function seedPermissions() {
     try {
         await createPermissionsForModel('Post');
         await createPermissionsForModel('Category');
+        await createPermissionsForModel('Author');
         await createPermissionsForModel('StaticPage');
         await createPermissionsForModel('Slider');
         await createPermissionsForModel('Team');
         await createPermissionsForModel('TeamType');
         await createPermissionsForModel('Testimonial');
         await createPermissionsForModel('User');
+        await createPermissionsForModel('Role');
         await createPermissionsForModel('Package');
         await createPermissionsForModel('CustomField');
     } finally {
