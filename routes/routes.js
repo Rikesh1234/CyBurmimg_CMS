@@ -74,10 +74,11 @@ router.post(
     { name: "featured_image", maxCount: 1 },
     { name: "gallery_images", maxCount: 10 },
   ]),
+  cacheMiddleware, authorize('Post', 'Create'),
   postController.createPost
 );
 
-router.get("/cms/post/edit/:postId", postController.getPostEditPage);
+router.get("/cms/post/edit/:postId", cacheMiddleware, authorize('Post', 'Update'), postController.getPostEditPage);
 // Route to handle the edit (update) request
 
 router.post(
@@ -86,112 +87,99 @@ router.post(
     { name: "featured_image", maxCount: 1 },
     { name: "gallery_images", maxCount: 10 },
   ]),
+  cacheMiddleware, authorize('Post', 'Update'),
   postController.updatePost
 );
 
-router.post("/cms/post/delete/:postId", postController.deletePost);
+router.post("/cms/post/delete/:postId", cacheMiddleware, authorize('Post', 'Delete'), postController.deletePost);
 
 
 
 // Author
-router.get("/cms/author", postController.getAuthorPage);
+router.get("/cms/author", cacheMiddleware, authorize('Author', 'Read'), postController.getAuthorPage);
 router.get("/cms/author/create", postController.getAuthorCreatePage);
 router.post(
   "/cms/author/create",
   upload.single("author_image"), 
+  cacheMiddleware, authorize('Author', 'Create'),
   postController.createAuthor
 );
 router.get("/cms/author/edit/:authorId", postController.getAuthorEditPage);
 router.post(
   "/cms/author/edit/:authorId",
   upload.single("author_image"), 
+  cacheMiddleware, authorize('Author', 'Update'),
   postController.updateAuthor
 );
-router.post("/cms/author/delete/:authorId", postController.deleteAuthor);
+router.post("/cms/author/delete/:authorId", cacheMiddleware, authorize('Author', 'Delete'), postController.deleteAuthor);
 
 
 //categoey
-router.get("/cms/category", postController.getCategoryPage);
+router.get("/cms/category", cacheMiddleware, authorize('Category', 'Read'), postController.getCategoryPage);
 
 router.post(
   "/cms/category/create",
   upload.single("featured_image"),
+  cacheMiddleware, authorize('Category', 'Create'),
   postController.createCategory
 );
-router.get("/cms/category/create", postController.getCategoryCreatePage);
+router.get("/cms/category/create", cacheMiddleware, authorize('Category', 'Create'), postController.getCategoryCreatePage);
 router.get(
   "/cms/category/edit/:categoryId",
+  cacheMiddleware, authorize('Category', 'Update'),
   postController.getCategoryEditPage
 );
 
-router.post("/cms/category/delete/:categoryId", postController.deleteCategory);
-router.get("/cms/category", postController.getCategoryPage);
-router.get("/cms/category",cacheMiddleware, postController.getCategoryPage);
-
-router.post(
-  "/cms/category/create",
-  upload.single("featured_image"),
-  postController.createCategory
-);
-router.get("/cms/category/create", postController.getCategoryCreatePage);
-router.get(
-  "/cms/category/edit/:categoryId",
-  postController.getCategoryEditPage
-);
-
-router.post("/cms/category/delete/:categoryId", postController.deleteCategory);
+router.post("/cms/category/delete/:categoryId", cacheMiddleware, authorize('Category', 'Delete'), postController.deleteCategory);
 
 //user
-router.get("/cms/user", userController.getUserPage);
-router.get("/cms/user/create", userController.getUserCreatePage);
-router.get("/cms/user/edit/:userId", userController.getUserEditPage);
-router.get("/cms/user", userController.getUserPage);
-router.get("/cms/user/create", userController.getUserCreatePage);
+router.get("/cms/user", cacheMiddleware, authorize('User', 'Read'), userController.getUserPage);
+router.get("/cms/user/create", cacheMiddleware, authorize('User', 'Create'), userController.getUserCreatePage);
+router.get("/cms/user/edit/:userId", cacheMiddleware, authorize('User', 'Update'), userController.getUserEditPage);
 // Route for handling the user creation
 router.post(
   "/cms/user/create",
   upload.fields([
     { name: "user_image", maxCount: 1 },
   ]),
+  cacheMiddleware, authorize('User', 'Create'),
   userController.createUser
 );
 
 
-router.get("/cms/user/edit/:userId", userController.getUserEditPage);
 //user edit
 router.post(
   "/cms/user/edit/:userId",
   upload.fields([
     { name: "user_image", maxCount: 1 },
   ]),
+  cacheMiddleware, authorize('User', 'Update'),
   userController.updateUser
 );
 
 //user delete
-router.post("/cms/user/delete/:userId", userController.deleteUser);
+router.post("/cms/user/delete/:userId", cacheMiddleware, authorize('User', 'Delete'), userController.deleteUser);
 
 
 //role
-router.get("/cms/role", userController.getRolePage);
-router.get("/cms/role/create", userController.getRoleCreatePage);
-router.get("/cms/role/edit/:userId", userController.getRoleEditPage);
-router.get("/cms/role", userController.getRolePage);
-router.get("/cms/role/create", userController.getRoleCreatePage);
+router.get("/cms/role", cacheMiddleware, authorize('Role', 'Read'), userController.getRolePage);
+router.get("/cms/role/create", cacheMiddleware, authorize('Role', 'Create'), userController.getRoleCreatePage);
+router.get("/cms/role/edit/:userId", cacheMiddleware, authorize('Role', 'Update'), userController.getRoleEditPage);
 // Route for handling the user creation
 router.post(
   "/cms/role/create",
+  cacheMiddleware, authorize('Post', 'Create'),
   userController.createRole
 );
-
-router.get("/cms/role/edit/:roleId", userController.getRoleEditPage);
 //role edit
 router.post(
   "/cms/role/edit/:roleId",
+  cacheMiddleware, authorize('Role', 'Update'),
   userController.updateRole
 );
 
 //role delete
-router.post("/cms/role/delete/:roleId", userController.deleteRole);
+router.post("/cms/role/delete/:roleId", cacheMiddleware, authorize('Role', 'Delete'), userController.deleteRole);
 
 
 
@@ -203,22 +191,26 @@ router.post('/cms/permissions/:roleId', userController.updateRolePermissions);
 
 
 //staticpage
-router.get("/cms/static-page", staticPageController.getStaticPagePage);
+router.get("/cms/static-page", cacheMiddleware, authorize('StaticPage', 'Read'), staticPageController.getStaticPagePage);
 router.get(
   "/cms/static-page/create",
+  cacheMiddleware, authorize('StaticPage', 'Create'),
   staticPageController.getStaticPageCreatePage
 );
 router.get(
   "/cms/static-page/edit/:pageId",
+  cacheMiddleware, authorize('StaticPage', 'Update'),
   staticPageController.getStaticPageEditPage
 );
 router.get("/cms/static-page", staticPageController.getStaticPagePage);
 router.get(
   "/cms/static-page/create",
+  cacheMiddleware, authorize('StaticPage', 'Create'),
   staticPageController.getStaticPageCreatePage
 );
 router.get(
   "/cms/static-page/edit/:pageId",
+  cacheMiddleware, authorize('StaticPage', 'Update'),
   staticPageController.getStaticPageEditPage
 );
 
@@ -239,40 +231,40 @@ router.get(
 );
 
 //testomonials
-router.get("/cms/testomonial", testomonialController.getTestomonialPage);
+router.get("/cms/testomonial", cacheMiddleware, authorize('Testimonial', 'Read'), testomonialController.getTestomonialPage);
 router.get(
   "/cms/testomonial/create",
+  cacheMiddleware, authorize('Testimonial', 'Create'),
   testomonialController.getTestomonialCreatePage
 );
 router.get(
   "/cms/testomonial/edit/:userId",
+  cacheMiddleware, authorize('Testimonial', 'Update'),
   testomonialController.getTestomonialEditPage
-);
-router.get("/cms/testomonial", testomonialController.getTestomonialPage);
-router.get(
-  "/cms/testomonial/create",
-  testomonialController.getTestomonialCreatePage
 );
 // Route for handling the testimonial creation
 router.post(
   "/cms/testomonial/create",
+  cacheMiddleware, authorize('Testimonial', 'Create'),
   upload.fields([{ name: "testimonials_image", maxCount: 1 }]),
   testomonialController.createTestominal
 );
 
 router.get(
-  "/cms/testomonial/edit/:userId",
+  "/cms/testomonial/edit/:testomonialId",
+  cacheMiddleware, authorize('Testimonial', 'Update'),
   testomonialController.getTestomonialEditPage
 );
 // Route to handle the edit (update) request
 
 router.post(
   "/cms/testomonial/edit/:testomonialId",
+  cacheMiddleware, authorize('Testimonial', 'Update'),
   upload.fields([{ name: "testimonials_image", maxCount: 1 }]),
   testomonialController.updateTestominal
 );
 
-router.post("/cms/testomonial/delete/:testomonialId", testomonialController.deleteTestominal);
+router.post("/cms/testomonial/delete/:testomonialId", cacheMiddleware, authorize('Testimonial', 'Delete'), testomonialController.deleteTestominal);
 
 
 //partners
@@ -284,12 +276,13 @@ router.get("/cms/partner/create", partnerController.getPartnerCreatePage);
 router.get("/cms/partner/edit/:userId", partnerController.getPartnerEditPage);
 
 // Team Routes
-router.get("/cms/team", teamController.getTeamPage);
-router.get("/cms/team/create", teamController.getTeamCreatePage,);
-router.get("/cms/team/edit/:teamId", teamController.getTeamEditPage,
+router.get("/cms/team", cacheMiddleware, authorize('Team', 'Read'), teamController.getTeamPage);
+router.get("/cms/team/create", cacheMiddleware, authorize('Team', 'Crerate'), teamController.getTeamCreatePage,);
+router.get("/cms/team/edit/:teamId", cacheMiddleware, authorize('Team', 'Update'),
   upload.fields([
     { name: "team_image", maxCount: 1 },
-  ]),
+  ]), 
+  teamController.getTeamEditPage
 );
 
 // Create team with image upload
@@ -304,6 +297,7 @@ router.post(
       next();
     });
   },
+  cacheMiddleware, authorize('Team', 'Create'),
   teamController.createTeam
 );
 
@@ -320,11 +314,12 @@ router.post(
       next();
     });
   },
+  cacheMiddleware, authorize('Team', 'Update'),
   teamController.updateTeam
 );
 
 // Delete team
-router.post("/cms/team/delete/:teamId", teamController.deleteTeam);
+router.post("/cms/team/delete/:teamId", cacheMiddleware, authorize('Team', 'Delete'), teamController.deleteTeam);
 
 //teamType
 router.get("/cms/team-type", teamController.getTeamTypePage);
@@ -339,23 +334,24 @@ router.get("/cms/team-type/edit/:userId", teamController.getTeamTypeEditPage);
 // router.get('/cms/setting/create',settingController.getSettingCreatePage);
 
 //custom field
-router.get('/cms/custom-field',customFieldController.getCustomFieldPage);
-router.get('/cms/custom-field/create',customFieldController.getCustomFieldCreatePage);
+router.get('/cms/custom-field', cacheMiddleware, authorize('CustomField', 'Read'), customFieldController.getCustomFieldPage);
+router.get('/cms/custom-field/create', cacheMiddleware, authorize('CustomField', 'Create'), customFieldController.getCustomFieldCreatePage);
 
 //slider
-router.get('/cms/slider',sliderController.getSliderPage);
-router.get('/cms/slider/create',sliderController.getSliderCreatePage);
+router.get('/cms/slider', cacheMiddleware, authorize('Slider', 'Read'), sliderController.getSliderPage);
+router.get('/cms/slider/create', cacheMiddleware, authorize('Slider', 'Create'), sliderController.getSliderCreatePage);
 // Route for handling the slider creation
 router.post(
   "/cms/slider/create",
   upload.fields([
     { name: "slider_image", maxCount: 1 },
   ]),
+  cacheMiddleware, authorize('Slider', 'Create'),
   sliderController.createSlider
 );
 
 
-router.get('/cms/slider/edit/:sliderId',sliderController.getSliderEditPage);
+router.get('/cms/slider/edit/:sliderId', cacheMiddleware, authorize('Slider', 'Update'), sliderController.getSliderEditPage);
 
 //slider edit
 router.post(
@@ -363,23 +359,25 @@ router.post(
   upload.fields([
     { name: "slider_image", maxCount: 1 },
   ]),
+  cacheMiddleware, authorize('Slider', 'Update'),
   sliderController.updateSlider
 );
 
 //slider delete
-router.post("/cms/slider/delete/:sliderId", sliderController.deleteSlider);
+router.post("/cms/slider/delete/:sliderId", cacheMiddleware, authorize('Slider', 'Delete'), sliderController.deleteSlider);
 
 //package
-router.get('/cms/package',packageController.getPackagePage);
-router.get('/cms/package/create',packageController.getPackageCreatePage);
+router.get('/cms/package', cacheMiddleware, authorize('Package', 'Read'), packageController.getPackagePage);
+router.get('/cms/package/create', cacheMiddleware, authorize('Package', 'Create'), packageController.getPackageCreatePage);
 
 
 // Static Page - Listing
-router.get("/cms/static-page",cacheMiddleware, staticPageController.getStaticPagePage);
+router.get("/cms/static-page",cacheMiddleware, authorize('StaticPage', 'Read'), staticPageController.getStaticPagePage);
 
 // Static Page - Create Page View
 router.get(
   "/cms/static-page/create",
+  cacheMiddleware, authorize('StaticPage', 'Create'),
   staticPageController.getStaticPageCreatePage
 );
 
@@ -387,12 +385,14 @@ router.get(
 router.post(
   "/cms/static-page/create",
   upload.single("static_page_image"),
+  cacheMiddleware, authorize('StaticPage', 'Create'),
   staticPageController.createStaticPage
 );
 
 // Static Page - Edit Page View
 router.get(
   "/cms/static-page/edit/:pageId",
+  cacheMiddleware, authorize('StaticPage', 'Update'),
   staticPageController.getStaticPageEditPage
 );
 
@@ -400,22 +400,24 @@ router.get(
 router.post(
   "/cms/static-page/edit/:pageId",
   upload.single("static_page_image"), // Handle static page image upload
+  cacheMiddleware, authorize('StaticPage', 'Update'),
   staticPageController.updateStaticPage
 );
 
 // Static Page - Delete Action
 router.post(
   "/cms/static-page/delete/:pageId",
+  cacheMiddleware, authorize('StaticPage', 'Delete'),
   staticPageController.deleteStaticPage
 );
 
 //PACKAGE MODULE
-router.get("/cms/package",cacheMiddleware ,packageController.getPackagePage);
-router.get("/cms/package/create", packageController.getPackageCreatePage);
-router.post("/cms/package/create", packageController.createPackage);
-router.get("/cms/package/edit/:packageId", packageController.getPackageEditPage);
-router.post("/cms/package/edit/:packageId", packageController.updatePackage);
-router.post('/cms/package/delete/:id', packageController.deletePackage);
+router.get("/cms/package", cacheMiddleware, authorize('Package', 'Read'), packageController.getPackagePage);
+router.get("/cms/package/create", cacheMiddleware, authorize('Package', 'Create'), packageController.getPackageCreatePage);
+router.post("/cms/package/create", cacheMiddleware, authorize('Package', 'Create'), packageController.createPackage);
+router.get("/cms/package/edit/:packageId", cacheMiddleware, authorize('Package', 'Update'), packageController.getPackageEditPage);
+router.post("/cms/package/edit/:packageId", cacheMiddleware, authorize('Package', 'Update'), packageController.updatePackage);
+router.post('/cms/package/delete/:id', cacheMiddleware, authorize('Package', 'Delete'), packageController.deletePackage);
 
 
 
