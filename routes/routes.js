@@ -66,7 +66,7 @@ router.get("/cms/post", cacheMiddleware,authorize('Post', 'Read'), postControlle
 // router.get("/cms/post", authorize('Post', 'Read'), postController.getPostPage);
 
 
-router.get("/cms/post/create", postController.getPostCreatePage);
+router.get("/cms/post/create", cacheMiddleware, authorize('Post', 'Create'), postController.getPostCreatePage);
 // Route for handling the post creation
 router.post(
   "/cms/post/create",
