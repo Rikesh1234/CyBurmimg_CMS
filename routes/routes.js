@@ -35,7 +35,11 @@ router.get("/category/:slug", homeController.getCategoryListingPage);
 router.get("/post/:postId", homeController.getPostDetailPage);
 
 router.get('/contact', (req, res) => {
-  res.render('theme/goodwill-cleaning/pages/contactPage'); 
+  res.render('theme/goodwill-cleaning/pages/contactPage',{ categorySlug:null,
+    activeHome: false,
+    packageSlug: null,
+    pageSlug: null,
+    contactActive:true}); 
 });
 
 router.get('/price', (req, res) => {

@@ -22,7 +22,7 @@
         <div class="head-title">
           <div class="left">
             <h1>
-              <%= typeof user !== 'undefined' ? 'Edit User' : 'Add User' %>
+              <%= user ? 'Edit User' : 'Add User' %>
             </h1>
             <ul class="breadcrumb">
               <li>
@@ -68,7 +68,7 @@
                   ><span class="important">*</span>
                 </div>
                 <input type="text" class="form-control" name="username" 
-                value="<%= user ? user.name : (formData.name || '') %>" />
+                value="<%= user ? user.username : (formData.username || '') %>" />
               </div>
 
               <div class="form-box">

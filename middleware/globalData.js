@@ -2,6 +2,7 @@
 const Category = require('../models/Category');
 const Page = require('../models/StaticPage');
 const Package = require('../models/Package');
+const Post = require("../models/Post");
 
 
 module.exports = async (req, res, next) => {
@@ -9,6 +10,7 @@ module.exports = async (req, res, next) => {
     const categories = await Category.find();
     const pages = await Page.find();
     const packages = await Package.find();
+    const posts = await Post.find().sort({ createdAt: -1 }).limit(5);
 
     
     
@@ -29,6 +31,7 @@ module.exports = async (req, res, next) => {
     res.locals.pages = pages;
     res.locals.contact = contact;
     res.locals.packages = packages;
+    res.locals.posts = posts;
 
 
     next();

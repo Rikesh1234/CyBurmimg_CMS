@@ -28,21 +28,12 @@
           <a href="/"><img src="/goodwill-cleaning/images/logo.png" /></a>
         </div>
         <ul class="d-flex gap-3 align-items-center m-0">
-          <li class="selected"><a href="/">Home</a></li>
+          <li class="<%= activeHome ? 'active' : '' %>"><a href="/">Home</a></li>
 
           <% let pageCount = 0; %>
           <% pages.forEach(page => { %> 
             <% if (page.slug === 'about-us' && pageCount < 1) { %>
-              <li><a href="/page/<%= page.slug %>">About</a></li>
-              <% pageCount++; %>
-            <% } %>
-          <% }) %>
-
-
-          <% let staticPageCount = 0; %>
-          <% pages.forEach(page => { %> 
-            <% if (staticPageCount < 1) { %>
-              <li><a href="/page/<%= page.slug %>"><%= page.title %></a></li>
+              <li class="<%= pageSlug == page.slug ? 'selected' : '' %>"><a href="/page/<%= page.slug %>">About</a></li>
               <% pageCount++; %>
             <% } %>
           <% }) %>
@@ -50,22 +41,22 @@
           <% let catCount = 0; %>
           <% categories.forEach(cat => { %> 
             <% if (catCount < 3) { %>
-              <li><a href="/category/<%= cat.slug %>"><%= cat.title %></a></li>
+              <li class="<%= categorySlug === cat.slug ? 'selected' : '' %>"><a href="/category/<%= cat.slug %>"><%= cat.title %></a></li>
               <% catCount++; %>
             <% } %>
           <% }) %>
 
-          <li><a href="/price">Pricing</a></li>
+          <li class="<%= packageSlug === 'package' ? 'selected' : '' %>"><a href="/price">Pricing</a></li>
 
           <% let catCount2 = 0; %>
           <% categories.forEach(cat => { %> 
             <% if (catCount2 < 4 && catCount2 > 3) { %>
-              <li><a href="/<%= cat.slug %>"><%= cat.name %></a></li>
+              <li class="<%= categorySlug === cat.slug ? 'selected' : '' %>"><a href="/<%= cat.slug %>"><%= cat.name %></a></li>
               <% } %>
               <% catCount2++; %>
           <% }) %>
 
-          <li><a href="/contact">Contact</a></li>
+          <li class="<%= contactActive ? 'selected' : '' %>"><a href="/contact">Contact</a></li>
         </ul>
       </div>
     </div>

@@ -10,6 +10,8 @@ const Testominal = require("../models/Testominal");
 //view home page
 exports.getPage = async (req, res) => {  // Mark the function as async
     try {
+
+
         const posts = await Post.find()
         .sort({ createdAt: -1 })
         .populate('category'); 
@@ -30,7 +32,7 @@ exports.getPage = async (req, res) => {  // Mark the function as async
         }
 
         // Pass the posts data to the template along with the title
-        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonials,sliders });
+        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonials,sliders, activeHome: true, categorySlug: null, pageSlug: null,packageSlug:null, contactActive:false });
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
@@ -41,6 +43,8 @@ exports.getPage = async (req, res) => {  // Mark the function as async
 // ---------SELECTED STATIC PAGE------------------------------------------------------
 exports.getStaticPage = async (req, res) => {
   try {
+
+    const pageSlug = req.params.slug;
     // Fetch the page data based on the slug in the URL
     const staticPage = await StaticPage.findOne({ slug: req.params.slug });
 
@@ -59,7 +63,12 @@ exports.getStaticPage = async (req, res) => {
     res.render(`theme/${process.env.THEME}/pages/static-page`, {
       pageTitle,
       background_image,
-      content
+      content,
+      activeHome: false, 
+      pageSlug,
+      categorySlug: null,
+      packageSlug:null,
+      contactActive:false
     });
 
   } catch (err) {
@@ -115,6 +124,11 @@ exports.getCategoryListingPage = async (req, res) => {
     res.render("theme/goodwill-cleaning/pages/postListing", {
       posts,
       category, // Pass the category data to the view
+      categorySlug,
+      activeHome: false,
+      packageSlug: null,
+      pageSlug: null,
+      contactActive:false
     });
   } catch (err) {
     console.error("Error fetching posts for category:", err);
@@ -155,13 +169,18 @@ exports.getPackage = async (req, res) => {
   try {
     // Fetch packages from the database
     const packages = await Package.find();
-
+    const packageSlug = 'package';
     
 
     // Render the EJS view, passing packages data
     res.render('theme/goodwill-cleaning/pages/pricePage', {
       title: 'Package Prices',
       packages: packages,
+      packageSlug,
+      categorySlug:null,
+      activeHome: false,
+      pageSlug: null,
+      contactActive:false
     });
   } catch (error) {
     console.error('Error fetching packages:', error);

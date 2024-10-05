@@ -20,13 +20,10 @@
 
         <!-- Dynamic Links for Categories (Limiting to 3) -->
         <% categories.slice(0, 3).forEach(cat => { %> 
-          <li><a href="/<%= cat.slug %>"><%= cat.title %></a></li>
+          <li><a href="/category/<%= cat.slug %>"><%= cat.title %></a></li>
         <% }) %>
 
-        <!-- Static Links -->
-        <li><a href="/pricing">Pricing</a></li>
-        <li><a href="/project">Project</a></li>
-        <li><a href="/blog">Blog</a></li>
+
 
         <!-- Additional Categories (4th Category) -->
         <% if (categories[3]) { %>

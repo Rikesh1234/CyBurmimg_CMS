@@ -2,7 +2,7 @@ const redis = require('redis');
 
 // Create a Redis client
 const client = redis.createClient({
-  url: 'redis://127.0.0.1:48607',
+  url: 'redis://127.0.0.1:' + (process.env.REDIS_PORT || '6379'),
   password: process.env.REDIS_PASSWORD 
 });
 
