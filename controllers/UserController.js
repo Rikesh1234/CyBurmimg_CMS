@@ -121,22 +121,49 @@ exports.getUserPage = async (req, res) => {
   }
 };
 
-//view user Create page
+// Get User Create Page
 exports.getUserCreatePage = async (req, res) => {
   try {
-    // Fetch active roles for dropdown
-    const activeRoles = await Role.find();
+    // Fetch the logged-in user from the session
+    const username = req.session.user.username;
 
-    res.render("users/user/user_create_edit", {
-      title: "User Create Page",
+    
+    // Find the user in the database and populate their role
+    const user = await User.findOne({ username }).populate('role');
+
+    if (!user) {
+      console.error('User not found');
+      return res.status(404).send('User not found');
+    }
+
+    // Check the user's role to determine which roles should be shown in the dropdown
+    const userRole = user.role.name; // Assuming `role` has a `name` field
+
+    
+    let activeRoles;
+
+    // If the user is an admin, show all roles
+    if (userRole === 'admin') {
+      activeRoles = await Role.find();
+    } else {
+      // If the user is not an admin, exclude the "admin" role
+      activeRoles = await Role.find({ name: { $ne: 'admin' } });
+      
+    }
+  
+
+    // Render the User Create/Edit page
+    res.render('users/user/user_create_edit', {
+      title: 'User Create Page',
       user: null,
       errorMessages: [],
-      roles: activeRoles, // Pass active roles for the form
-      formData: {} // Ensure formData is always an object
+      roles: activeRoles, // Pass the roles for the dropdown
+      formData: {} // Ensure formData is always an object for the form
     });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
+    console.error('Error fetching user create page:', err);
+    res.status(500).send('Server Error');
   }
 };
   
@@ -148,10 +175,10 @@ exports.getUserEditPage = async (req, res) => {
     const userId = req.params.userId;
 
     // Fetch all active roles for the dropdown
-    const activeRoles = await Role.find();
+    // const activeRoles = await Role.find();
 
     // Fetch the user from the database, including their role
-    const user = await User.findById(userId).populate('role');
+    const activeRoles = await Role.find({ name: { $ne: 'admin' } });
 
     // If user not found, return a 404 error
     if (!user) {
