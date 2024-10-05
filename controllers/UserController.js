@@ -45,9 +45,13 @@ exports.getRolePermissions = async (req, res) => {
 
 // Update permissions for a role
 exports.updateRolePermissions = async (req, res) => {
+
+
   try {
-    const { roleId } = req.params; // The ID of the role to update
-    const permissions = req.body.permissions || []; // Permissions submitted by the form
+
+
+    const { roleId } = req.params;
+    const permissions = req.body.permissions || []; 
 
     // Ensure permissions is always an array
     const permissionsArray = Array.isArray(permissions)
@@ -172,7 +176,6 @@ exports.getRolePage = async (req, res) => {
   try{
     // Fetch all roles from the database
     const roles = await Role.find();
-
       //Render the view and pass the users to the EJS template
       res.render('users/role/role_listing',{title:'Role Page', roles});
     }catch (err) {
