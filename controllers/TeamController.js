@@ -16,6 +16,7 @@ const getPostValidationRules = () => {
 
 //view member page
 exports.getTeamPage= async (req,res)=>{
+  if (req.session.user) {
     try{
       // Fetch all team from the database
       const teams= await Team.find();
@@ -25,22 +26,40 @@ exports.getTeamPage= async (req,res)=>{
     }catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
+      res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
     }
+  }else{
+    res.render("404", {
+      errorMessages: "Looks Like you are lost!",
+      error: "404",
+    });
+  }
   }
 
 //view member Create page
 exports.getTeamCreatePage = (req, res) => {
+  if (req.session.user) {
   res.render('teams/team/team_create_edit', {
       title: 'Team Create Page',
       team: null,
       errorMessages: [],
       formConfig:validationConfig.team
   });
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 
 //view member Edit page
 exports.getTeamEditPage = async (req, res) => {
+  if (req.session.user) {
   try {
       const teamId = req.params.teamId; // Use the correct parameter name from the route
       // Fetch the existing team
@@ -62,12 +81,23 @@ exports.getTeamEditPage = async (req, res) => {
   } catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
+      res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 
 //view member Edit page
 exports.getTeamEditPage = async (req, res) => {
+  if (req.session.user) {
   try {
       const teamId = req.params.teamId; // Use the correct parameter name from the route
       // Fetch the existing team
@@ -88,23 +118,54 @@ exports.getTeamEditPage = async (req, res) => {
   } catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
+      res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 
 //view member-type page
 exports.getTeamTypePage=(req,res)=>{
+  if (req.session.user) {
     res.render('teams/memberType/memberType_listing',{title:'Team Type Page'});
+  }else{
+    res.render("404", {
+      errorMessages: "Looks Like you are lost!",
+      error: "404",
+    });
+  }
 }
 
 //view member-type Create page
 exports.getTeamTypeCreatePage=(req,res)=>{
+  if (req.session.user) {
     res.render('teams/memberType/memberType_create_edit',{title:'Team Type Create Page',formConfig: validationConfig.team});
+  }else{
+    res.render("404", {
+      errorMessages: "Looks Like you are lost!",
+      error: "404",
+    });
+  }
 }
 
 //view member-type Edit page
 exports.getTeamTypeEditPage=(req,res)=>{
+  if (req.session.user) {
     res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page',formConfig: validationConfig.team});
+  }else{
+    res.render("404", {
+      errorMessages: "Looks Like you are lost!",
+      error: "404",
+    });
+  }
 }
 
 
@@ -173,6 +234,10 @@ exports.createTeam = async (req, res) => {
     } else {
       console.error(err);
       res.status(500).send("Server Error");
+      res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
     }
   }
 };
@@ -192,6 +257,10 @@ exports.deleteTeam = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
 };
 
@@ -285,6 +354,10 @@ exports.updateTeam = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
 };
 

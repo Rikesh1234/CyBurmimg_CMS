@@ -3,6 +3,7 @@ const Testominal = require("../models/Testominal");
 
 //view testomonial page
 exports.getTestomonialPage = async (req, res) => {
+  if (req.session.user) {
   try {
     // Fetch all testimonials from the database
     const testimonials = await Testominal.find();
@@ -14,20 +15,38 @@ exports.getTestomonialPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 // View testimonial Create page
 exports.getTestomonialCreatePage = (req, res) => {
+  if (req.session.user) {
   res.render("testomonial/testomonial_create_edit", {
     title: "Testimonial Create Page",
     testominal: null,
   });
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 //view testomonial Edit page
 // Fetch and render the edit page for a specific testimonial
 exports.getTestomonialEditPage = async (req, res) => {
+  if (req.session.user) {
   try {
     const testomonialId = req.params.userId; // Assuming `userId` is the correct parameter name
 
@@ -46,7 +65,17 @@ exports.getTestomonialEditPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 //cruds for testominal
@@ -92,6 +121,10 @@ exports.createTestominal = async (req, res) => {
     } else {
       console.error(err);
       res.status(500).send("Server Error");
+      res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
     }
   }
 };
@@ -113,6 +146,10 @@ exports.deleteTestominal = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
 };
 
@@ -181,6 +218,10 @@ exports.updateTestominal = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
 };
 

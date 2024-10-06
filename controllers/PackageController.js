@@ -1,37 +1,53 @@
-
 const redis = require("../config/redis");
 const { body, validationResult } = require("express-validator");
 const Package = require("../models/Package");
 
-
 //view package page
 exports.getPackagePage = async (req, res) => {
-  try {
-    // Fetch all packages from the database
-    const packages = await Package.find();
+  if (req.session.user) {
+    try {
+      // Fetch all packages from the database
+      const packages = await Package.find();
 
-    // Render the view and pass the packages to the EJS template
-    res.render('package/package_listing', { title: 'Package Page', packages });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
+      // Render the view and pass the packages to the EJS template
+      res.render("package/package_listing", {
+        title: "Package Page",
+        packages,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Server Error");
+      res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
+    }
+  } else {
+    res.render("404", {
+      errorMessages: "Looks Like you are lost!",
+      error: "404",
+    });
   }
 };
 
-
 //view package Create page
 exports.getPackageCreatePage = (req, res) => {
-  res.render('package/package_create_edit', {
-    title: 'Package Create Page',
-    package: null, 
-  });
+  if (req.session.user) {
+    res.render("package/package_create_edit", {
+      title: "Package Create Page",
+      package: null,
+    });
+  } else {
+    res.render("404", {
+      errorMessages: "Looks Like you are lost!",
+      error: "404",
+    });
+  }
 };
-
 
 // Handle package creation
 exports.createPackage = async (req, res) => {
   try {
-    
     const { title, currency, price, includes } = req.body;
 
     // If includes are provided, make sure it's an array
@@ -42,40 +58,52 @@ exports.createPackage = async (req, res) => {
       title,
       currency,
       price,
-      includes: includesArray
+      includes: includesArray,
     });
 
     // Save the package to the database
     await newPackage.save();
     await redis.del("/cms/package");
 
-
     // Redirect to package listing or any other desired page after successful creation
     res.redirect("/cms/package");
   } catch (error) {
     console.error("Error creating package:", error);
-    res.status(500).send("Server Error");
+    res.render("404", {
+      errorMessages: "Something is wrong with our side. Please inform us!",
+      error: "500",
+    });
   }
 };
 
-
 // Get Package Edit Page
 exports.getPackageEditPage = async (req, res) => {
-  try {
-    const packageId = req.params.packageId;
-    const packageData = await Package.findById(packageId);
+  if (req.session.user) {
+    try {
+      const packageId = req.params.packageId;
+      const packageData = await Package.findById(packageId);
 
-    if (!packageData) {
-      return res.status(404).send('Package not found');
+      if (!packageData) {
+        return res.status(404).send("Package not found");
+      }
+
+      res.render("package/package_create_edit", {
+        title: "Edit Package",
+        package: packageData, // Pass the package data to the template
+      });
+    } catch (error) {
+      console.error("Error fetching package for edit:", error);
+      res.status(500).send("Server Error");
+      res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
     }
-
-    res.render('package/package_create_edit', {
-      title: 'Edit Package',
-      package: packageData, // Pass the package data to the template
+  } else {
+    res.render("404", {
+      errorMessages: "Looks Like you are lost!",
+      error: "404",
     });
-  } catch (error) {
-    console.error('Error fetching package for edit:', error);
-    res.status(500).send('Server Error');
   }
 };
 
@@ -101,15 +129,18 @@ exports.updatePackage = async (req, res) => {
     );
 
     if (!updatedPackage) {
-      return res.status(404).send('Package not found');
+      return res.status(404).send("Package not found");
     }
     await redis.del("/cms/package");
 
     // Redirect to package listing or any other desired page after successful update
     res.redirect("/cms/package");
   } catch (error) {
-    console.error('Error updating package:', error);
-    res.status(500).send('Server Error');
+    console.error("Error updating package:", error);
+    res.render("404", {
+      errorMessages: "Something is wrong with our side. Please inform us!",
+      error: "500",
+    });
   }
 };
 
@@ -128,9 +159,12 @@ exports.deletePackage = async (req, res) => {
     await redis.del("/cms/package");
 
     // Redirect to the package listing after successful deletion
-    res.redirect('/cms/package');
+    res.redirect("/cms/package");
   } catch (err) {
     console.error("Error deleting package:", err);
-    res.status(500).send("Server Error");
+    res.render("404", {
+      errorMessages: "Something is wrong with our side. Please inform us!",
+      error: "500",
+    });
   }
 };
