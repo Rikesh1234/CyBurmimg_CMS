@@ -22,7 +22,7 @@
       <main>
         <div class="head-title">
           <div class="left">
-            <h1>Add Category</h1>
+            <h1><%= cat ? 'Edit Category' : 'Add Category' %></h1>
             <ul class="breadcrumb">
               <li>
                 <a href="/cms/dashboard">Dashboard</a>
@@ -33,7 +33,7 @@
               </li>
               <li><i class="bx bx-chevron-right"></i></li>
               <li>
-                <a class="active">Add Category</a>
+                <a class="active"><%= cat ? 'Edit Category' : 'Add Category' %></a>
               </li>
             </ul>
           </div>
@@ -56,21 +56,21 @@
                   class="form-control"
                   name="title"
                   id="title"
-                />
+                  value="<%= cat ? cat.title : (formData.title || '') %>" />
               </div>
 
               <div class="form-box">
                 <div class="form-label">
                   <label for="slug">Slug</label><span class="important">*</span>
                 </div>
-                <input type="text" class="form-control" name="slug" id="slug" />
+                <input type="text" class="form-control" name="slug" id="slug" value="<%= cat ? cat.slug : (formData.slug || '') %>" />
               </div>
 
               <div class="form-box">
                 <div class="form-label">
                   <label for="tag_line">Tag Line</label>
                 </div>
-                <input type="text" class="form-control" name="tag_line" />
+                <input type="text" class="form-control" name="tag_line"  value="<%= cat ? cat.tag_line : (formData.tag_line || '') %>" /> 
               </div>
 
               <div class="form-box">
@@ -97,7 +97,8 @@
                   rows="7"
                   cols="7"
                   id="description"
-                ></textarea>
+                  value="<%= cat ? cat.content : (formData.content || '') %>" >
+                </textarea>
               </div>
             </div>
 
@@ -112,6 +113,8 @@
                       type="checkbox"
                       id="status"
                       name="status"
+                      <%=cat &&
+                            cat.status ? 'checked' : '' %>
                     />
                   </div>
                 </div>
@@ -129,7 +132,7 @@
                     hidden
                   />
                   <div id="image-container-one">
-                    <img src="/images/upload.png" class="uploaded-image" />
+                    <img src="<%= cat ? cat.featured_image : '/images/upload.png' %>" class="uploaded-image" />
                   </div>
                   <label for="upload-input-one">Upload Image</label>
                 </div>

@@ -35,15 +35,11 @@ router.get("/category/:slug", homeController.getCategoryListingPage);
 router.get("/post/:postId", homeController.getPostDetailPage);
 
 router.get('/contact', (req, res) => {
-  res.render('theme/goodwill-cleaning/pages/contactPage',{ categorySlug:null,
-    activeHome: false,
-    packageSlug: null,
-    pageSlug: null,
-    contactActive:true}); 
+  res.render('theme/goodwill-cleaning/pages/contactPage',{ showingpage: 'contact'}); 
 });
 
 router.get('/price', (req, res) => {
-  res.render('theme/goodwill-cleaning/pages/pricePage'); 
+  res.render('theme/goodwill-cleaning/pages/pricePage',{showingpage: 'price'}); 
 });
 router.get("/price", homeController.getPackage);
 
@@ -168,7 +164,7 @@ router.post("/cms/user/delete/:userId", cacheMiddleware, authorize('User', 'Dele
 //role
 router.get("/cms/role", cacheMiddleware, authorize('Role', 'Read'), userController.getRolePage);
 router.get("/cms/role/create", cacheMiddleware, authorize('Role', 'Create'), userController.getRoleCreatePage);
-router.get("/cms/role/edit/:userId", cacheMiddleware, authorize('Role', 'Update'), userController.getRoleEditPage);
+router.get("/cms/role/edit/:roleId", cacheMiddleware, authorize('Role', 'Update'), userController.getRoleEditPage);
 // Route for handling the user creation
 router.post(
   "/cms/role/create",
@@ -281,7 +277,7 @@ router.get("/cms/partner/edit/:userId", partnerController.getPartnerEditPage);
 
 // Team Routes
 router.get("/cms/team", cacheMiddleware, authorize('Team', 'Read'), teamController.getTeamPage);
-router.get("/cms/team/create", cacheMiddleware, authorize('Team', 'Crerate'), teamController.getTeamCreatePage,);
+router.get("/cms/team/create", cacheMiddleware, authorize('Team', 'Create'), teamController.getTeamCreatePage,);
 router.get("/cms/team/edit/:teamId", cacheMiddleware, authorize('Team', 'Update'),
   upload.fields([
     { name: "team_image", maxCount: 1 },

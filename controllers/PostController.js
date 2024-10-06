@@ -585,8 +585,27 @@ exports.deleteCategory = async (req, res) => {
 };
 
 //view Category Edit page
-exports.getCategoryEditPage = (req, res) => {
-  res.render("posts/category/category_create_edit", {
-    title: "Category Edit Page",
-  });
+exports.getCategoryEditPage = async (req, res) => {
+  try {
+    const catId = req.params.categoryId;
+
+    // Find the post by ID
+    const cat = await Category.findById(catId);
+
+
+    if (!cat) {
+      return res.status(404).send("Category not found");
+    }
+
+    // Pass 'errorMessages' as an empty array if no errors exist
+    res.render("posts/category/category_create_edit", {
+      title: "Edit Category",
+      errorMessages: [], // Default to empty array
+      cat,
+      formConfig: validationConfig.post
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 };

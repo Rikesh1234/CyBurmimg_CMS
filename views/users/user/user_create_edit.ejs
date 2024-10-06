@@ -36,7 +36,7 @@
               <li>
                 <!-- <a class="active">Add User</a> -->
                 <h1>
-                  <%= typeof user !== 'undefined' ? 'Edit User' : 'Add User' %>
+                  <%= user  ? 'Edit User' : 'Add User' %>
                 </h1>
               </li>
             </ul>
@@ -77,7 +77,9 @@
                 </div>
                 <select name="role" class="select-tags form-control" multiple="multiple">
                   <% roles.forEach(function(role) { %>
-                    <option value="<%= role._id %>"><%= role.name %></option>
+                    <option value="<%= role._id %>" <%=user && user.role &&
+                      user.role.toString()===role._id.toString() ? 'selected' : '' %>><%= role.name
+                        %>
                   <% }) %>
                 </select>
               </div>

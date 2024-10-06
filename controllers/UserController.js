@@ -45,13 +45,9 @@ exports.getRolePermissions = async (req, res) => {
 
 // Update permissions for a role
 exports.updateRolePermissions = async (req, res) => {
-
-
   try {
-
-
-    const { roleId } = req.params;
-    const permissions = req.body.permissions || []; 
+    const { roleId } = req.params; // The ID of the role to update
+    const permissions = req.body.permissions || []; // Permissions submitted by the form
 
     // Ensure permissions is always an array
     const permissionsArray = Array.isArray(permissions)
@@ -111,7 +107,10 @@ exports.getUserPage = async (req, res) => {
   try {
     // Fetch all users from the database
 
-    const users = await User.find();
+    let users = await User.find().populate('role');
+
+// Filter out users whose role is Admin
+     users = users.filter(user => user.role.name !== 'Admin');
 
     //Render the view and pass the users to the EJS template
     res.render("users/user/user_listing", { title: "User Page", users });
@@ -121,7 +120,7 @@ exports.getUserPage = async (req, res) => {
   }
 };
 
-// Get User Create Page
+//view user Create page
 exports.getUserCreatePage = async (req, res) => {
   try {
     // Fetch the logged-in user from the session
@@ -143,11 +142,11 @@ exports.getUserCreatePage = async (req, res) => {
     let activeRoles;
 
     // If the user is an admin, show all roles
-    if (userRole === 'admin') {
+    if (userRole === 'Admin') {
       activeRoles = await Role.find();
     } else {
       // If the user is not an admin, exclude the "admin" role
-      activeRoles = await Role.find({ name: { $ne: 'admin' } });
+      activeRoles = await Role.find({ name: { $ne: 'Admin' } });
       
     }
   
@@ -177,8 +176,10 @@ exports.getUserEditPage = async (req, res) => {
     // Fetch all active roles for the dropdown
     // const activeRoles = await Role.find();
 
+    const user = await User.findById(userId);
+
     // Fetch the user from the database, including their role
-    const activeRoles = await Role.find({ name: { $ne: 'admin' } });
+    const activeRoles = await Role.find({ name: { $ne: 'Admin' } });
 
     // If user not found, return a 404 error
     if (!user) {
@@ -202,7 +203,10 @@ exports.getUserEditPage = async (req, res) => {
 exports.getRolePage = async (req, res) => {
   try{
     // Fetch all roles from the database
-    const roles = await Role.find();
+    let roles = await Role.find();
+
+    roles = roles.filter(role => role.name !== 'Admin');
+
       //Render the view and pass the users to the EJS template
       res.render('users/role/role_listing',{title:'Role Page', roles});
     }catch (err) {
@@ -336,29 +340,45 @@ exports.deleteUser = async (req, res) => {
 // Handle updating a user
 exports.updateUser = async (req, res) => {
   const userId = req.params.userId;
-  const { name, email, password, confirm, published, published_date } =
-    req.body;
+  // Extract form data from the request body
+  const { username, email, password, confirm, role, published, published_date } = req.body;
 
   // Array to collect validation errors
   const errorMessages = [];
 
   // Perform manual validation on required fields
-  if (!name || name.trim() === "") errorMessages.push("Name is required");
+  if (!username || username.trim() === "") errorMessages.push("username is required");
   if (!email || email.trim() === "") errorMessages.push("Email is required");
-  if (!password) errorMessages.push("Password is required");
-  if (!confirm) errorMessages.push("Confirm Password is required");
+  
+  // Password validation logic
+  if (password === undefined || password === "") {
+    // If password is not provided, we do not check confirm password
+    if (confirm && confirm.trim() !== "") {
+      errorMessages.push("Confirm Password should not be provided if Password is not set.");
+    }
+  } else {
+    // If password is provided, check if confirm password matches
+    if (confirm === undefined || confirm === "") {
+      errorMessages.push("Confirm Password is required when setting a new Password.");
+    } else if (password !== confirm) {
+      errorMessages.push("Password and Confirm Password do not match.");
+    }
+  }
 
   // If there are validation errors, re-render the form with error messages
   if (errorMessages.length > 0) {
     // Fetch the existing user to repopulate the form
     const existingUser = await User.findById(userId);
+    const roles = await Role.find({ username: { $ne: 'Admin' } });
     return res.render("users/user/user_create_edit", {
       title: "Edit User",
+      roles,
       errorMessages,
       user: {
         ...existingUser.toObject(), // Copy existing user details
-        name, // Preserve user’s current input
+        username, // Preserve user’s current input
         email,
+        role,
         published,
         published_date,
       },
@@ -366,24 +386,26 @@ exports.updateUser = async (req, res) => {
   }
 
   try {
-    // Handle featured image update if provided
-    const featured_image = req.files["featured_image"]
-      ? `/uploads/user/${req.files["featured_image"][0].filename}`
-      : req.body.existing_featured_image;
+
+    // Prepare the update object
+    const updateFields = {
+      username,
+      email,
+      role,
+      published: published === "on",
+      published_date: published_date || Date.now(),
+    };
+
+    // Update the password only if it's provided
+    if (password && password.trim() !== "") {
+      updateFields.password = password; // Include password only if it's set
+    }
 
     // Update the user
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        name,
-        email,
-        password,
-        featured_image,
-        published: published === "on",
-        published_date: published_date || Date.now(),
-      },
-      { new: true, runValidators: true } // Ensure Mongoose validation is still applied
-    );
+    const updatedUser = await User.findByIdAndUpdate(userId, updateFields, {
+      new: true,
+      runValidators: true, // Ensure Mongoose validation is still applied
+    });
 
     if (!updatedUser) {
       return res.status(404).send("User not found");
