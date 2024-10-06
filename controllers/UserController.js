@@ -124,6 +124,7 @@ exports.getUserPage = async (req, res) => {
 // Get User Create Page
 exports.getUserCreatePage = async (req, res) => {
   try {
+
     // Fetch the logged-in user from the session
     const username = req.session.user.username;
 
@@ -143,11 +144,11 @@ exports.getUserCreatePage = async (req, res) => {
     let activeRoles;
 
     // If the user is an admin, show all roles
-    if (userRole === 'admin') {
+    if (userRole === 'Admin') {
       activeRoles = await Role.find();
     } else {
       // If the user is not an admin, exclude the "admin" role
-      activeRoles = await Role.find({ name: { $ne: 'admin' } });
+      activeRoles = await Role.find({ name: { $ne: 'Admin' } });
       
     }
   

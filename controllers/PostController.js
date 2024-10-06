@@ -382,10 +382,6 @@ exports.getAuthorEditPage = async (req, res) => {
     // Find the author by ID
     const author = await Author.findById(authorId);
 
-    // Log the `author` object to verify fields
-    console.log('Fetched Author:', author);
-    console.log(author.socialLinks)
-
     // If the author is not found, handle the error appropriately
     if (!author) {
       return res.status(404).send('Author not found');

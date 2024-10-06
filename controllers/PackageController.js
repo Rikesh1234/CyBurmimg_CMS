@@ -31,7 +31,6 @@ exports.getPackageCreatePage = (req, res) => {
 // Handle package creation
 exports.createPackage = async (req, res) => {
   try {
-    console.log(req.body);
     
     const { title, currency, price, includes } = req.body;
 
