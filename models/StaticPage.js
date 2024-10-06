@@ -15,6 +15,14 @@ const staticPageSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Content is required'],
   },
+  tag_line: {
+    type: String, 
+    default: '',
+  },
+  summary: {
+    type: String,
+    default: '',
+  },
   status: {
     type: String,
     enum: ['active', 'inactive'],
@@ -31,4 +39,3 @@ const staticPageSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('StaticPage', staticPageSchema);
-    

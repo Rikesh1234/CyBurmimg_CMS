@@ -31,10 +31,6 @@ const authorize = (modelName, requiredPermission) => {
                 path: 'role.permissions',
                 populate: { path: 'model' }
             });
-
-            // Debug output to ensure proper population
-            console.log('Fully populated user:', user);
-
             // Check if role has the required permission for the specified model
             const hasPermission = user.role.permissions.some(permission =>
                 permission.type === requiredPermission && permission.model.name === modelName

@@ -57,7 +57,7 @@
                   name="title"
                   id="title"
                   value="<%= page ? page.title : '' %>"
-                  required
+                  
                 />
               </div>
 
@@ -464,6 +464,23 @@
           .replace(/^-+|-+$/g, "");
         slugInput.val(theSlug);
       });
+
+        const formErrors = <%- JSON.stringify(errors || []) %>;
+        console.log('Form Errors:', formErrors); // Check if the errors are appearing correctly
+      
+        document.addEventListener('DOMContentLoaded', () => {
+          // If there are errors, show the Swal alert
+          if (formErrors.length > 0) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Validation Error',
+              html: '<ul>' + formErrors.map(error => `<li>${error}</li>`).join('') + '</ul>',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      
+
     </script>
   </body>
 </html>

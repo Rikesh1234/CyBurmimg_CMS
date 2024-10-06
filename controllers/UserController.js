@@ -123,6 +123,7 @@ exports.getUserPage = async (req, res) => {
 //view user Create page
 exports.getUserCreatePage = async (req, res) => {
   try {
+
     // Fetch the logged-in user from the session
     const username = req.session.user.username;
 

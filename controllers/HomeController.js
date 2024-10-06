@@ -54,7 +54,6 @@ exports.getStaticPage = async (req, res) => {
     if (!staticPage) {
       return res.status(404).send('Page not found');
     }
-    console.log(staticPage);
     
 
     // Define variables to be used in the view
@@ -90,7 +89,6 @@ exports.getHomePageSlider = async (req, res) => {
 
     // Render the homepage view with sliders data
     res.render("theme/goodwill-cleaning/index", { sliders });
-    console.log(sliders);
     
   } catch (err) {
     console.error("Error fetching sliders:", err);
