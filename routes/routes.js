@@ -432,8 +432,13 @@ router.get("/page/:pageSlug", homeController.getStaticPage);
 
 // ----------------------------------------------------------------------------------------------
 // FRONTEND ROUTES
+router.use((req, res) => {
+  res.status(404).render('404', { 
+    title: 'Page Not Found',
+    error: '404', // Pass a default error value
+    errorMessages: 'The page you are looking for cannot be found.' // Default error message
+  });
+});
 
 
-
-module.exports = router;
 module.exports = router;
