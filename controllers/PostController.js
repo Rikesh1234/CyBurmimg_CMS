@@ -203,108 +203,114 @@ exports.getPostEditPage = async (req, res) => {
 };
 
 // Handle updating a post
-exports.updatePost = async (req, res) => {
-  const postId = req.params.postId;
-  const {
-    title,
-    slug,
-    tag_line,
-    summary,
-    content,
-    category,
-    author,
-    tags,
-    published,
-    published_date,
-  } = req.body;
+exports.updatePost = [
+  // Apply dynamic validation rules based on config
+  ...getPostValidationRules(),
 
-  // Array to collect validation errors
-  const errorMessages = [];
+  async (req, res) => {
+    const postId = req.params.postId;
+    const {
+      title,
+      slug,
+      tag_line,
+      summary,
+      content,
+      category,
+      author,
+      tags,
+      published,
+      published_date,
+    } = req.body;
 
-  // Perform manual validation on required fields
-  if (!title || title.trim() === "") errorMessages.push("Title is required");
-  if (!slug || slug.trim() === "") errorMessages.push("Slug is required");
-  if (!content || content.trim() === "")
-    errorMessages.push("Content is required");
-  if (!category || category.length === 0)
-    errorMessages.push("At least one category is required");
-  if (!author || author.trim() === "") errorMessages.push("Author is required");
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // Fetch the existing post and any other necessary data
+      const existingPost = await Post.findById(postId);
+      const authors = await Author.find({ status: "active" }).lean();
+      const categories = await Category.find({ status: "active" }).lean();
 
-  // If there are validation errors, re-render the form with error messages
-  if (errorMessages.length > 0) {
-    // Fetch the existing post to repopulate the form
-    const existingPost = await Post.findById(postId);
-    return res.render("posts/post/post_create_edit", {
-      title: "Edit Post",
-      errorMessages,
-      post: {
-        ...existingPost.toObject(), // Copy existing post details
-        title, // Preserve user’s current input
-        slug,
-        tag_line,
-        summary,
-        content,
-        category,
-        author,
-        tags,
-        published,
-        published_date,
-      },
-    });
-  }
+      // Return validation errors and repopulate form data
+      return res.render("posts/post/post_create_edit", {
+        title: "Edit Post",
+        errorMessages: errors.array().map((err) => err.msg),
+        post: {
+          ...existingPost.toObject(), // Copy existing post details
+          title, // Preserve user's current input
+          slug,
+          tag_line,
+          summary,
+          content,
+          category,
+          author,
+          tags,
+          published,
+          published_date,
+        },
+        authors, // Pass authors for dropdown
+        categories, // Pass categories for dropdown
+        formConfig: validationConfig.post, // Pass formConfig
+      });
+    }
 
-  try {
-    // Handle featured image update if provided
-    const featured_image = req.files["featured_image"]
-      ? `/uploads/post/${req.files["featured_image"][0].filename}`
-      : req.body.existing_featured_image;
+    try {
+      // Handle featured image update if provided
+      const featured_image = req.files["featured_image"]
+        ? `/uploads/post/${req.files["featured_image"][0].filename}`
+        : req.body.existing_featured_image;
 
-    // Handle gallery images update
-    const gallery_images = req.files["gallery_images"]
-      ? req.files["gallery_images"].map(
-          (file) => `/uploads/post/gallery/${file.filename}`
-        )
-      : req.body.existing_gallery_images || [];
+      // Handle gallery images update
+      const gallery_images = req.files["gallery_images"]
+        ? req.files["gallery_images"].map(
+            (file) => `/uploads/post/gallery/${file.filename}`
+          )
+        : req.body.existing_gallery_images || [];
 
-    // Ensure empty values for category and author are not set to old values
-    const updatedCategory = category && category.length > 0 ? category : [];
-    const updatedAuthor = author && author.trim() !== "" ? author : "";
+      // Ensure empty values for category and author are not set to old values
+      const updatedCategory = (category && category.length > 0 && validationConfig.post.category) ? category : undefined;
+      const updatedAuthor = (author && author.trim() !== "" && validationConfig.post.author) ? author : undefined;
 
-    // Update the post
-    const updatedPost = await Post.findByIdAndUpdate(
-      postId,
-      {
+      // Create update data dynamically based on formConfig
+      const updateData = {
         title,
         slug,
         tag_line,
         summary,
         content,
-        category: updatedCategory, // Ensure empty category doesn't default to old value
-        author: updatedAuthor, // Ensure empty author doesn't default to old value
         tags,
         photo_gallery: gallery_images.length > 0, // Set to true if there are gallery images
         gallery_images,
         featured_image,
         published: published === "on",
         published_date: published_date || Date.now(),
-      },
-      { new: true, runValidators: true } // Ensure Mongoose validation is still applied
-    );
+      };
+      
+      // Conditionally add `category` and `author` if required
+      if (updatedCategory) updateData.category = updatedCategory;
+      if (updatedAuthor) updateData.author = updatedAuthor;
 
-    if (!updatedPost) {
-      return res.status(404).send("Post not found");
+      // Update the post
+      const updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        updateData,
+        { new: true, runValidators: true } // Ensure Mongoose validation is still applied
+      );
+
+      if (!updatedPost) {
+        return res.status(404).send("Post not found");
+      }
+
+      // Invalidate the cached post list
+      await redis.del("/cms/post");
+
+      // Redirect after successful update
+      res.redirect("/cms/post");
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Server error");
     }
-
-    // Invalidate the cached post list
-    await redis.del("/cms/post");
-
-    // Redirect after successful update
-    res.redirect("/cms/post");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
-  }
-};
+  },
+];
 
 // View Authors page
 exports.getAuthorPage = async (req, res) => {

@@ -145,6 +145,8 @@
                     </div>
                     <% } %>
 
+                    <% if (formConfig.tags) { %>
+
 
                     <!-- Tags -->
                     <div class="form-box">
@@ -156,6 +158,8 @@
                         <option value="Tag B" <%=post && post.tags.includes('Tag B') ? 'selected' : '' %>>Tag B</option>
                       </select>
                     </div>
+
+                    <% } %>
 
 
                     <div class="form-box">
