@@ -28,6 +28,7 @@ const getPostValidationRules = () => {
 };
 //view post page
 exports.getPostPage = async (req, res) => {
+  if (req.session.user) {
   try {
     // Fetch all posts from the database
     const posts = await Post.find();
@@ -37,12 +38,22 @@ exports.getPostPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 //view post Create page
 exports.getPostCreatePage = async (req, res) => {
-
+  if (req.session.user) {
   try {
     // Fetch all categories  and authors to populate the dropdown
     const categories = await Category.find({ status: "active" }).lean(); 
@@ -61,7 +72,17 @@ exports.getPostCreatePage = async (req, res) => {
   } catch (error) {
     console.error("Error fetching categories:", error);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 exports.createPost = [
@@ -144,9 +165,13 @@ exports.createPost = [
       res.redirect("/cms/post");
     } catch (err) {
       console.error(err);
+      res.status(500).send("Server Error");
 
       // In case of any other errors, show server error
-      res.status(500).send("Server Error");
+      res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
     }
   },
 ];
@@ -168,11 +193,16 @@ exports.deletePost = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
 };
 
 // Get the post edit page using async/await
 exports.getPostEditPage = async (req, res) => {
+  if (req.session.user) {
   try {
     const postId = req.params.postId;
 
@@ -198,8 +228,18 @@ exports.getPostEditPage = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error");
+    res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 // Handle updating a post
@@ -309,8 +349,26 @@ exports.updatePost = [
       console.error(err);
       res.status(500).send("Server error");
     }
+<<<<<<< HEAD
   },
 ];
+=======
+
+    // Invalidate the cached post list
+    await redis.del("/cms/post");
+
+    // Redirect after successful update
+    res.redirect("/cms/post");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
+  }
+};
+>>>>>>> 32394cf8842638a752af2ad1ae4644c7b859b5f0
 
 // View Authors page
 exports.getAuthorPage = async (req, res) => {
@@ -470,6 +528,10 @@ exports.getCategoryPage = async (req, res) => {
   } catch (error) {
     console.error("Error fetching categories:", error);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
 };
 
@@ -540,6 +602,10 @@ exports.getCategoryCreatePage = async (req, res) => {
   } catch (error) {
     console.error("Error fetching categories:", error);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
 };
 
@@ -608,6 +674,10 @@ exports.getCategoryEditPage = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error");
+    res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
 };

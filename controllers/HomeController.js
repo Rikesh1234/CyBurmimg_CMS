@@ -30,14 +30,14 @@ exports.getPage = async (req, res) => {  // Mark the function as async
 
         const theme = process.env.THEME;
         if (!theme) {
-            return res.status(500).send('Theme is not defined');
+          res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
         }
 
         // Pass the posts data to the template along with the title
         res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonials,sliders, showingpage });
     } catch (err) {
         console.error(err);
-        res.status(500).send("Server Error");
+        res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
     }
 };
 
@@ -52,7 +52,7 @@ exports.getStaticPage = async (req, res) => {
     const staticPage = await StaticPage.findOne({ slug: req.params.slug });
 
     if (!staticPage) {
-      return res.status(404).send('Page not found');
+      res.render('404',{errorMessages:"Looks like you are lost!",error:"404"});
     }
     
 
@@ -71,7 +71,7 @@ exports.getStaticPage = async (req, res) => {
 
   } catch (err) {
     console.error("Error fetching static page:", err);
-    res.status(500).send("Server Error");
+    res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
   }
 };
 // ---------SELECTED STATIC PAGE END---------------------------------------------------
@@ -92,7 +92,7 @@ exports.getHomePageSlider = async (req, res) => {
     
   } catch (err) {
     console.error("Error fetching sliders:", err);
-    res.status(500).send("Server Error");
+    res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
   }
 };
 
@@ -128,7 +128,7 @@ exports.getCategoryListingPage = async (req, res) => {
     });
   } catch (err) {
     console.error("Error fetching posts for category:", err);
-    res.status(500).send("Server Error");
+    res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
   }
 };
 
@@ -157,7 +157,7 @@ exports.getPostDetailPage = async (req, res) => {
     });
   } catch (err) {
     console.error('Error fetching post detail:', err);
-    res.status(500).send('Server Error');
+    res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
   }
 };
 // ---------POST DETAIL PAGE END------------------------------------------------------
@@ -180,7 +180,7 @@ exports.getPackage = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching packages:', error);
-    res.status(500).send('Server Error');
+    res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
   }
 };
 // ---------END PRICE------------------------------------------------------
