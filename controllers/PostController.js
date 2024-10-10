@@ -710,3 +710,37 @@ exports.getCategoryEditPage = async (req, res) => {
       });
   }
 };
+
+// Update Category
+exports.updateCategory = async (req, res) => {
+  try {
+    const { title, slug, tag_line, parent, content } = req.body;
+
+    // Check if a file was uploaded
+    let featured_image = req.body.existing_featured_image; 
+    if (req.file) {
+      featured_image = `/uploads/category/${req.file.filename}`;
+    }
+    const updatedData = {
+      title,
+      slug,
+      tag_line,
+      parent: parent === "None" ? null : parent,
+      content,
+      featured_image, // Set updated image
+    };
+
+    const categoryId = req.params.categoryId;
+    const updatedCategory = await Category.findByIdAndUpdate(categoryId, updatedData, { new: true });
+
+    if (!updatedCategory) {
+      return res.status(404).send("Category not found");
+    }
+
+    await redis.del("/cms/category");
+    res.redirect("/cms/category");
+  } catch (error) {
+    console.error("Error updating category:", error);
+    res.status(500).send("Server Error");
+  }
+};

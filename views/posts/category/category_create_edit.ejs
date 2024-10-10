@@ -43,7 +43,7 @@
           </a>
         </div>
 
-        <form action="/cms/category/create" method="POST" enctype="multipart/form-data">
+        <form action="<%= cat ? '/cms/category/edit/' + cat._id : '/cms/category/create' %>" method="POST" enctype="multipart/form-data">
           <div class="form-container">
             <div class="post-right-container col-md-7 col-sm-12">
               <div class="form-box">
@@ -127,6 +127,7 @@
                 <div class="upload-container-one">
                   <input
                     id="upload-input-one"
+                    name="category_image"
                     type="file"
                     accept="image/*"
                     hidden
@@ -432,31 +433,8 @@
         slugInput.val(theSlug);
       });
 
-      $("form").on("submit", function (e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-
-        $.ajax({
-          url: "/cms/category/create", // Endpoint to your server
-          type: "POST",
-          data: formData,
-          contentType: false,
-          processData: false,
-          success: function (response) {
-            // Success feedback using SweetAlert
-            Swal.fire("Success", response.message, "success").then(() => {
-              window.location.href = "/cms/category"; // Redirect to category list page
-            });
-          },
-          error: function (xhr) {
-            const errors = xhr.responseJSON?.errors || [
-              xhr.responseJSON.message,
-            ];
-            Swal.fire("Error", errors.join("<br>"), "error");
-          },
-        });
-      });
+    
+      
     </script>
   </body>
 </html>

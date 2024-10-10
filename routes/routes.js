@@ -119,7 +119,7 @@ router.get("/cms/category", cacheMiddleware, authorize('Category', 'Read'), post
 
 router.post(
   "/cms/category/create",
-  upload.single("featured_image"),
+  upload.single("category_image"),
   cacheMiddleware, authorize('Category', 'Create'),
   postController.createCategory
 );
