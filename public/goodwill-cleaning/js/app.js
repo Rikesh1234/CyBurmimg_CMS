@@ -1,10 +1,31 @@
-$('.menu-bars').click(()=>{
-    $('.sidebar').addClass("active-sidebar");
+function throttle(func, limit) {
+  let lastFunc;
+  let lastRan;
+  return function() {
+      const context = this;
+      const args = arguments;
+      if (!lastRan) {
+          func.apply(context, args);
+          lastRan = Date.now();
+      } else {
+          clearTimeout(lastFunc);
+          lastFunc = setTimeout(function() {
+              if ((Date.now() - lastRan) >= limit) {
+                  func.apply(context, args);
+                  lastRan = Date.now();
+              }
+          }, limit - (Date.now() - lastRan));
+      }
+  };
+}
+
+$('.menu-bars').click(() => {
+  $('.sidebar').addClass("active-sidebar");
 });
 
-$('.cross').click(()=>{
-    $('.sidebar').removeClass("active-sidebar");
-})
+$('.cross').click(() => {
+  $('.sidebar').removeClass("active-sidebar");
+});
 
 let lastScrollY = window.scrollY;
 const navbar = document.querySelector('.navbar');
@@ -12,36 +33,44 @@ const mobile_navbar = document.querySelector('.mobile-navbar');
 const topMenuHeight = document.querySelector('#top-nav').offsetHeight;
 let isNavbarVisible = true;
 
+let ticking = false;
 
-window.addEventListener('scroll', () => {
-	const currentScrollY = window.scrollY;
-  
-	// If the scroll position is more than 50px
-	if (currentScrollY > 50) {
-		navbar.style.position = `fixed`;
-    mobile_navbar.style.position = 'fixed'
-	  // Hide navbar if scrolling down by more than 30px and navbar is visible
-	  if (currentScrollY - lastScrollY > 30 && isNavbarVisible) {
-		navbar.style.top = `-${navbar.offsetHeight}px`; // Hide the navbar, accounting for the small menu height
-    mobile_navbar.style.top = `-35px`;
-		isNavbarVisible = false;
-	  }else if(currentScrollY==topMenuHeight || currentScrollY<topMenuHeight) {
-		navbar.style.top = `27px`;
-    mobile_navbar.style.top= `0px`;
-	  }
-	  // Show navbar if scrolling up by more than 30px and navbar is hidden
-	  else if (lastScrollY - currentScrollY > 30 && !isNavbarVisible) {
-		navbar.style.top = `0`; // Show the navbar below the small top menu
-    mobile_navbar.style.top = `0`;
-		isNavbarVisible = true;
-	  }
-	}else {
-		navbar.style.position = `relative`;	
-    mobile_navbar.style.position = `relative`;
-	}
-  
-	lastScrollY = currentScrollY;
-  });
+window.addEventListener('scroll', throttle(() => {
+  if (!ticking) {
+      window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+
+          // If the scroll position is more than 50px
+          if (currentScrollY > 50) {
+              navbar.style.position = `fixed`;
+              mobile_navbar.style.position = 'fixed';
+
+              // Hide navbar if scrolling down by more than 30px and navbar is visible
+              if (currentScrollY - lastScrollY > 30 && isNavbarVisible) {
+                  navbar.style.top = `-${navbar.offsetHeight}px`;
+                  mobile_navbar.style.top = `-35px`;
+                  isNavbarVisible = false;
+              } else if (currentScrollY <= topMenuHeight) {
+                  navbar.style.top = `27px`;
+                  mobile_navbar.style.top = `0px`;
+              }
+              // Show navbar if scrolling up by more than 30px and navbar is hidden
+              else if (lastScrollY - currentScrollY > 30 && !isNavbarVisible) {
+                  navbar.style.top = `0`;
+                  mobile_navbar.style.top = `0`;
+                  isNavbarVisible = true;
+              }
+          } else {
+              navbar.style.position = `relative`;    
+              mobile_navbar.style.position = `relative`;
+          }
+
+          lastScrollY = currentScrollY;
+          ticking = false;
+      });
+      ticking = true;
+  }
+}, 100));
 
 
   $(document).ready(function(){

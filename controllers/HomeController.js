@@ -7,6 +7,8 @@ const Category = require("../models/Category");
 const StaticPage = require('../models/StaticPage');
 const Testominal = require("../models/Testominal");
 
+const { truncateWords } = require("../helper/truncateWord");
+
 //view home page
 exports.getPage = async (req, res) => {  // Mark the function as async
     try {
@@ -30,14 +32,14 @@ exports.getPage = async (req, res) => {  // Mark the function as async
 
         const theme = process.env.THEME;
         if (!theme) {
-          res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
+            return res.status(500).send('Theme is not defined');
         }
 
         // Pass the posts data to the template along with the title
-        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonials,sliders, showingpage });
+        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonials,sliders, showingpage, truncateWords });
     } catch (err) {
         console.error(err);
-        res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
+        res.status(500).send("Server Error");
     }
 };
 
@@ -52,8 +54,9 @@ exports.getStaticPage = async (req, res) => {
     const staticPage = await StaticPage.findOne({ slug: req.params.slug });
 
     if (!staticPage) {
-      res.render('404',{errorMessages:"Looks like you are lost!",error:"404"});
+      return res.status(404).send('Page not found');
     }
+    console.log(staticPage);
     
 
     // Define variables to be used in the view
@@ -71,7 +74,7 @@ exports.getStaticPage = async (req, res) => {
 
   } catch (err) {
     console.error("Error fetching static page:", err);
-    res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
+    res.status(500).send("Server Error");
   }
 };
 // ---------SELECTED STATIC PAGE END---------------------------------------------------
@@ -89,10 +92,11 @@ exports.getHomePageSlider = async (req, res) => {
 
     // Render the homepage view with sliders data
     res.render("theme/goodwill-cleaning/index", { sliders });
+    console.log(sliders);
     
   } catch (err) {
     console.error("Error fetching sliders:", err);
-    res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
+    res.status(500).send("Server Error");
   }
 };
 
@@ -128,7 +132,7 @@ exports.getCategoryListingPage = async (req, res) => {
     });
   } catch (err) {
     console.error("Error fetching posts for category:", err);
-    res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
+    res.status(500).send("Server Error");
   }
 };
 
@@ -157,7 +161,7 @@ exports.getPostDetailPage = async (req, res) => {
     });
   } catch (err) {
     console.error('Error fetching post detail:', err);
-    res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
+    res.status(500).send('Server Error');
   }
 };
 // ---------POST DETAIL PAGE END------------------------------------------------------
@@ -180,7 +184,7 @@ exports.getPackage = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching packages:', error);
-    res.render('404',{errorMessages:"Something is wrong with our side. Please inform us!",error:"500"});
+    res.status(500).send('Server Error');
   }
 };
 // ---------END PRICE------------------------------------------------------

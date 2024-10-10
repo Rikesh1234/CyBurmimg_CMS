@@ -3,83 +3,59 @@ const redis = require("../config/redis");
 
 //view slider page
 exports.getSliderPage = async (req, res) => {
-  if (req.session.user) {
-    try {
-      // Fetch all sliders from the database
-      const sliders = await Slider.find();
+  try {
+    // Fetch all sliders from the database
+    const sliders = await Slider.find();
+    
 
-      // Render the view and pass the sliders to the EJS template
-      res.render("slider/slider_listing", { title: "Slider Page", sliders });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
-    }
-  } else {
-    res.render("404", {
-      errorMessages: "Looks Like you are lost!",
-      error: "404",
-    });
+    // Render the view and pass the sliders to the EJS template
+    res.render("slider/slider_listing", { title: "Slider Page", sliders });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
   }
 };
+
 
 //view slider Create page
 // view slider Create page
 exports.getSliderCreatePage = (req, res) => {
-  if (req.session.user) {
-    // Pass a null slider object when creating
-    res.render("slider/slider_create_edit", {
-      title: "Slider Create Page",
-      slider: null, // Make sure this is set to `null` for create
-    });
-  } else {
-    res.render("404", {
-      errorMessages: "Looks Like you are lost!",
-      error: "404",
-    });
-  }
+  // Pass a null slider object when creating
+  res.render("slider/slider_create_edit", {
+    title: "Slider Create Page",
+    slider: null, // Make sure this is set to `null` for create
+  });
 };
+
 
 //view slider Edit page
 // view slider Edit page
 exports.getSliderEditPage = async (req, res) => {
-  if (req.session.user) {
-    try {
-      const sliderId = req.params.sliderId;
-      // Fetch the slider using its ID
-      const slider = await Slider.findById(sliderId);
+  try {
+    const sliderId = req.params.sliderId;
+    // Fetch the slider using its ID
+    const slider = await Slider.findById(sliderId);
 
-      if (!slider) {
-        return res.status(404).send("Slider not found");
-      }
-
-      // Pass the fetched slider data to the template for editing
-      res.render("slider/slider_create_edit", {
-        title: "Slider Edit Page",
-        slider,
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
+    if (!slider) {
+      return res.status(404).send("Slider not found");
     }
-  } else {
-    res.render("404", {
-      errorMessages: "Looks Like you are lost!",
-      error: "404",
+
+    // Pass the fetched slider data to the template for editing
+    res.render("slider/slider_create_edit", {
+      title: "Slider Edit Page",
+      slider,
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
   }
 };
+
 
 //cruds for slider
 exports.createSlider = async (req, res) => {
   try {
+
     // Extract form data from the request body
     const { title, subtitle, published, published_date } = req.body;
 
@@ -119,13 +95,10 @@ exports.createSlider = async (req, res) => {
     } else {
       console.error(err);
       res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
     }
   }
 };
+
 
 exports.deleteSlider = async (req, res) => {
   try {
@@ -141,10 +114,7 @@ exports.deleteSlider = async (req, res) => {
     res.redirect("/cms/slider");
   } catch (err) {
     console.error(err);
-    res.render("404", {
-      errorMessages: "Something is wrong with our side. Please inform us!",
-      error: "500",
-    });
+    res.status(500).send("Server Error");
   }
 };
 
@@ -181,6 +151,7 @@ exports.updateSlider = async (req, res) => {
       ? `/uploads/sliders/${req.files["slider_image"][0].filename}`
       : req.body.existing_featured_image;
 
+    
     // Update the slider
     const updatedSlider = await Slider.findByIdAndUpdate(
       sliderId,
@@ -205,10 +176,7 @@ exports.updateSlider = async (req, res) => {
     res.redirect("/cms/slider");
   } catch (err) {
     console.error(err);
-    res.render("404", {
-      errorMessages: "Something is wrong with our side. Please inform us!",
-      error: "500",
-    });
+    res.status(500).send("Server error");
   }
 };
 

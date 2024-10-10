@@ -7,6 +7,14 @@
   --gray-dark: rgb(114, 113, 113);
 }
 
+.navbar{
+  transition: all 0.3s ease-in;
+}
+
+.mobile-navbar{
+  transition: all 0.3s ease-in;
+}
+
  h2 {
   margin-bottom: 19px;
 }
@@ -1148,6 +1156,71 @@ footer li {
 
 .team-info h4 {
   margin: 15px 0 5px;
+}
+
+/* General modal styles */
+.modal-content {
+  background-color: #f8f9fa; /* Light gray background */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Modal header */
+
+.modal{
+  z-index: 9999999;
+}
+
+.modal-header {
+  border-bottom: none; /* Remove the bottom border */
+  padding-bottom: 0;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--brand-color-secondary);
+}
+
+/* Modal body */
+.modal-body {
+  padding: 2rem; /* More padding for better spacing */
+
+}
+
+.form-label {
+  font-weight: 500;
+
+}
+
+.form-control {
+  border-radius: 6px; /* Slightly round the form input fields */
+  border: 1px solid #ccc;
+  box-shadow: none; /* Remove default shadow */
+}
+
+.form-control:focus {
+  border-color: var(--brand-color-primary) ; /* Blue border on focus */
+
+}
+
+/* Modal footer */
+.modal-footer {
+  padding: 1.5rem; /* More padding for better spacing */
+}
+
+.btn {
+  border-radius: 30px; /* Make buttons more rounded */
+}
+
+.btn-primary {
+  background-color: var(--brand-color-primary);
+  border-color: var(--brand-color-primary);
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
 }
 
 

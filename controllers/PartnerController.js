@@ -2,38 +2,17 @@ const Partner = require("../models/Partner");
 const redis = require("../config/redis");
 //view parnters page
 exports.getPartnerPage=(req,res)=>{
-  if (req.session.user) {
     res.render('partners/partner_listing',{title:'Partner Page'});
-  }else{
-    res.render("404", {
-      errorMessages: "Looks Like you are lost!",
-      error: "404",
-    });
-  }
 }
 
 //view parnters Create page
 exports.getPartnerCreatePage=(req,res)=>{
-  if (req.session.user) {
     res.render('partners/partner_create_edit',{title:'Partner Create Page'});
-  }else{
-    res.render("404", {
-      errorMessages: "Looks Like you are lost!",
-      error: "404",
-    });
-  }
 }
 
 //view parnters Edit page
 exports.getPartnerEditPage=(req,res)=>{
-  if (req.session.user) {
     res.render('partners/partner_create_edit',{title:'Partner Edit Page'});
-  }else{
-    res.render("404", {
-      errorMessages: "Looks Like you are lost!",
-      error: "404",
-    });
-  }
 }
 
 //crud for partner
@@ -84,10 +63,6 @@ exports.createPartner = async (req, res) => {
     } else {
       console.error(err);
       res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
     }
   }
 };
@@ -106,10 +81,7 @@ exports.deletePartner = async (req, res) => {
     res.redirect("/cms/partner");
   } catch (err) {
     console.error(err);
-    res.render("404", {
-      errorMessages: "Something is wrong with our side. Please inform us!",
-      error: "500",
-    });
+    res.status(500).send("Server Error");
   }
 };
 

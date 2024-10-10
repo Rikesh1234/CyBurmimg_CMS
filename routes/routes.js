@@ -129,6 +129,12 @@ router.get(
   cacheMiddleware, authorize('Category', 'Update'),
   postController.getCategoryEditPage
 );
+router.post(
+  "/cms/category/edit/:categoryId",
+  upload.single("category_image"),
+  cacheMiddleware, authorize('Category', 'Update'),
+  postController.updateCategory
+);
 
 router.post("/cms/category/delete/:categoryId", cacheMiddleware, authorize('Category', 'Delete'), postController.deleteCategory);
 
@@ -426,14 +432,14 @@ router.post('/cms/package/delete/:id', cacheMiddleware, authorize('Package', 'De
 
 router.get("/page/:pageSlug", homeController.getStaticPage);
 
-// router.use((req,res)=>{
-//     res.status(404).render('404',{title:'Page Not Found'});
-// });
+// FALL BACK ROUTE
+router.use((req, res) => {
+  res.status(404).render('404', { 
+    title: 'Page Not Found',
+    error: '404', // Pass a default error value
+    errorMessages: 'The page you are looking for cannot be found.' // Default error message
+  });
+});
 
-// ----------------------------------------------------------------------------------------------
-// FRONTEND ROUTES
 
-
-
-module.exports = router;
 module.exports = router;

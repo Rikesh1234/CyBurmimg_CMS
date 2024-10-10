@@ -40,10 +40,6 @@ exports.getRolePermissions = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 
@@ -92,10 +88,6 @@ exports.updateRolePermissions = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 // Controller to handle the form submission
@@ -112,7 +104,6 @@ exports.savePermissions = (req, res) => {
 
 //view user page
 exports.getUserPage = async (req, res) => {
-  if (req.session.user) {
   try {
     // Fetch all users from the database
 
@@ -126,21 +117,12 @@ exports.getUserPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
-}else{
-
-}
 };
 
 //view user Create page
 exports.getUserCreatePage = async (req, res) => {
-  if (req.session.user) {
   try {
-
     // Fetch the logged-in user from the session
     const username = req.session.user.username;
 
@@ -182,15 +164,11 @@ exports.getUserCreatePage = async (req, res) => {
     console.error('Error fetching user create page:', err);
     res.status(500).send('Server Error');
   }
-}else{
-
-}
 };
   
 
 //view user Edit page
 exports.getUserEditPage = async (req, res) => {
-  if (req.session.user) {
   try {
     // Get the user ID from the request params
     const userId = req.params.userId;
@@ -218,19 +196,11 @@ exports.getUserEditPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
-}else{
-
-}
 };
 
 //view role page
 exports.getRolePage = async (req, res) => {
-  if (req.session.user) {
   try{
     // Fetch all roles from the database
     let roles = await Role.find();
@@ -242,32 +212,20 @@ exports.getRolePage = async (req, res) => {
     }catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
-        res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
       }
-    }else{
-
-    }
 }
 
 //view role Create page
 exports.getRoleCreatePage = (req, res) => {
-  if (req.session.user) {
   res.render("users/role/role_create_edit", {
     title: "Role Create Page",
     role: null,
     errorMessages: [],
   });
-}else{
-
-}
 };
 
 //view role Edit page
 exports.getRoleEditPage = async (req, res) => {
-  if (req.session.user) {
   try {
     // Find the role by its ID
     const role = await Role.findById(req.params.roleId);
@@ -284,14 +242,7 @@ exports.getRoleEditPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
-}else{
-
-}
 };
 
 //cruds for users
@@ -364,10 +315,6 @@ exports.createUser = [
 
       // In case of any other errors, show server error
       res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
     }
   },
 ];
@@ -387,10 +334,6 @@ exports.deleteUser = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 
@@ -476,10 +419,6 @@ exports.updateUser = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 //end of cruds for user
@@ -518,10 +457,6 @@ exports.createRole = async (req, res) => {
     } else {
       console.error(err);
       res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
     }
   }
 };
@@ -541,10 +476,6 @@ exports.deleteRole = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 
@@ -600,9 +531,5 @@ exports.updateRole = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
