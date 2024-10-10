@@ -119,7 +119,7 @@ router.get("/cms/category", cacheMiddleware, authorize('Category', 'Read'), post
 
 router.post(
   "/cms/category/create",
-  upload.single("featured_image"),
+  upload.single("category_image"),
   cacheMiddleware, authorize('Category', 'Create'),
   postController.createCategory
 );
@@ -129,7 +129,12 @@ router.get(
   cacheMiddleware, authorize('Category', 'Update'),
   postController.getCategoryEditPage
 );
-
+router.post(
+  "/cms/category/edit/:categoryId",
+  upload.single("category_image"),
+  cacheMiddleware, authorize('Category', 'Update'),
+  postController.updateCategory
+);
 router.post("/cms/category/delete/:categoryId", cacheMiddleware, authorize('Category', 'Delete'), postController.deleteCategory);
 
 //user

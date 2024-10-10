@@ -534,20 +534,22 @@ exports.createCategory = [
 
   // Process request
   async (req, res) => {
+    console.log(req.file);
+    console.log(req.body);
+
+    
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ errors: errors.array().map((err) => err.msg) });
+      const errorMessage = errors.array().map(err => err.msg).join(', ');
+
+      // Redirect back with an error query parameter
+      return res.redirect(`/cms/category/create?error=${encodeURIComponent(errorMessage)}`);
     }
 
     try {
       const { title, slug, tag_line, parent, content } = req.body;
-
-      const status = req.body.status === 'on' ? 'active' : 'inactive';
-
-      // Correctly handle "None" as parent
+      const status = req.body.status === "on" ? "active" : "inactive";
       const parentCategory = parent === "None" ? null : parent;
 
       // Create category with correct `parent` field
@@ -565,12 +567,19 @@ exports.createCategory = [
         category.featured_image = `/uploads/category/${req.file.filename}`;
       }
 
+      // Save category to the database
       await category.save();
+
+      // Clear the cache (if used)
       await redis.del("/cms/category");
 
-      res.status(200).json({ message: "Category created successfully!" });
+      // Redirect to category page with success message in query parameters
+      return res.redirect(`/cms/category?success=${encodeURIComponent('Category created successfully!')}`);
     } catch (error) {
-      res.status(500).json({ message: "Failed to create category", error });
+      console.error("Failed to create category:", error);
+
+      // Redirect back with an error query parameter
+      return res.redirect(`/cms/category/create?error=${encodeURIComponent('Failed to create category. Please try again.')}`);
     }
   },
 ];
@@ -584,7 +593,9 @@ exports.getCategoryCreatePage = async (req, res) => {
     // Render the view and pass the categories
     res.render("posts/category/category_create_edit", {
       title: "Category Create Page",
+      cat: null,
       categories, // Pass categories to view
+      formData:{}
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -666,5 +677,39 @@ exports.getCategoryEditPage = async (req, res) => {
         errorMessages: "Something is wrong with our side. Please inform us!",
         error: "500",
       });
+  }
+};
+
+// Update Category
+exports.updateCategory = async (req, res) => {
+  try {
+    const { title, slug, tag_line, parent, content } = req.body;
+
+    // Check if a file was uploaded
+    let featured_image = req.body.existing_featured_image; 
+    if (req.file) {
+      featured_image = `/uploads/category/${req.file.filename}`;
+    }
+    const updatedData = {
+      title,
+      slug,
+      tag_line,
+      parent: parent === "None" ? null : parent,
+      content,
+      featured_image, // Set updated image
+    };
+
+    const categoryId = req.params.categoryId;
+    const updatedCategory = await Category.findByIdAndUpdate(categoryId, updatedData, { new: true });
+
+    if (!updatedCategory) {
+      return res.status(404).send("Category not found");
+    }
+
+    await redis.del("/cms/category");
+    res.redirect("/cms/category");
+  } catch (error) {
+    console.error("Error updating category:", error);
+    res.status(500).send("Server Error");
   }
 };

@@ -1,4 +1,3 @@
-// models/StaticPage.js
 const mongoose = require('mongoose');
 
 const staticPageSchema = new mongoose.Schema({
@@ -17,11 +16,11 @@ const staticPageSchema = new mongoose.Schema({
   },
   tag_line: {
     type: String, 
-    default: '',
+    default: '', 
   },
   summary: {
     type: String,
-    default: '',
+    default: '', 
   },
   status: {
     type: String,
@@ -30,7 +29,7 @@ const staticPageSchema = new mongoose.Schema({
   },
   featured_image: {
     type: String,
-    default: '/uploads/pages/default.jpg',
+    default: '/uploads/goodwill-cleaning/images/default.jpg',
   },
   createdAt: {
     type: Date,

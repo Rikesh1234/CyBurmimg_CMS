@@ -184,8 +184,8 @@ exports.updateStaticPage = [
           slug,
           content,
           status,
-          tag_line, // Ensure tag_line is correctly used
-          summary, // Ensure summary is correctly used
+          tag_line, 
+          summary,
         },
         { new: true }
       );
