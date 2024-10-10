@@ -2,30 +2,39 @@ const CustomField = require("../models/CustomField");
 const redis = require("../config/redis");
 
 //view custom-field page
-exports.getCustomFieldPage=(req,res)=>{
-    res.render('custom-field/custom-field-list',{title:'Custom Field Page'});
-}
+exports.getCustomFieldPage = (req, res) => {
+  if (req.session.user) {
+    res.render("custom-field/custom-field-list", {
+      title: "Custom Field Page",
+    });
+  } else {
+    res.render("404", {
+      errorMessages: "Looks Like you are lost!",
+      error: "404",
+    });
+  }
+};
 
 //view custom-field Create page
-exports.getCustomFieldCreatePage=(req,res)=>{
-    res.render('custom-field/custom-field-create',{title:'Custom Field Create Page'});
-}
+exports.getCustomFieldCreatePage = (req, res) => {
+  if (req.session.user) {
+    res.render("custom-field/custom-field-create", {
+      title: "Custom Field Create Page",
+    });
+  } else {
+    res.render("404", {
+      errorMessages: "Looks Like you are lost!",
+      error: "404",
+    });
+  }
+};
 
 //crudsfor custom-field
 exports.createCustomField = async (req, res) => {
   try {
     // Extract form data from the request body
-    const {
-      title,
-      model,
-      target_type,
-      label_name,
-      field_name,
-    } = req.body;
+    const { title, model, target_type, label_name, field_name } = req.body;
 
-    
-
-    
     // Create a new team object
     const newField = new CustomField({
       title,
@@ -57,6 +66,10 @@ exports.createCustomField = async (req, res) => {
     } else {
       console.error(err);
       res.status(500).send("Server Error");
+      res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
     }
   }
 };
@@ -66,16 +79,19 @@ exports.deleteField = async (req, res) => {
     const field = await CustomField.findByIdAndDelete(req.params.customFieldId);
 
     if (!field) {
-      return res.status(404).send("Field not found");
+      res.render("404", { errorMessages: "File Not Found!", error: "404" });
     }
 
     // Invalidate the cached field list
     await redis.del("/cms/custom-field");
     // Handle deletion of associated files here if necessary
-    res.redirect("/cms/cusom-field");
+    res.redirect("/cms/custom-field");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server Error");
+    res.render("404", {
+      errorMessages: "Something is wrong with our side. Please inform us!",
+      error: "500",
+    });
   }
 };
 
@@ -134,7 +150,6 @@ exports.updateTeam = async (req, res) => {
       ? `/uploads/team/${req.files["featured_image"][0].filename}`
       : req.body.existing_featured_image;
 
-    
     // Ensure empty values for category and author are not set to old values
     const updatedCategory = category && category.length > 0 ? category : [];
 
@@ -158,7 +173,7 @@ exports.updateTeam = async (req, res) => {
     );
 
     if (!updatedTeam) {
-      return res.status(404).send("Team not found");
+      res.render("404", { errorMessages: "Team not Found!", error: "404" });
     }
 
     // Invalidate the cached team list
@@ -168,7 +183,10 @@ exports.updateTeam = async (req, res) => {
     res.redirect("/cms/team");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error");
+    res.render("404", {
+      errorMessages: "Something is wrong with our side. Please inform us!",
+      error: "500",
+    });
   }
 };
 //end of cruds for custom-field

@@ -39,32 +39,32 @@
 						</li>
 					</ul>
 				</div>
-				<a href="#" class="btn-download">
+				<!-- <a href="#" class="btn-download">
 					<i class='bx bxs-cloud-download' ></i>
-					<span class="text">Download PDF</span>
-				</a>
+					<span class="text">Download Manual</span>
+				</a> -->
 			</div>
 
 			<ul class="box-info">
 				<li>
 					<i class='bx bx-notepad' ></i>
 					<span class="text">
-						<h3>1020</h3>
+						<h3><%= postCount %></h3>
 						<p>Total Post</p>
 					</span>
 				</li>
 				<li>
 					<i class='bx bxs-group' ></i>
 					<span class="text">
-						<h3>2834</h3>
-						<p>Total Users</p>
+						<h3><%= teamCount %></h3>
+						<p>Total Team</p>
 					</span>
 				</li>
 				<li>
 					<i class='bx bx-briefcase' ></i>
 					<span class="text">
-						<h3>$2543</h3>
-						<p>Total Poject</p>
+						<h3><%= packagesCount %></h3>
+						<p>Total Package</p>
 					</span>
 				</li>
 			</ul>
@@ -84,46 +84,16 @@
 							</tr>
 						</thead>
 						<tbody>
+							<% posts.forEach(post => { %>
 							<tr>
 								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
+									<img src="<%= post.featured_image ? post.featured_image : '/images/default.jpg' %>">
+									<p><%= post.title %></p>
 								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completed</span></td>
+								<td><%= new Date(post.createdAt).toLocaleDateString() %></td>
+								<td><span class="status <%= post.published ? 'completed' : 'pending' %>"><%= post.published ? 'published' : 'unpublished' %></span></td>
 							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pending</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status process">Process</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pending</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completed</span></td>
-							</tr>
+							<% }) %>
 						</tbody>
 					</table>
 				</div>
@@ -132,27 +102,13 @@
 						<h3>Active Users</h3>
 					</div>
 					<ul class="todo-list">
-						<li class="completed">
-							<img src="/images/icons/profile.png">
-							<p>Todo List</p>
+						<% users.forEach(user => { %>
+						<li class="<%= user.status == 'active' ? 'completed' : 'not-completed' %>">
+							<img src="<%= user.featured_image ? user.featured_image : '/images/icons/profile.png' %>">
+							<p><%= user.username %></p>
 							<i class='bx bx-dots-vertical-rounded' ></i>
 						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
+						<% }) %>
 					</ul>
 				</div>
 			</div>

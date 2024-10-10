@@ -28,6 +28,7 @@ const getPostValidationRules = () => {
 };
 //view post page
 exports.getPostPage = async (req, res) => {
+  if (req.session.user) {
   try {
     // Fetch all posts from the database
     const posts = await Post.find();
@@ -37,12 +38,22 @@ exports.getPostPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 //view post Create page
 exports.getPostCreatePage = async (req, res) => {
-
+  if (req.session.user) {
   try {
     // Fetch all categories  and authors to populate the dropdown
     const categories = await Category.find({ status: "active" }).lean(); 
@@ -61,7 +72,17 @@ exports.getPostCreatePage = async (req, res) => {
   } catch (error) {
     console.error("Error fetching categories:", error);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 exports.createPost = [
@@ -144,9 +165,13 @@ exports.createPost = [
       res.redirect("/cms/post");
     } catch (err) {
       console.error(err);
+      res.status(500).send("Server Error");
 
       // In case of any other errors, show server error
-      res.status(500).send("Server Error");
+      res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
     }
   },
 ];
@@ -168,11 +193,16 @@ exports.deletePost = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
 };
 
 // Get the post edit page using async/await
 exports.getPostEditPage = async (req, res) => {
+  if (req.session.user) {
   try {
     const postId = req.params.postId;
 
@@ -198,48 +228,30 @@ exports.getPostEditPage = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error");
+    res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
+}else{
+  res.render("404", {
+    errorMessages: "Looks Like you are lost!",
+    error: "404",
+  });
+}
 };
 
 // Handle updating a post
-exports.updatePost = async (req, res) => {
-  const postId = req.params.postId;
-  const {
-    title,
-    slug,
-    tag_line,
-    summary,
-    content,
-    category,
-    author,
-    tags,
-    published,
-    published_date,
-  } = req.body;
+exports.updatePost = [
+  // Apply dynamic validation rules based on config
+  ...getPostValidationRules(),
 
-  // Array to collect validation errors
-  const errorMessages = [];
-
-  // Perform manual validation on required fields
-  if (!title || title.trim() === "") errorMessages.push("Title is required");
-  if (!slug || slug.trim() === "") errorMessages.push("Slug is required");
-  if (!content || content.trim() === "")
-    errorMessages.push("Content is required");
-  if (!category || category.length === 0)
-    errorMessages.push("At least one category is required");
-  if (!author || author.trim() === "") errorMessages.push("Author is required");
-
-  // If there are validation errors, re-render the form with error messages
-  if (errorMessages.length > 0) {
-    // Fetch the existing post to repopulate the form
-    const existingPost = await Post.findById(postId);
-    return res.render("posts/post/post_create_edit", {
-      title: "Edit Post",
-      errorMessages,
-      post: {
-        ...existingPost.toObject(), // Copy existing post details
-        title, // Preserve user’s current input
+  async (req, res) => {
+    try {
+      const postId = req.params.postId;
+      const {
+        title,
         slug,
         tag_line,
         summary,
@@ -249,62 +261,101 @@ exports.updatePost = async (req, res) => {
         tags,
         published,
         published_date,
-      },
-    });
-  }
+      } = req.body;
 
-  try {
-    // Handle featured image update if provided
-    const featured_image = req.files["featured_image"]
-      ? `/uploads/post/${req.files["featured_image"][0].filename}`
-      : req.body.existing_featured_image;
+      // Check for validation errors
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        // Fetch the existing post and any other necessary data
+        const existingPost = await Post.findById(postId);
+        const authors = await Author.find({ status: "active" }).lean();
+        const categories = await Category.find({ status: "active" }).lean();
 
-    // Handle gallery images update
-    const gallery_images = req.files["gallery_images"]
-      ? req.files["gallery_images"].map(
-          (file) => `/uploads/post/gallery/${file.filename}`
-        )
-      : req.body.existing_gallery_images || [];
+        // Return validation errors and repopulate form data
+        return res.render("posts/post/post_create_edit", {
+          title: "Edit Post",
+          errorMessages: errors.array().map((err) => err.msg),
+          post: {
+            ...existingPost.toObject(), // Copy existing post details
+            title, // Preserve user's current input
+            slug,
+            tag_line,
+            summary,
+            content,
+            category,
+            author,
+            tags,
+            published,
+            published_date,
+          },
+          authors, // Pass authors for dropdown
+          categories, // Pass categories for dropdown
+          formConfig: validationConfig.post, // Pass formConfig
+        });
+      }
 
-    // Ensure empty values for category and author are not set to old values
-    const updatedCategory = category && category.length > 0 ? category : [];
-    const updatedAuthor = author && author.trim() !== "" ? author : "";
+      // Handle featured image update if provided
+      const featured_image = req.files["featured_image"]
+        ? `/uploads/post/${req.files["featured_image"][0].filename}`
+        : req.body.existing_featured_image;
 
-    // Update the post
-    const updatedPost = await Post.findByIdAndUpdate(
-      postId,
-      {
+      // Handle gallery images update
+      const gallery_images = req.files["gallery_images"]
+        ? req.files["gallery_images"].map(
+            (file) => `/uploads/post/gallery/${file.filename}`
+          )
+        : req.body.existing_gallery_images || [];
+
+      // Ensure empty values for category and author are not set to old values
+      const updatedCategory = (category && category.length > 0 && validationConfig.post.category) ? category : undefined;
+      const updatedAuthor = (author && author.trim() !== "" && validationConfig.post.author) ? author : undefined;
+
+      // Create update data dynamically based on formConfig
+      const updateData = {
         title,
         slug,
         tag_line,
         summary,
         content,
-        category: updatedCategory, // Ensure empty category doesn't default to old value
-        author: updatedAuthor, // Ensure empty author doesn't default to old value
         tags,
         photo_gallery: gallery_images.length > 0, // Set to true if there are gallery images
         gallery_images,
         featured_image,
         published: published === "on",
         published_date: published_date || Date.now(),
-      },
-      { new: true, runValidators: true } // Ensure Mongoose validation is still applied
-    );
+      };
+      
+      // Conditionally add `category` and `author` if required
+      if (updatedCategory) updateData.category = updatedCategory;
+      if (updatedAuthor) updateData.author = updatedAuthor;
 
-    if (!updatedPost) {
-      return res.status(404).send("Post not found");
+      // Update the post
+      const updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        updateData,
+        { new: true, runValidators: true } // Ensure Mongoose validation is still applied
+      );
+
+      if (!updatedPost) {
+        return res.status(404).send("Post not found");
+      }
+
+      // Invalidate the cached post list
+      await redis.del("/cms/post");
+
+      // Redirect after successful update
+      return res.redirect("/cms/post");
+    } catch (err) {
+      console.error(err);
+      // Render a user-friendly error page
+      res.status(500).render("404", {
+        errorMessages: "Something went wrong on our side. Please inform us!",
+        error: "500",
+      });
     }
-
-    // Invalidate the cached post list
-    await redis.del("/cms/post");
-
-    // Redirect after successful update
-    res.redirect("/cms/post");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
   }
-};
+];
+
 
 // View Authors page
 exports.getAuthorPage = async (req, res) => {
@@ -381,10 +432,6 @@ exports.getAuthorEditPage = async (req, res) => {
 
     // Find the author by ID
     const author = await Author.findById(authorId);
-
-    // Log the `author` object to verify fields
-    console.log('Fetched Author:', author);
-    console.log(author.socialLinks)
 
     // If the author is not found, handle the error appropriately
     if (!author) {
@@ -468,10 +515,12 @@ exports.getCategoryPage = async (req, res) => {
   } catch (error) {
     console.error("Error fetching categories:", error);
     res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
   }
 };
-
-// Create Category
 exports.createCategory = [
   // Validate fields
   body("title").notEmpty().withMessage("Title is required"),
@@ -483,20 +532,22 @@ exports.createCategory = [
 
   // Process request
   async (req, res) => {
+    console.log(req.file);
+    console.log(req.body);
+
+    
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ errors: errors.array().map((err) => err.msg) });
+      const errorMessage = errors.array().map(err => err.msg).join(', ');
+
+      // Redirect back with an error query parameter
+      return res.redirect(`/cms/category/create?error=${encodeURIComponent(errorMessage)}`);
     }
 
     try {
       const { title, slug, tag_line, parent, content } = req.body;
-
-      const status = req.body.status === 'on' ? 'active' : 'inactive';
-
-      // Correctly handle "None" as parent
+      const status = req.body.status === "on" ? "active" : "inactive";
       const parentCategory = parent === "None" ? null : parent;
 
       // Create category with correct `parent` field
@@ -514,12 +565,19 @@ exports.createCategory = [
         category.featured_image = `/uploads/category/${req.file.filename}`;
       }
 
+      // Save category to the database
       await category.save();
+
+      // Clear the cache (if used)
       await redis.del("/cms/category");
 
-      res.status(200).json({ message: "Category created successfully!" });
+      // Redirect to category page with success message in query parameters
+      return res.redirect(`/cms/category?success=${encodeURIComponent('Category created successfully!')}`);
     } catch (error) {
-      res.status(500).json({ message: "Failed to create category", error });
+      console.error("Failed to create category:", error);
+
+      // Redirect back with an error query parameter
+      return res.redirect(`/cms/category/create?error=${encodeURIComponent('Failed to create category. Please try again.')}`);
     }
   },
 ];
@@ -533,10 +591,49 @@ exports.getCategoryCreatePage = async (req, res) => {
     // Render the view and pass the categories
     res.render("posts/category/category_create_edit", {
       title: "Category Create Page",
+      cat: null,
       categories, // Pass categories to view
+      formData:{}
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
+    res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
+  }
+};
+
+exports.updateCategory = async (req, res) => {
+  try {
+    const { title, slug, tag_line, parent, content } = req.body;
+
+    // Check if a file was uploaded
+    let featured_image = req.body.existing_featured_image; 
+    if (req.file) {
+      featured_image = `/uploads/category/${req.file.filename}`;
+    }
+    const updatedData = {
+      title,
+      slug,
+      tag_line,
+      parent: parent === "None" ? null : parent,
+      content,
+      featured_image, // Set updated image
+    };
+
+    const categoryId = req.params.categoryId;
+    const updatedCategory = await Category.findByIdAndUpdate(categoryId, updatedData, { new: true });
+
+    if (!updatedCategory) {
+      return res.status(404).send("Category not found");
+    }
+
+    await redis.del("/cms/category");
+    res.redirect("/cms/category");
+  } catch (error) {
+    console.error("Error updating category:", error);
     res.status(500).send("Server Error");
   }
 };
@@ -585,8 +682,65 @@ exports.deleteCategory = async (req, res) => {
 };
 
 //view Category Edit page
-exports.getCategoryEditPage = (req, res) => {
-  res.render("posts/category/category_create_edit", {
-    title: "Category Edit Page",
-  });
+exports.getCategoryEditPage = async (req, res) => {
+  try {
+    const catId = req.params.categoryId;
+
+    // Find the post by ID
+    const cat = await Category.findById(catId);
+
+
+    if (!cat) {
+      return res.status(404).send("Category not found");
+    }
+
+    // Pass 'errorMessages' as an empty array if no errors exist
+    res.render("posts/category/category_create_edit", {
+      title: "Edit Category",
+      errorMessages: [], // Default to empty array
+      cat,
+      formConfig: validationConfig.post
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
+  }
+};
+
+// Update Category
+exports.updateCategory = async (req, res) => {
+  try {
+    const { title, slug, tag_line, parent, content } = req.body;
+
+    // Check if a file was uploaded
+    let featured_image = req.body.existing_featured_image; 
+    if (req.file) {
+      featured_image = `/uploads/category/${req.file.filename}`;
+    }
+    const updatedData = {
+      title,
+      slug,
+      tag_line,
+      parent: parent === "None" ? null : parent,
+      content,
+      featured_image, // Set updated image
+    };
+
+    const categoryId = req.params.categoryId;
+    const updatedCategory = await Category.findByIdAndUpdate(categoryId, updatedData, { new: true });
+
+    if (!updatedCategory) {
+      return res.status(404).send("Category not found");
+    }
+
+    await redis.del("/cms/category");
+    res.redirect("/cms/category");
+  } catch (error) {
+    console.error("Error updating category:", error);
+    res.status(500).send("Server Error");
+  }
 };

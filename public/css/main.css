@@ -27,10 +27,13 @@
 	box-sizing: border-box;
 }
 
-body, html {
-	height: 100%;
-	font-family: Ubuntu-Regular, sans-serif;
-}
+  body, html {
+    height: 100%;
+    font-family: Ubuntu-Regular, sans-serif;
+    -webkit-overflow-scrolling: touch; /* Allows smooth scrolling */
+    overflow-x: hidden;
+
+  }
 
 /*---------------------------------------------*/
 a {

@@ -10,31 +10,26 @@
       <i class="fa-solid fa-x cross"></i>
       <ul>
         <!-- Home Link -->
-        <li class="selected"><a href="/">Home</a></li>
+        <li class="<%= showingpage == 'home' ? 'selected' : '' %>"><a href="/">Home</a></li>
         
-        <!-- About Link (Checking for 'about-us' page in `pages`) -->
+         About Link (Checking for 'about-us' page in `pages`) 
         <% let aboutPage = pages.find(page => page.slug === 'about-us'); %>
         <% if (aboutPage) { %>
-          <li><a href="/page/<%= aboutPage.slug %>">About</a></li>
+          <li class="<%= showingpage == aboutPage.slug ? 'selected' : '' %>"><a href="/page/<%= aboutPage.slug %>">About</a></li>
         <% } %>
 
-        <!-- Dynamic Links for Categories (Limiting to 3) -->
+         Dynamic Links for Categories (Limiting to 3) 
         <% categories.slice(0, 3).forEach(cat => { %> 
-          <li><a href="/<%= cat.slug %>"><%= cat.title %></a></li>
+          <li class="<%= showingpage === cat.slug ? 'selected' : '' %>"><a href="/category/<%= cat.slug %>"><%= cat.title %></a></li>
         <% }) %>
 
-        <!-- Static Links -->
-        <li><a href="/pricing">Pricing</a></li>
-        <li><a href="/project">Project</a></li>
-        <li><a href="/blog">Blog</a></li>
+         Static Links 
+        <li class="<%= showingpage === 'price' ? 'selected' : '' %>"><a href="/price">Pricing</a></li>
 
-        <!-- Additional Categories (4th Category) -->
-        <% if (categories[3]) { %>
-          <li><a href="/<%= categories[3].slug %>"><%= categories[3].title %></a></li>
-        <% } %>
+        
 
-        <!-- Contact Link -->
-        <li><a href="/contact">Contact</a></li>
+         Contact Link 
+        <li class="<%= showingpage == 'contact' ? 'selected' : '' %>"><a href="/contact">Contact</a></li>
       </ul>
     </div>
   </div>

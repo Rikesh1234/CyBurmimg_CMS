@@ -35,11 +35,11 @@ router.get("/category/:slug", homeController.getCategoryListingPage);
 router.get("/post/:postId", homeController.getPostDetailPage);
 
 router.get('/contact', (req, res) => {
-  res.render('theme/goodwill-cleaning/pages/contactPage'); 
+  res.render('theme/goodwill-cleaning/pages/contactPage',{ showingpage: 'contact'}); 
 });
 
 router.get('/price', (req, res) => {
-  res.render('theme/goodwill-cleaning/pages/pricePage'); 
+  res.render('theme/goodwill-cleaning/pages/pricePage',{showingpage: 'price'}); 
 });
 router.get("/price", homeController.getPackage);
 
@@ -119,7 +119,7 @@ router.get("/cms/category", cacheMiddleware, authorize('Category', 'Read'), post
 
 router.post(
   "/cms/category/create",
-  upload.single("featured_image"),
+  upload.single("category_image"),
   cacheMiddleware, authorize('Category', 'Create'),
   postController.createCategory
 );
@@ -128,6 +128,12 @@ router.get(
   "/cms/category/edit/:categoryId",
   cacheMiddleware, authorize('Category', 'Update'),
   postController.getCategoryEditPage
+);
+router.post(
+  "/cms/category/edit/:categoryId",
+  upload.single("category_image"),
+  cacheMiddleware, authorize('Category', 'Update'),
+  postController.updateCategory
 );
 
 router.post("/cms/category/delete/:categoryId", cacheMiddleware, authorize('Category', 'Delete'), postController.deleteCategory);
@@ -164,7 +170,7 @@ router.post("/cms/user/delete/:userId", cacheMiddleware, authorize('User', 'Dele
 //role
 router.get("/cms/role", cacheMiddleware, authorize('Role', 'Read'), userController.getRolePage);
 router.get("/cms/role/create", cacheMiddleware, authorize('Role', 'Create'), userController.getRoleCreatePage);
-router.get("/cms/role/edit/:userId", cacheMiddleware, authorize('Role', 'Update'), userController.getRoleEditPage);
+router.get("/cms/role/edit/:roleId", cacheMiddleware, authorize('Role', 'Update'), userController.getRoleEditPage);
 // Route for handling the user creation
 router.post(
   "/cms/role/create",
@@ -277,7 +283,7 @@ router.get("/cms/partner/edit/:userId", partnerController.getPartnerEditPage);
 
 // Team Routes
 router.get("/cms/team", cacheMiddleware, authorize('Team', 'Read'), teamController.getTeamPage);
-router.get("/cms/team/create", cacheMiddleware, authorize('Team', 'Crerate'), teamController.getTeamCreatePage,);
+router.get("/cms/team/create", cacheMiddleware, authorize('Team', 'Create'), teamController.getTeamCreatePage,);
 router.get("/cms/team/edit/:teamId", cacheMiddleware, authorize('Team', 'Update'),
   upload.fields([
     { name: "team_image", maxCount: 1 },
@@ -426,14 +432,14 @@ router.post('/cms/package/delete/:id', cacheMiddleware, authorize('Package', 'De
 
 router.get("/page/:pageSlug", homeController.getStaticPage);
 
-// router.use((req,res)=>{
-//     res.status(404).render('404',{title:'Page Not Found'});
-// });
+// FALL BACK ROUTE
+router.use((req, res) => {
+  res.status(404).render('404', { 
+    title: 'Page Not Found',
+    error: '404', // Pass a default error value
+    errorMessages: 'The page you are looking for cannot be found.' // Default error message
+  });
+});
 
-// ----------------------------------------------------------------------------------------------
-// FRONTEND ROUTES
 
-
-
-module.exports = router;
 module.exports = router;

@@ -1,4 +1,3 @@
-// models/StaticPage.js
 const mongoose = require('mongoose');
 
 const staticPageSchema = new mongoose.Schema({
@@ -15,6 +14,14 @@ const staticPageSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Content is required'],
   },
+  tag_line: {
+    type: String, 
+    default: '', 
+  },
+  summary: {
+    type: String,
+    default: '', 
+  },
   status: {
     type: String,
     enum: ['active', 'inactive'],
@@ -22,7 +29,7 @@ const staticPageSchema = new mongoose.Schema({
   },
   featured_image: {
     type: String,
-    default: '/uploads/pages/default.jpg',
+    default: '/uploads/goodwill-cleaning/images/default.jpg',
   },
   createdAt: {
     type: Date,
@@ -31,4 +38,3 @@ const staticPageSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('StaticPage', staticPageSchema);
-    

@@ -7,9 +7,15 @@ const Category = require("../models/Category");
 const StaticPage = require('../models/StaticPage');
 const Testominal = require("../models/Testominal");
 
+const { truncateWords } = require("../helper/truncateWord");
+
 //view home page
 exports.getPage = async (req, res) => {  // Mark the function as async
     try {
+        
+        const showingpage  = 'home';
+        
+        
         const posts = await Post.find()
         .sort({ createdAt: -1 })
         .populate('category'); 
@@ -30,7 +36,7 @@ exports.getPage = async (req, res) => {  // Mark the function as async
         }
 
         // Pass the posts data to the template along with the title
-        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonials,sliders });
+        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonials,sliders, showingpage, truncateWords });
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
@@ -41,6 +47,9 @@ exports.getPage = async (req, res) => {  // Mark the function as async
 // ---------SELECTED STATIC PAGE------------------------------------------------------
 exports.getStaticPage = async (req, res) => {
   try {
+      
+      const showingpage = req.params.slug;
+      
     // Fetch the page data based on the slug in the URL
     const staticPage = await StaticPage.findOne({ slug: req.params.slug });
 
@@ -59,7 +68,8 @@ exports.getStaticPage = async (req, res) => {
     res.render(`theme/${process.env.THEME}/pages/static-page`, {
       pageTitle,
       background_image,
-      content
+      content,
+      showingpage
     });
 
   } catch (err) {
@@ -97,6 +107,9 @@ exports.getHomePageSlider = async (req, res) => {
 // Fetch posts for a selected category by slug
 exports.getCategoryListingPage = async (req, res) => {
   try {
+      
+      const showingpage = req.params.slug;
+      
     // Get the category slug from request params
     const categorySlug = req.params.slug;
 
@@ -115,6 +128,7 @@ exports.getCategoryListingPage = async (req, res) => {
     res.render("theme/goodwill-cleaning/pages/postListing", {
       posts,
       category, // Pass the category data to the view
+      showingpage
     });
   } catch (err) {
     console.error("Error fetching posts for category:", err);
@@ -129,6 +143,9 @@ exports.getCategoryListingPage = async (req, res) => {
 // ---------POST DETAIL PAGE ------------------------------------------------------
 exports.getPostDetailPage = async (req, res) => {
   try {
+      
+      showingpage = 'post'
+      
     // Fetch the post based on `postId` from the request params
     const postId = req.params.postId;
     const post = await Post.findById(postId);
@@ -140,6 +157,7 @@ exports.getPostDetailPage = async (req, res) => {
     // Render the post detail view, passing the post data
     res.render('theme/goodwill-cleaning/pages/postDetail', {
       post,
+      showingpage
     });
   } catch (err) {
     console.error('Error fetching post detail:', err);
@@ -162,6 +180,7 @@ exports.getPackage = async (req, res) => {
     res.render('theme/goodwill-cleaning/pages/pricePage', {
       title: 'Package Prices',
       packages: packages,
+      showingpage: 'price'
     });
   } catch (error) {
     console.error('Error fetching packages:', error);
