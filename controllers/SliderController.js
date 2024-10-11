@@ -1,12 +1,12 @@
 const Slider = require("../models/Slider");
 const redis = require("../config/redis");
+const CustomField = require("../models/CustomField");
 
 //view slider page
 exports.getSliderPage = async (req, res) => {
   try {
     // Fetch all sliders from the database
     const sliders = await Slider.find();
-    
 
     // Render the view and pass the sliders to the EJS template
     res.render("slider/slider_listing", { title: "Slider Page", sliders });
@@ -19,11 +19,22 @@ exports.getSliderPage = async (req, res) => {
 
 //view slider Create page
 // view slider Create page
-exports.getSliderCreatePage = (req, res) => {
+exports.getSliderCreatePage = async (req, res) => {
+
+  let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Slider' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
   // Pass a null slider object when creating
   res.render("slider/slider_create_edit", {
     title: "Slider Create Page",
     slider: null, // Make sure this is set to `null` for create
+    customField
   });
 };
 
@@ -32,6 +43,16 @@ exports.getSliderCreatePage = (req, res) => {
 // view slider Edit page
 exports.getSliderEditPage = async (req, res) => {
   try {
+
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Slider' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
     const sliderId = req.params.sliderId;
     // Fetch the slider using its ID
     const slider = await Slider.findById(sliderId);
@@ -44,6 +65,7 @@ exports.getSliderEditPage = async (req, res) => {
     res.render("slider/slider_create_edit", {
       title: "Slider Edit Page",
       slider,
+      customField
     });
   } catch (err) {
     console.error(err);

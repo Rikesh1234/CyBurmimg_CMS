@@ -1,6 +1,7 @@
 const Post = require("../models/Post");
 const Author = require("../models/Author");
 const Category = require("../models/Category");
+const CustomField = require("../models/CustomField");
 const validationConfig = require('../config/validationConfig.json');
 
 
@@ -56,6 +57,17 @@ exports.getPostCreatePage = async (req, res) => {
   if (req.session.user) {
   try {
     // Fetch all categories  and authors to populate the dropdown
+
+  let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Post' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+   
+
     const categories = await Category.find({ status: "active" }).lean(); 
     const authors = await Author.find({ status: "active" }).lean();
 
@@ -66,8 +78,8 @@ exports.getPostCreatePage = async (req, res) => {
       post: null,
       categories,
       authors,
-      formConfig: validationConfig.post
-
+      formConfig: validationConfig.post,
+      customField
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -204,6 +216,16 @@ exports.deletePost = async (req, res) => {
 exports.getPostEditPage = async (req, res) => {
   if (req.session.user) {
   try {
+
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Post' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
     const postId = req.params.postId;
 
     // Find the post by ID
@@ -223,7 +245,8 @@ exports.getPostEditPage = async (req, res) => {
       errorMessages: [], // Default to empty array
       authors,
       categories,
-      formConfig: validationConfig.post
+      formConfig: validationConfig.post,
+      customField
 
     });
   } catch (err) {
@@ -369,6 +392,9 @@ exports.getAuthorPage = async (req, res) => {
 };
 // View Author Create page
 exports.getAuthorCreatePage = (req, res) => {
+
+  
+
   res.render("posts/author/author_create_edit", {
     title: "Author Create Page",
     author: null 
@@ -585,6 +611,16 @@ exports.createCategory = [
 //view Category Create page
 exports.getCategoryCreatePage = async (req, res) => {
   try {
+
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Category' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
     // Fetch all categories
     const categories = await Category.find();
 
@@ -593,7 +629,8 @@ exports.getCategoryCreatePage = async (req, res) => {
       title: "Category Create Page",
       cat: null,
       categories, // Pass categories to view
-      formData:{}
+      formData:{},
+      customField
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -684,6 +721,16 @@ exports.deleteCategory = async (req, res) => {
 //view Category Edit page
 exports.getCategoryEditPage = async (req, res) => {
   try {
+
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Category' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
     const catId = req.params.categoryId;
 
     // Find the post by ID
@@ -699,7 +746,8 @@ exports.getCategoryEditPage = async (req, res) => {
       title: "Edit Category",
       errorMessages: [], // Default to empty array
       cat,
-      formConfig: validationConfig.post
+      formConfig: validationConfig.post, 
+      customField
     });
   } catch (err) {
     console.error(err);

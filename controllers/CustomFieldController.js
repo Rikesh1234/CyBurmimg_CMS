@@ -1,12 +1,29 @@
+const Model = require("../models/Model");
 const CustomField = require("../models/CustomField");
+const StaticPage = require("../models/StaticPage");
+const StaticField = require("../models/Fields");
 const redis = require("../config/redis");
+const validationConfig = require('../config/validationConfig.json');
 
 //view custom-field page
-exports.getCustomFieldPage = (req, res) => {
+exports.getCustomFieldPage = async (req, res) => {
   if (req.session.user) {
+    try{
+
+      const customField = await CustomField.find().populate('model');
+
     res.render("custom-field/custom-field-list", {
       title: "Custom Field Page",
+      customField,
     });
+  }catch(err){
+    console.error(err);
+    res.status(500).send("Server Error");
+    res.render("404", {
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
+  }
   } else {
     res.render("404", {
       errorMessages: "Looks Like you are lost!",
@@ -16,11 +33,30 @@ exports.getCustomFieldPage = (req, res) => {
 };
 
 //view custom-field Create page
-exports.getCustomFieldCreatePage = (req, res) => {
+exports.getCustomFieldCreatePage = async (req, res) => {
   if (req.session.user) {
-    res.render("custom-field/custom-field-create", {
-      title: "Custom Field Create Page",
-    });
+      try{
+      const customModels = await Model.find().sort({ name: 1 });
+      const staticPage = await StaticPage.find().lean();
+      const staticField = await StaticField.find();
+  
+      res.render("custom-field/custom-field-create", {
+        title: "Custom Field Create Page",
+        customModels,
+        customField:null,
+        staticPage,
+        staticField,
+        formConfig: validationConfig.field
+      });
+    }catch(err){
+      console.error(err);
+      res.status(500).send("Server Error");
+      res.render("404", {
+          errorMessages: "Something is wrong with our side. Please inform us!",
+          error: "500",
+        });
+    }
+    
   } else {
     res.render("404", {
       errorMessages: "Looks Like you are lost!",
@@ -28,6 +64,87 @@ exports.getCustomFieldCreatePage = (req, res) => {
     });
   }
 };
+
+exports.getCustomFieldEditPage = async (req, res) => {
+  if (req.session.user) {
+      try{
+        const fieldId = req.params.fieldId;
+
+        const customField = await CustomField.findById(fieldId);
+
+      const customModels = await Model.find().sort({ name: 1 });
+      const staticPage = await StaticPage.find().lean();
+      const staticField = await StaticField.find();
+  
+      res.render("custom-field/custom-field-create", {
+        title: "Custom Field Create Page",
+        customModels,
+        customField,
+        staticPage,
+        staticField,
+        formConfig: validationConfig.field
+      });
+    }catch(err){
+      console.error(err);
+      res.status(500).send("Server Error");
+      res.render("404", {
+          errorMessages: "Something is wrong with our side. Please inform us!",
+          error: "500",
+        });
+    }
+    
+  } else {
+    res.render("404", {
+      errorMessages: "Looks Like you are lost!",
+      error: "404",
+    });
+  }
+};
+
+exports.createOrUpdateCustomField = async (req, res) => {
+  try {
+    // Capture the fields from the request body
+    const { title, model, target_type, label_name, field_name, parent_id, staticId } = req.body;
+    const customFieldId = req.params.fieldId; // For updating
+
+    // Find or create the custom field
+    let customField = customFieldId
+      ? await CustomField.findById(customFieldId)
+      : new CustomField();
+
+    // Update the custom field with the incoming data
+    customField.title = title || null;
+    customField.model = model ? (Array.isArray(model) ? model : [model]) : []; // Handle model as an array
+    customField.target_type = target_type || []; // Ensure target_type is stored as an array
+    customField.label_name = label_name || []; // Directly assign label_name as an array
+    customField.field_name = field_name || []; // Directly assign field_name as an array
+    customField.parent_id = parent_id || null;
+    customField.staticId = staticId || null;
+
+    // Save the custom field
+    await customField.save();
+
+    // Fetch updated custom fields list
+    const customFields = await CustomField.find().populate('model');
+
+    // Render the custom field list with a success message
+    res.render("custom-field/custom-field-list", {
+      title: "Custom Field Page",
+      message: "Custom field created/updated successfully.",
+      customField: customFields
+    });
+  } catch (error) {
+    console.error("Error while creating/updating custom field:", error);
+    res.render("custom-field/custom-field-create", {
+      title: "Custom Field Create Page",
+      customField: null,
+      error: error.message,
+    });
+  }
+};
+
+
+
 
 //crudsfor custom-field
 exports.createCustomField = async (req, res) => {

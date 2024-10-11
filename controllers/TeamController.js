@@ -1,6 +1,7 @@
 const Team = require("../models/Team");
 const redis = require("../config/redis");
 const validationConfig = require('../config/validationConfig.json');
+const CustomField = require("../models/CustomField");
 
 
 const getPostValidationRules = () => {
@@ -29,12 +30,22 @@ exports.getTeamPage= async (req,res)=>{
   }
 
 //view member Create page
-exports.getTeamCreatePage = (req, res) => {
+exports.getTeamCreatePage = async (req, res) => {
+  let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Team' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
   res.render('teams/team/team_create_edit', {
       title: 'Team Create Page',
       team: null,
       errorMessages: [],
-      formConfig:validationConfig.team
+      formConfig:validationConfig.team,
+      customField
   });
 };
 
@@ -42,6 +53,16 @@ exports.getTeamCreatePage = (req, res) => {
 //view member Edit page
 exports.getTeamEditPage = async (req, res) => {
   try {
+
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Team' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
       const teamId = req.params.teamId; // Use the correct parameter name from the route
       // Fetch the existing team
       const team = await Team.findById(teamId);
@@ -56,34 +77,9 @@ exports.getTeamEditPage = async (req, res) => {
           title: 'Team Edit Page',
           team, 
           errorMessages: [],
-          formConfig:validationConfig.team
+          formConfig:validationConfig.team,
+          customField
 
-      });
-  } catch (err) {
-      console.error(err);
-      res.status(500).send("Server Error");
-  }
-};
-
-
-//view member Edit page
-exports.getTeamEditPage = async (req, res) => {
-  try {
-      const teamId = req.params.teamId; // Use the correct parameter name from the route
-      // Fetch the existing team
-      const team = await Team.findById(teamId);
-
-      // If team not found, return a 404 status
-      if (!team) {
-          return res.status(404).send("Team not found");
-      }
-
-      // Render the edit form with the existing team data
-      res.render('teams/team/team_create_edit', {
-          title: 'Team Edit Page',
-          team, 
-          errorMessages: [],
-          formConfig: validationConfig.team
       });
   } catch (err) {
       console.error(err);

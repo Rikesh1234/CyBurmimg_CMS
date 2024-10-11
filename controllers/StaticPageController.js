@@ -2,6 +2,7 @@
 const StaticPage = require("../models/StaticPage");
 const { body, validationResult } = require("express-validator");
 const redis = require("../config/redis");
+const CustomField = require("../models/CustomField");
 
 // View static pages listing
 exports.getStaticPagePage = async (req, res) => {
@@ -27,12 +28,15 @@ exports.getStaticPagePage = async (req, res) => {
 };
 
 // View static page create form
-exports.getStaticPageCreatePage = (req, res) => {
+exports.getStaticPageCreatePage =  async (req, res) => {
+  
   if (req.session.user) {
+
     res.render("pages/page_create_edit", {
       title: "Create Static Page",
       page: null,
       errors: [],
+      customField
     });
   } else {
     res.render("404", {
@@ -114,6 +118,20 @@ exports.createStaticPage = [
 exports.getStaticPageEditPage = async (req, res) => {
   if (req.session.user) {
     try {
+
+      let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/StaticPage' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  })
+  .populate({
+    path: 'staticId',
+    match: {_id: req.params.pageId}
+  });
+
       const page = await StaticPage.findById(req.params.pageId);
       if (!page) return res.status(404).send("Page not found");
 
@@ -121,6 +139,7 @@ exports.getStaticPageEditPage = async (req, res) => {
         title: "Edit Static Page",
         page,
         errors: [],
+        customField
       });
     } catch (err) {
       console.error(err);

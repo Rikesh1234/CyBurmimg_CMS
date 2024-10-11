@@ -1564,7 +1564,7 @@ input:checked + .switch::after {
 }
 
 .select-target-type{
-	width: 15% !important;
+	width: 100% !important;
 }
 
 .custom-swal-button-error {

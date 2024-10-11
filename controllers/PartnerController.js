@@ -1,12 +1,13 @@
 const Partner = require("../models/Partner");
 const redis = require("../config/redis");
+const CustomField = require("../models/CustomField");
 //view parnters page
 exports.getPartnerPage=(req,res)=>{
     res.render('partners/partner_listing',{title:'Partner Page'});
 }
 
 //view parnters Create page
-exports.getPartnerCreatePage=(req,res)=>{
+exports.getPartnerCreatePage= async (req,res)=>{
     res.render('partners/partner_create_edit',{title:'Partner Create Page'});
 }
 

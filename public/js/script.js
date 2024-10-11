@@ -105,6 +105,32 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+
+  const customUploadInputOne = document.getElementById("custom-upload-input-one");
+  const customImageContainerOne = document.getElementById("custom-image-container-one");
+  let customUploadedImage = document.querySelector(".custom-uploaded-image");
+
+  if (customUploadInputOne !== null) {
+    customUploadInputOne.addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          if (customUploadedImage) {
+            customImageContainerOne.removeChild(customUploadedImage);
+          }
+          const img = document.createElement("img");
+          img.src = reader.result;
+          img.classList.add("uploaded-image");
+          customImageContainerOne.appendChild(img);
+          customUploadedImage = img;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+
   const colorRepeator = document.querySelector("#ColorRepetor");
 
   if (colorRepeator !== null) {

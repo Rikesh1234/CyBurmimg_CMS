@@ -342,6 +342,8 @@ router.get("/cms/team-type/edit/:userId", teamController.getTeamTypeEditPage);
 //custom field
 router.get('/cms/custom-field', cacheMiddleware, authorize('CustomField', 'Read'), customFieldController.getCustomFieldPage);
 router.get('/cms/custom-field/create', cacheMiddleware, authorize('CustomField', 'Create'), customFieldController.getCustomFieldCreatePage);
+router.get('/cms/custom-field/edit/:fieldId', cacheMiddleware, authorize('CustomField', 'Create'), customFieldController.getCustomFieldEditPage);
+router.post('/cms/custom-field/create-edit/:fieldId?', cacheMiddleware,authorize('CustomField', 'Create'),customFieldController.createOrUpdateCustomField);
 
 //slider
 router.get('/cms/slider', cacheMiddleware, authorize('Slider', 'Read'), sliderController.getSliderPage);

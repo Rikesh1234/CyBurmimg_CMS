@@ -1,6 +1,7 @@
 const redis = require("../config/redis");
 const { body, validationResult } = require("express-validator");
 const Package = require("../models/Package");
+const CustomField = require("../models/CustomField");
 
 
 //view package page
@@ -19,10 +20,21 @@ exports.getPackagePage = async (req, res) => {
 
 
 //view package Create page
-exports.getPackageCreatePage = (req, res) => {
+exports.getPackageCreatePage = async (req, res) => {
+
+  let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Package' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
   res.render('package/package_create_edit', {
     title: 'Package Create Page',
     package: null, 
+    customField
   });
 };
 
@@ -62,6 +74,14 @@ exports.createPackage = async (req, res) => {
 // Get Package Edit Page
 exports.getPackageEditPage = async (req, res) => {
   try {
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Package' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
     const packageId = req.params.packageId;
     const packageData = await Package.findById(packageId);
 
@@ -72,6 +92,7 @@ exports.getPackageEditPage = async (req, res) => {
     res.render('package/package_create_edit', {
       title: 'Edit Package',
       package: packageData, // Pass the package data to the template
+      customField
     });
   } catch (error) {
     console.error('Error fetching package for edit:', error);

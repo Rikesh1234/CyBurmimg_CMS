@@ -1,5 +1,6 @@
 const redis = require("../config/redis");
 const Testominal = require("../models/Testominal");
+const CustomField = require("../models/CustomField");
 
 //view testomonial page
 exports.getTestomonialPage = async (req, res) => {
@@ -18,10 +19,21 @@ exports.getTestomonialPage = async (req, res) => {
 };
 
 // View testimonial Create page
-exports.getTestomonialCreatePage = (req, res) => {
+exports.getTestomonialCreatePage = async (req, res) => {
+
+  let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Testimonial' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
   res.render("testomonial/testomonial_create_edit", {
     title: "Testimonial Create Page",
     testominal: null,
+    customField
   });
 };
 
@@ -29,6 +41,16 @@ exports.getTestomonialCreatePage = (req, res) => {
 // Fetch and render the edit page for a specific testimonial
 exports.getTestomonialEditPage = async (req, res) => {
   try {
+
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Testimonial' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
     const testomonialId = req.params.userId; // Assuming `userId` is the correct parameter name
 
     // Fetch the testimonial from the database using its ID
@@ -42,6 +64,7 @@ exports.getTestomonialEditPage = async (req, res) => {
     res.render("testomonial/testomonial_create_edit", {
       title: "Edit Testimonial",
       testominal, // Pass the testominal object here
+      customField
     });
   } catch (err) {
     console.error(err);
