@@ -19,6 +19,80 @@
 
 <script src="/goodwill-cleaning/js/app.js"></script>
 
+<script>
+  $(document).ready(function () {
+  $('#InquiryForm').on('submit', function (e) {
+    e.preventDefault();
+
+    const formData = {
+      name: $('#name').val(),
+      phone: $('#phone').val(),
+      email: $('#email').val(),
+      address: $('#address').val(),
+      message: $('#message').val() ?? null,
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: '/mail/sendInquiries', // Make sure this URL matches the backend route
+      data: formData,
+      success: function (response) {
+        // Show success message using SweetAlert
+        
+        Swal.fire({
+          title: 'Success!',
+          text: 'Your appointment request has been sent successfully!',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+      },
+      error: function (error) {
+        // Show error message using SweetAlert
+        Swal.fire({
+          title: 'Error!',
+          text: 'Something went wrong. Please try again later.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      },
+    });
+  });
+});
+</script>
+
+
+<script>
+  $(document).ready(function () {
+      $(document).on('submit', '.bookForm', function (e) {
+          e.preventDefault();
+
+          const formData = $(this).serialize(); // Serialize the form data
+
+          $.ajax({
+              type: 'POST',
+              url: '/mail/bookOrder',
+              data: formData,
+              success: function (response) {
+                  Swal.fire({
+                      title: 'Success!',
+                      text: 'Your appointment request has been sent successfully!',
+                      icon: 'success',
+                      confirmButtonText: 'OK',
+                  });
+              },
+              error: function (error) {
+                  Swal.fire({
+                      title: 'Error!',
+                      text: 'Something went wrong. Please try again later.',
+                      icon: 'error',
+                      confirmButtonText: 'OK',
+                  });
+              },
+          });
+      });
+  });
+</script>
+
 
 </body>
 </html>
