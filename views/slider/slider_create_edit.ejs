@@ -59,6 +59,44 @@
                 </div>
                 <input type="text" class="form-control" name="subtitle" id="subtitle" value="<%= slider ? slider.subtitle : '' %>" />
               </div>
+
+              <% if (Array.isArray(customField) && customField.length) { %>
+                <% customField.forEach(field => { %>
+                  <% field.target_type.forEach((fields, index) => { %>
+                    <% if(fields.slug == 'text'){ %>
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                      </div>
+                      <input type="<%= fields.name %>" class="form-control" name="<%= field.field_name[index] %>" id="<%= field.label_name[index] %>"
+                        value="" />
+                    </div>
+                    <% }else if(fields.slug == 'textarea'){ %>
+                      <div class="form-box">
+                        <div class="form-label">
+                          <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                        </div>
+                        <textarea type="<%= fields.name %>" class="form-control" name="<%= field.field_name[index] %>" rows="7"
+                          cols="7"></textarea>
+                      </div>
+                    <% }else if(fields.slug == 'direct-image-uploader') { %>
+                      <div class="form-box">
+                        <div class="form-label">
+                          <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                        </div>
+                        <div class="upload-container-one">
+                          <input id="custom-upload-input-one" type="file" accept="image/*" name="<%= field.field_name[index] %>" hidden />
+                          <div id="custom-image-container-one" class=" d-flex justify-content-center">
+                            <img src="/images/upload.png" class="custom-uploaded-image" />
+                          </div>
+                          <label for="custom-upload-input-one">Upload Image</label>
+                        </div>
+                      </div>
+                    <% }%>
+                  <% }) %>
+                <% }) %>
+                <% } %>
+
             </div>
         
             <div class="post-left-container col-md-4 col-sm-12">

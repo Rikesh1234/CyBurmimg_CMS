@@ -1,55 +1,3 @@
-
-// const mongoose = require('mongoose');
-// const Permission = require('../../models/Permission');
-// const Model = require('../../models/Model');
-
-// mongoose.connect('mongodb://localhost:27017/inferno_cms', {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// });
-
-// async function createPermissionsForModel(modelName) {
-//     try {
-//         // Fetch the model from the database
-//         const model = await Model.findOne({ name: modelName });
-//         if (!model) throw new Error(`Model ${modelName} not found`);
-
-//         // Create permissions for the model
-//         const types = ['Create', 'Read', 'Update', 'Delete'];
-//         for (const type of types) {
-//             const permission = new Permission({
-//                 type,
-//                 model: model._id // Use the model's ObjectId
-//             });
-//             await permission.save();
-//             console.log(`Permission created: ${type} for ${modelName}`);
-//         }
-//     } catch (error) {
-//         console.error('Error creating permission:', error.message);
-//     }
-// }
-
-// async function seedPermissions() {
-//     try {
-//         await createPermissionsForModel('Post');
-//         await createPermissionsForModel('Category');
-//         await createPermissionsForModel('Author');
-//         await createPermissionsForModel('StaticPage');
-//         await createPermissionsForModel('Slider');
-//         await createPermissionsForModel('Team');
-//         await createPermissionsForModel('TeamType');
-//         await createPermissionsForModel('Testimonial');
-//         await createPermissionsForModel('User');
-//         await createPermissionsForModel('Role');
-//         await createPermissionsForModel('Package');
-//         await createPermissionsForModel('CustomField');
-//     } finally {
-//         mongoose.connection.close(); // Close the database connection
-//     }
-// }
-
-// seedPermissions();
-
 require('dotenv').config(); 
 const mongoose = require('mongoose');
 const Permission = require('../../models/Permission');
@@ -60,45 +8,71 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('Database connected successfully'))
     .catch(err => console.error('Database connection failed:', err.message));
 
-// Function to create permissions for a model
-async function createPermissionsForModel(modelName) {
+// Function to create or update permissions for a model
+async function createOrUpdatePermissionsForModel(modelName) {
     try {
         // Fetch the model from the database
         const model = await Model.findOne({ name: modelName });
         if (!model) throw new Error(`Model ${modelName} not found`);
 
-        // Create permissions for the model
+        // Define the permission types
         const types = ['Create', 'Read', 'Update', 'Delete'];
         for (const type of types) {
-            const permission = new Permission({
-                type,
-                model: model._id // Use the model's ObjectId
-            });
-            await permission.save();
-            console.log(`Permission created: ${type} for ${modelName}`);
+            // Check if the permission already exists
+            const existingPermission = await Permission.findOne({ type, model: model._id });
+
+            if (existingPermission) {
+                console.log(`Permission already exists: ${type} for ${modelName}, skipping...`);
+            } else {
+                // Create a new permission if it doesn't exist
+                const permission = new Permission({
+                    type,
+                    model: model._id // Use the model's ObjectId
+                });
+                await permission.save();
+                console.log(`Permission created: ${type} for ${modelName}`);
+            }
         }
     } catch (error) {
-        console.error('Error creating permission:', error.message);
+        console.error('Error creating/updating permission:', error.message);
     }
 }
 
-// Function to seed all permissions
-async function seedPermissions() {
+// Function to sync permissions
+async function syncPermissions() {
     try {
-        await createPermissionsForModel('Post');
-        await createPermissionsForModel('Category');
-        await createPermissionsForModel('Author');
-        await createPermissionsForModel('StaticPage');
-        await createPermissionsForModel('Slider');
-        await createPermissionsForModel('Team');
-        await createPermissionsForModel('TeamType');
-        await createPermissionsForModel('Testimonial');
-        await createPermissionsForModel('User');
-        await createPermissionsForModel('Role');
-        await createPermissionsForModel('Package');
-        await createPermissionsForModel('CustomField');
+        // The list of models in the seeder
+        const modelNames = [
+            'Post', 'Category', 'StaticPage', 'Slider', 'Team',
+            'TeamType', 'Testimonial', 'User', 'Role', 'Package', 'CustomField',
+            'Advertisement'
+        ];
+
+        // Fetch all models that are in the seeder
+        const modelDocs = await Model.find({ name: { $in: modelNames } });
+
+        // Create or update permissions for models in the seeder
+        for (const modelName of modelNames) {
+            await createOrUpdatePermissionsForModel(modelName);
+        }
+
+        // Fetch all existing permissions in the database
+        const existingPermissions = await Permission.find();
+
+        // Build a list of valid model ObjectIds based on the seeder
+        const validModelIds = modelDocs.map(model => model._id.toString());
+
+        // Delete permissions whose model is not in the valid models list
+        for (const permission of existingPermissions) {
+            const permissionModelId = permission.model.toString();
+            if (!validModelIds.includes(permissionModelId)) {
+                await Permission.deleteOne({ _id: permission._id });
+                console.log(`Deleted permission: ${permission.type} for model ID ${permissionModelId}`);
+            }
+        }
+
     } catch (error) {
-        console.error('Error seeding permissions:', error.message);
+        console.error('Error syncing permissions:', error.message);
     } finally {
         // Properly close the database connection
         try {
@@ -110,5 +84,5 @@ async function seedPermissions() {
     }
 }
 
-// Run the seed function
-seedPermissions();
+// Run the sync function
+syncPermissions();

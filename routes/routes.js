@@ -25,6 +25,7 @@ const testomonialController = require('../controllers/TestominalController');
 const customFieldController = require('../controllers/CustomFieldController');
 const sliderController = require('../controllers/SliderController');
 
+const advertisementController = require('../controllers/AdvertisementController');
 
 
 
@@ -374,9 +375,31 @@ router.post(
 //slider delete
 router.post("/cms/slider/delete/:sliderId", cacheMiddleware, authorize('Slider', 'Delete'), sliderController.deleteSlider);
 
+
+
 //package
 router.get('/cms/package', cacheMiddleware, authorize('Package', 'Read'), packageController.getPackagePage);
 router.get('/cms/package/create', cacheMiddleware, authorize('Package', 'Create'), packageController.getPackageCreatePage);
+
+//Ads
+router.get('/cms/ads', cacheMiddleware, authorize('Advertisement', 'Read'), advertisementController.getAdsPage);
+router.get('/cms/ads/create', cacheMiddleware, authorize('Advertisement', 'Create'), advertisementController.getAdsCreatePage);
+router.get('/cms/ads/edit/:adsId', cacheMiddleware, authorize('Advertisement', 'Update'), advertisementController.getAdsEditPage);
+
+// Route for handling the ads creation
+router.post(
+  "/cms/ads/create",
+  upload.fields([
+    { name: "ads_image", maxCount: 1 },
+  ]),
+  cacheMiddleware, authorize('Advertisement', 'Create'),
+  advertisementController.createAds 
+);
+
+
+
+
+
 
 
 // Static Page - Listing
