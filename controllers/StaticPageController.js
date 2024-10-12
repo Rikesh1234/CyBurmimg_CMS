@@ -176,6 +176,11 @@ exports.updateStaticPage = [
         });
       }
 
+      let featured_image = "/images/upload.png"; // Default image
+      if (req.file) {
+        featured_image = `/uploads/static_pages/${req.file.filename}`;
+      }
+
       // Update static page
       const updatedPage = await StaticPage.findByIdAndUpdate(
         req.params.pageId,
@@ -186,6 +191,7 @@ exports.updateStaticPage = [
           status,
           tag_line, 
           summary,
+          featured_image
         },
         { new: true }
       );
