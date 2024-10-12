@@ -1,9 +1,9 @@
 const redis = require("../config/redis");
 const Testominal = require("../models/Testominal");
+const CustomField = require("../models/CustomField");
 
 //view testomonial page
 exports.getTestomonialPage = async (req, res) => {
-  if (req.session.user) {
   try {
     // Fetch all testimonials from the database
     const testimonials = await Testominal.find();
@@ -15,39 +15,42 @@ exports.getTestomonialPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
-}else{
-  res.render("404", {
-    errorMessages: "Looks Like you are lost!",
-    error: "404",
-  });
-}
 };
 
 // View testimonial Create page
-exports.getTestomonialCreatePage = (req, res) => {
-  if (req.session.user) {
+exports.getTestomonialCreatePage = async (req, res) => {
+
+  let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Testimonial' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
   res.render("testomonial/testomonial_create_edit", {
     title: "Testimonial Create Page",
     testominal: null,
+    customField
   });
-}else{
-  res.render("404", {
-    errorMessages: "Looks Like you are lost!",
-    error: "404",
-  });
-}
 };
 
 //view testomonial Edit page
 // Fetch and render the edit page for a specific testimonial
 exports.getTestomonialEditPage = async (req, res) => {
-  if (req.session.user) {
   try {
+
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Testimonial' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
     const testomonialId = req.params.userId; // Assuming `userId` is the correct parameter name
 
     // Fetch the testimonial from the database using its ID
@@ -61,21 +64,12 @@ exports.getTestomonialEditPage = async (req, res) => {
     res.render("testomonial/testomonial_create_edit", {
       title: "Edit Testimonial",
       testominal, // Pass the testominal object here
+      customField
     });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
-}else{
-  res.render("404", {
-    errorMessages: "Looks Like you are lost!",
-    error: "404",
-  });
-}
 };
 
 //cruds for testominal
@@ -121,10 +115,6 @@ exports.createTestominal = async (req, res) => {
     } else {
       console.error(err);
       res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
     }
   }
 };
@@ -146,10 +136,6 @@ exports.deleteTestominal = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 
@@ -218,10 +204,6 @@ exports.updateTestominal = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 

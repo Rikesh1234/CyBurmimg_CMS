@@ -25,11 +25,10 @@ async function createModels() {
         { name: 'Slider', path: '../models/Slider' },
         { name: 'Team', path: '../models/Team' },
         { name: 'TeamType', path: '../models/TeamType' },
-        { name: 'Testimonial', path: '../models/Testimonial' }, // Fixed typo
+        { name: 'Testimonial', path: '../models/Testimonial' },
         { name: 'User', path: '../models/user' },
         { name: 'Role', path: '../models/Role' },
         { name: 'Package', path: '../models/Package' },
-        { name: 'CustomField', path: '../models/CustomField' },
     ];
 
     try {

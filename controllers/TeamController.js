@@ -1,6 +1,7 @@
 const Team = require("../models/Team");
 const redis = require("../config/redis");
 const validationConfig = require('../config/validationConfig.json');
+const CustomField = require("../models/CustomField");
 
 
 const getPostValidationRules = () => {
@@ -16,7 +17,6 @@ const getPostValidationRules = () => {
 
 //view member page
 exports.getTeamPage= async (req,res)=>{
-  if (req.session.user) {
     try{
       // Fetch all team from the database
       const teams= await Team.find();
@@ -26,41 +26,43 @@ exports.getTeamPage= async (req,res)=>{
     }catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
     }
-  }else{
-    res.render("404", {
-      errorMessages: "Looks Like you are lost!",
-      error: "404",
-    });
-  }
   }
 
 //view member Create page
-exports.getTeamCreatePage = (req, res) => {
-  if (req.session.user) {
+exports.getTeamCreatePage = async (req, res) => {
+  let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Team' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
   res.render('teams/team/team_create_edit', {
       title: 'Team Create Page',
       team: null,
       errorMessages: [],
-      formConfig:validationConfig.team
+      formConfig:validationConfig.team,
+      customField
   });
-}else{
-  res.render("404", {
-    errorMessages: "Looks Like you are lost!",
-    error: "404",
-  });
-}
 };
 
 
 //view member Edit page
 exports.getTeamEditPage = async (req, res) => {
-  if (req.session.user) {
   try {
+
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Team' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
       const teamId = req.params.teamId; // Use the correct parameter name from the route
       // Fetch the existing team
       const team = await Team.findById(teamId);
@@ -75,97 +77,30 @@ exports.getTeamEditPage = async (req, res) => {
           title: 'Team Edit Page',
           team, 
           errorMessages: [],
-          formConfig:validationConfig.team
+          formConfig:validationConfig.team,
+          customField
 
       });
   } catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
-}else{
-  res.render("404", {
-    errorMessages: "Looks Like you are lost!",
-    error: "404",
-  });
-}
-};
-
-
-//view member Edit page
-exports.getTeamEditPage = async (req, res) => {
-  if (req.session.user) {
-  try {
-      const teamId = req.params.teamId; // Use the correct parameter name from the route
-      // Fetch the existing team
-      const team = await Team.findById(teamId);
-
-      // If team not found, return a 404 status
-      if (!team) {
-          return res.status(404).send("Team not found");
-      }
-
-      // Render the edit form with the existing team data
-      res.render('teams/team/team_create_edit', {
-          title: 'Team Edit Page',
-          team, 
-          errorMessages: [],
-          formConfig: validationConfig.team
-      });
-  } catch (err) {
-      console.error(err);
-      res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
-  }
-}else{
-  res.render("404", {
-    errorMessages: "Looks Like you are lost!",
-    error: "404",
-  });
-}
 };
 
 
 //view member-type page
 exports.getTeamTypePage=(req,res)=>{
-  if (req.session.user) {
     res.render('teams/memberType/memberType_listing',{title:'Team Type Page'});
-  }else{
-    res.render("404", {
-      errorMessages: "Looks Like you are lost!",
-      error: "404",
-    });
-  }
 }
 
 //view member-type Create page
 exports.getTeamTypeCreatePage=(req,res)=>{
-  if (req.session.user) {
     res.render('teams/memberType/memberType_create_edit',{title:'Team Type Create Page',formConfig: validationConfig.team});
-  }else{
-    res.render("404", {
-      errorMessages: "Looks Like you are lost!",
-      error: "404",
-    });
-  }
 }
 
 //view member-type Edit page
 exports.getTeamTypeEditPage=(req,res)=>{
-  if (req.session.user) {
     res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page',formConfig: validationConfig.team});
-  }else{
-    res.render("404", {
-      errorMessages: "Looks Like you are lost!",
-      error: "404",
-    });
-  }
 }
 
 
@@ -234,10 +169,6 @@ exports.createTeam = async (req, res) => {
     } else {
       console.error(err);
       res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
     }
   }
 };
@@ -257,10 +188,6 @@ exports.deleteTeam = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 
@@ -354,10 +281,6 @@ exports.updateTeam = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 

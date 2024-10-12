@@ -40,6 +40,8 @@
 
         <div class="row">
           <div class="card-container">
+            <% if (Array.isArray(customField) && customField.length) { %>
+              <% customField.forEach(field => { %>
             <div class="one-card-container col-md-6 col-lg-4 col-sm-12">
               <div class="card category position-relative overflow-hidden">
                 <div
@@ -51,18 +53,14 @@
                     font-weight: 500;
                   "
                 >
-                  <span class="card-category-name">Custom Field Name</span>
+                  <span class="card-category-name"><%= field.title %></span>
                 </div>
                 <div class="card-body p-4">
                   <div class="category-published">
-                    <span class="badge parent-name px-2 mt-3">Model Name</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
+                    <% field.model.forEach(models => { %>
+                    <span class="badge parent-name px-2 mt-3"><%= models.name %></span>
+                    <% }); %>
+                    
                   </div>
 
                   <div
@@ -70,7 +68,7 @@
                     style="margin-top: 21px"
                   >
                     <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/category/edit/1" class="text-black"
+                      <a href="/cms/custom-field/edit/<%= field._id %>" class="text-black"
                         ><i class="fas fa-edit"></i
                       ></a>
                     </div>
@@ -84,232 +82,10 @@
                 </div>
               </div>
             </div>
-
-            <div class="one-card-container col-md-6 col-lg-4 col-sm-12">
-              <div class="card category position-relative overflow-hidden">
-                <div
-                  class="position-relative"
-                  style="
-                    top: 19px;
-                    left: 22px;
-                    font-size: 21px;
-                    font-weight: 500;
-                  "
-                >
-                  <span class="card-category-name">Custom Field Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge parent-name px-2 mt-3">Model Name</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div
-                    class="d-flex align-items-center gap-4 icon-container"
-                    style="margin-top: 21px"
-                  >
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/category/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                   
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="one-card-container col-md-6 col-lg-4 col-sm-12">
-              <div class="card category position-relative overflow-hidden">
-                <div
-                  class="position-relative"
-                  style="
-                    top: 19px;
-                    left: 22px;
-                    font-size: 21px;
-                    font-weight: 500;
-                  "
-                >
-                  <span class="card-category-name">Custom Field Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge parent-name px-2 mt-3">Model Name</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div
-                    class="d-flex align-items-center gap-4 icon-container"
-                    style="margin-top: 21px"
-                  >
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/category/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                   
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="one-card-container col-md-6 col-lg-4 col-sm-12">
-              <div class="card category position-relative overflow-hidden">
-                <div
-                  class="position-relative"
-                  style="
-                    top: 19px;
-                    left: 22px;
-                    font-size: 21px;
-                    font-weight: 500;
-                  "
-                >
-                  <span class="card-category-name">Custom Field Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge parent-name px-2 mt-3">Model Name</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div
-                    class="d-flex align-items-center gap-4 icon-container"
-                    style="margin-top: 21px"
-                  >
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/category/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                   
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="one-card-container col-md-6 col-lg-4 col-sm-12">
-              <div class="card category position-relative overflow-hidden">
-                <div
-                  class="position-relative"
-                  style="
-                    top: 19px;
-                    left: 22px;
-                    font-size: 21px;
-                    font-weight: 500;
-                  "
-                >
-                  <span class="card-category-name">Custom Field Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge parent-name px-2 mt-3">Model Name</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div
-                    class="d-flex align-items-center gap-4 icon-container"
-                    style="margin-top: 21px"
-                  >
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/category/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                   
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="one-card-container col-md-6 col-lg-4 col-sm-12">
-              <div class="card category position-relative overflow-hidden">
-                <div
-                  class="position-relative"
-                  style="
-                    top: 19px;
-                    left: 22px;
-                    font-size: 21px;
-                    font-weight: 500;
-                  "
-                >
-                  <span class="card-category-name">Custom Field Name</span>
-                </div>
-                <div class="card-body p-4">
-                  <div class="category-published">
-                    <span class="badge parent-name px-2 mt-3">Model Name</span>
-                    <label class="wraper" for="something">
-                      <span class="label-text">Published</span>
-                      <div class="switch-wrap">
-                        <input type="checkbox" checked id="something" />
-                        <div class="switch"></div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div
-                    class="d-flex align-items-center gap-4 icon-container"
-                    style="margin-top: 21px"
-                  >
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="/cms/category/edit/1" class="text-black"
-                        ><i class="fas fa-edit"></i
-                      ></a>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
-                    </div>
-                   
-                  </div>
-                </div>
-              </div>
-            </div>
-
+            <% }); %>
+            <% } else { %>
+              <p>No custom fields available.</p>
+            <% } %>
           </div>
         </div>
       </main>

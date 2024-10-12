@@ -135,6 +135,7 @@ router.post(
   cacheMiddleware, authorize('Category', 'Update'),
   postController.updateCategory
 );
+
 router.post("/cms/category/delete/:categoryId", cacheMiddleware, authorize('Category', 'Delete'), postController.deleteCategory);
 
 //user
@@ -341,6 +342,8 @@ router.get("/cms/team-type/edit/:userId", teamController.getTeamTypeEditPage);
 //custom field
 router.get('/cms/custom-field', cacheMiddleware, authorize('CustomField', 'Read'), customFieldController.getCustomFieldPage);
 router.get('/cms/custom-field/create', cacheMiddleware, authorize('CustomField', 'Create'), customFieldController.getCustomFieldCreatePage);
+router.get('/cms/custom-field/edit/:fieldId', cacheMiddleware, authorize('CustomField', 'Create'), customFieldController.getCustomFieldEditPage);
+router.post('/cms/custom-field/create-edit/:fieldId?', cacheMiddleware,authorize('CustomField', 'Create'),customFieldController.createOrUpdateCustomField);
 
 //slider
 router.get('/cms/slider', cacheMiddleware, authorize('Slider', 'Read'), sliderController.getSliderPage);
@@ -431,12 +434,7 @@ router.post('/cms/package/delete/:id', cacheMiddleware, authorize('Package', 'De
 
 router.get("/page/:pageSlug", homeController.getStaticPage);
 
-// router.use((req,res)=>{
-//     res.status(404).render('404',{title:'Page Not Found'});
-// });
-
-// ----------------------------------------------------------------------------------------------
-// FRONTEND ROUTES
+// FALL BACK ROUTE
 router.use((req, res) => {
   res.status(404).render('404', { 
     title: 'Page Not Found',

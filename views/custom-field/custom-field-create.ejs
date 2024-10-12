@@ -42,7 +42,7 @@
           </a>
         </div>
 
-        <form action="#">
+        <form action="/cms/custom-field/create-edit/<%= customField ? customField._id : null %>" method="post">
           <div class="form-container">
             <div class="post-right-container col-md-12">
               <div class="form-box">
@@ -55,6 +55,7 @@
                   class="form-control"
                   name="title"
                   id="title"
+                  value="<%= customField ? customField.title : (formData.title || '') %>"
                 />
               </div>
 
@@ -62,28 +63,41 @@
                 <div class="form-label">
                   <label for="model-name">Model Name</label>
                 </div>
-                <select
-                  name="model-name"
+                <select 
+                id="modelSelect"
+                  name="model"
                   class="model-name form-control"
-                  multiple="multiple"
                 >
-                  <option>Post</option>
-                  <option>Category</option>
+                <% customModels.forEach(models=> { %>
+                  <option value="<%= models._id %>" <%=customField && customField.model &&
+                    customField.model.toString()===models._id.toString() ? 'selected' : '' %>> <%= models.name %>
+                  </option>
+                  <% }) %>
                 </select>
               </div>
 
               <div class="setting-input">
+                <% if (Array.isArray(customField.target_type) && customField.target_type.length) { %>
+                <% customField.target_type.forEach((customFields, index)=> { %>
                 <div class="setting-container">
+
+                 
+
+
                   <div class="form-box" style="width: 25%">
                     <div class="form-label">
                       <label for="other_feature">Target Type</label>
                     </div>
                     <select
-                      name="targetType"
+                      name="target_type"
                       class="select-target-type form-control"
+                      style="width:100% !important"
                     >
-                      <option>Cat A</option>
-                      <option>Cat B</option>
+                      <% staticField.forEach(field=> { %>
+                      <option value="<%= field._id %>" <%=customFields && customFields &&
+                        customFields===field._id.toString() ? 'selected' : '' %>> <%= field.name %>
+                      </option>
+                      <% }) %>
                     </select>
                   </div>
 
@@ -95,8 +109,9 @@
                     <input
                       type="text"
                       class="form-control"
-                      name="title"
-                      id="title"
+                      name="label_name[]"
+                      id="label_name"
+                      value="<%= customField.label_name[index] ? customField.label_name[index] : (formData[index] ? formData[index] : '') %>"
                     />
                   </div>
 
@@ -108,11 +123,15 @@
                     <input
                       type="text"
                       class="form-control"
-                      name="title"
-                      id="title"
+                      name="field_name[]"
+                      id="field_name"
+                      value="<%= customField.field_name[index] ? customField.field_name[index] : (formData[index] ? formData[index] : '') %>"
                     />
                   </div>
-                </div>
+  <div class="delete-btn" id="delete-btn" style="height:50px; width:50px;"><i class="fa-solid fa-minus"></i></div>
+</div>
+<% }) %>
+<% } %>
 
                 <div class="extra-setting"></div>
 
@@ -129,6 +148,24 @@
                   </button>
                 </div>
               </div>
+
+              <div class="static-page-field">  
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="page">Static Field</label>
+                  </div>
+                  <select name="page" class="select-page form-control" multiple="multiple">
+                    <% staticPage.forEach(page=> { %>
+                      <option value="<%= page._id %>" <%=customField && customField.staticId &&
+                        customField.staticId===page._id.toString() ? 'selected' : '' %>> <%= page.title %>
+                      </option>
+                      <% }) %>
+
+                  </select>
+
+                </div>
+              </div>
+
               <div class="btn-container" style="margin-top: 25px; display: flex; justify-content: flex-end; align-items: center; width: 100%; gap: 10px;">
                 <button class="submit-button form-control" style="height: 50px;">Submit</button>
                 <button class="cancel-button form-control" style="height: 50px; display: block;">Cancel</button>
@@ -141,12 +178,44 @@
     </section>
     <!-- CONTENT -->
 
-    <%- include('../layout/script') %>
+
+
+    <% customModels.forEach(models=> { %>
+      <% if (customField && customField.staticId && models.name == 'StaticPage') { %>
+        <% if (models._id == customField.modal) { %>
+          <script>
+            document.querySelector('.static-page-field').classList.remove('d-none');
+          </script>
+          <% } %>
+        <% } %>
+
+      <% }) %>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+         
+  const modelSelect = document.querySelector('#modelSelect');
+
+  modelSelect.addEventListener('change', function() {
+    console.log('Change event fired!');
+    
+    const selectedModelName = this.options[this.selectedIndex].text;
+    console.log('Selected model name:', selectedModelName);
+
+    if (selectedModelName === 'StaticPage') {
+      document.querySelector('.static-page-field').classList.remove('d-none');
+    } else {
+      document.querySelector('.static-page-field').classList.add('d-none');
+    }
+  });
+});
+
+      </script>
 
     <script>
       $(document).ready(function domReady() {
-        $(".select-target-type").select2({
-          placeholder: "Member Type",
+        $(".select-page").select2({
+          placeholder: "Static Page",
         });
       });
     </script>
@@ -173,12 +242,14 @@
                       <label for="other_feature">Target Type</label>
                     </div>
                     <select
-                      name="targetType"
+                      name="target_type"
                       class="select-target-type form-control"
                       style="width:100% !important"
                     >
-                      <option>Cat A</option>
-                      <option>Cat B</option>
+                      <% staticField.forEach(field=> { %>
+                      <option value="<%= field._id %>"> <%= field.name %>
+                      </option>
+                      <% }) %>
                     </select>
                   </div>
 
@@ -190,8 +261,8 @@
                     <input
                       type="text"
                       class="form-control"
-                      name="title"
-                      id="title"
+                      name="label_name[]"
+                      id="label_name"
                     />
                   </div>
 
@@ -203,8 +274,8 @@
                     <input
                       type="text"
                       class="form-control"
-                      name="title"
-                      id="title"
+                      name="field_name[]"
+                      id="field_name"
                     />
                   </div>
   <div class="delete-btn" id="delete-btn" style="height:50px; width:50px;"><i class="fa-solid fa-minus"></i></div>
@@ -223,5 +294,7 @@
         });
       });
     </script>
+
+<%- include('../layout/script') %>
   </body>
 </html>

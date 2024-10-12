@@ -3,6 +3,7 @@ const Role = require("../models/Role");
 const User = require("../models/user");
 const Permission = require("../models/Permission");
 const Model = require("../models/Model");
+const CustomField = require("../models/CustomField");
 
 const { validationResult } = require("express-validator");
 
@@ -40,10 +41,6 @@ exports.getRolePermissions = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 
@@ -92,10 +89,6 @@ exports.updateRolePermissions = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 // Controller to handle the form submission
@@ -112,7 +105,6 @@ exports.savePermissions = (req, res) => {
 
 //view user page
 exports.getUserPage = async (req, res) => {
-  if (req.session.user) {
   try {
     // Fetch all users from the database
 
@@ -126,20 +118,21 @@ exports.getUserPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
-}else{
-
-}
 };
 
 //view user Create page
 exports.getUserCreatePage = async (req, res) => {
-  if (req.session.user) {
   try {
+
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/user' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
 
     // Fetch the logged-in user from the session
     const username = req.session.user.username;
@@ -175,23 +168,28 @@ exports.getUserCreatePage = async (req, res) => {
       user: null,
       errorMessages: [],
       roles: activeRoles, // Pass the roles for the dropdown
-      formData: {} // Ensure formData is always an object for the form
+      formData: {}, // Ensure formData is always an object for the form
+      customField
     });
 
   } catch (err) {
     console.error('Error fetching user create page:', err);
     res.status(500).send('Server Error');
   }
-}else{
-
-}
 };
   
 
 //view user Edit page
 exports.getUserEditPage = async (req, res) => {
-  if (req.session.user) {
   try {
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/user' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
     // Get the user ID from the request params
     const userId = req.params.userId;
 
@@ -213,25 +211,19 @@ exports.getUserEditPage = async (req, res) => {
       title: "User Edit Page",
       user: user, // Pass the user object
       errorMessages: [],
-      roles: activeRoles // Pass roles for the dropdown
+      roles: activeRoles, // Pass roles for the dropdown
+      customField
     });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
-}else{
-
-}
 };
 
 //view role page
 exports.getRolePage = async (req, res) => {
-  if (req.session.user) {
   try{
+
     // Fetch all roles from the database
     let roles = await Role.find();
 
@@ -242,33 +234,40 @@ exports.getRolePage = async (req, res) => {
     }catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
-        res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
       }
-    }else{
-
-    }
 }
 
 //view role Create page
-exports.getRoleCreatePage = (req, res) => {
-  if (req.session.user) {
+exports.getRoleCreatePage = async (req, res) => {
+
+  let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Role' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
+
   res.render("users/role/role_create_edit", {
     title: "Role Create Page",
     role: null,
     errorMessages: [],
+    customField
   });
-}else{
-
-}
 };
 
 //view role Edit page
 exports.getRoleEditPage = async (req, res) => {
-  if (req.session.user) {
   try {
+    let customField = await CustomField.find()
+  .populate({
+    path: 'model',  // Populate the 'model' field
+    match: { path: '../models/Role' } // Filter to only include models with the specified path
+  })
+  .populate({
+    path: 'target_type', // Populate the 'field' field
+  });
     // Find the role by its ID
     const role = await Role.findById(req.params.roleId);
 
@@ -280,18 +279,12 @@ exports.getRoleEditPage = async (req, res) => {
     res.render("users/role/role_create_edit", {
       title: "Role Edit Page",
       role, // Pass the role object to the template
+      customField
     });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
-}else{
-
-}
 };
 
 //cruds for users
@@ -364,10 +357,6 @@ exports.createUser = [
 
       // In case of any other errors, show server error
       res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
     }
   },
 ];
@@ -387,10 +376,6 @@ exports.deleteUser = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 
@@ -476,10 +461,6 @@ exports.updateUser = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 //end of cruds for user
@@ -518,10 +499,6 @@ exports.createRole = async (req, res) => {
     } else {
       console.error(err);
       res.status(500).send("Server Error");
-      res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
     }
   }
 };
@@ -541,10 +518,6 @@ exports.deleteRole = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };
 
@@ -600,9 +573,5 @@ exports.updateRole = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
-    res.render("404", {
-        errorMessages: "Something is wrong with our side. Please inform us!",
-        error: "500",
-      });
   }
 };

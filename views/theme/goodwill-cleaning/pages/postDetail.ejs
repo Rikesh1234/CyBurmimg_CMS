@@ -16,7 +16,7 @@
 
                 <!-- Inner Hero Section -->
                 <div class="inner-hero"
-                    style="background-image: url('<%= post.featured_image || '/images/default.jpg' %>')">
+                    style="background-image: url('<%= post.featured_image ? post.featured_image : /images/default.jpg %>')">
                     <div class="overlay">
                         <div class="container">
                             <div class="page-contains">

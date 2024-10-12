@@ -9,7 +9,7 @@
         <div class="footer-title">Goodwill Company</div>
         <div class="line"></div>
         <% pages.forEach(page => { %> <% if (page.slug === 'about-us') { %>
-        <p class="gray-text-dark"><%- page.content %></p>
+        <p class="gray-text-dark"><%- truncateWords(page.content, 40) %></p>
         <% } %> <% }) %>
         <div class="social-media d-flex gap-3 align-items-center">
           <a href="#"
