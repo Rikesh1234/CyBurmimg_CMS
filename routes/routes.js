@@ -25,6 +25,8 @@ const testomonialController = require('../controllers/TestominalController');
 const customFieldController = require('../controllers/CustomFieldController');
 const sliderController = require('../controllers/SliderController');
 
+const masterController = require('../controllers/MasterController');
+
 
 
 
@@ -431,6 +433,13 @@ router.post('/cms/package/delete/:id', cacheMiddleware, authorize('Package', 'De
 
 
 router.get("/page/:pageSlug", homeController.getStaticPage);
+
+
+//mail
+router.post('/mail/sendInquiries', masterController.sendInquiries);
+router.post('/mail/bookOrder', masterController.bookOrder);
+
+
 
 // FALL BACK ROUTE
 router.use((req, res) => {
