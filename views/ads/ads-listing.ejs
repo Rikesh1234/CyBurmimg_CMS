@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <%- include('../layout/link') %>
+    <title>CyBurning</title>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <%- include('../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../layout/header') %>
+      <!-- NAVBAR -->
+      <!-- MAIN -->
+      <main>
+
+        
+
+        <div class="head-title">
+          <div class="left">
+            <h1>Advertisement</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/cms/dashboard">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active">Advertisement</a>
+              </li>
+            </ul>
+          </div>
+          <a href="/cms/ads/create" class="btn-create">
+            <i class="fas fa-plus"></i>
+            <span class="text">Create Advertisement</span>
+          </a>
+        </div>
+
+        <div class="search-container">
+          <form onsubmit="event.preventDefault();" role="search">
+            <label for="search">Search for stuff</label>
+            <input
+              id="search"
+              type="search"
+              placeholder="Search..."
+              autofocus
+              required
+            />
+            <button type="submit">Go</button>
+          </form>
+        </div>
+
+        <div class="row">
+          <div class="card-container">
+
+            <% if (ads && ads.length > 0) { %>
+              <% ads.forEach(ad => { %>
+
+                <div class="col-md-6 col-lg-4">
+                  <div class="card post post-img-one position-relative overflow-hidden hover-img">
+                    <div class="position-relative">
+                      <a>
+
+                        <img
+                          src="<%= ad.featuredImage ?? '/goodwill-cleaning/images/default.png' %>"
+                          class="card-img-top"
+                          alt="ads-img"
+                        />
+                      </a>
+                    </div>
+                    <div class="card-body p-4">
+                      <div class="category-published">
+                        <span class="badge category-name px-2 mt-3">Advertisement</span>
+                        <label class="wraper" for="status-<%= ad._id %>">
+                          <span class="label-text">Published</span>
+                          <div class="switch-wrap">
+                            <input type="checkbox" id="status-<%= ad._id %>" <%= ad.published ? 'checked' : '' %> />
+                            <div class="switch"></div>
+                          </div>
+                        </label>
+                      </div>
+                      <a class="d-block my-2 text-dark fw-semibold link-primary"><%= ad.title %></a>
+                      <span class="d-block my-2 text-dark fw-semibold link-primary"><%= ad.startDate.toDateString() %>-<%= ad.expiredDate.toDateString() %></span>
+                      <div class="d-flex align-items-center gap-4 icon-container">
+                        <div class="d-flex align-items-center gap-2">
+                          <a href="/cms/ads/edit/<%= ad._id %>" class="text-black"><i class="fas fa-edit"></i></a>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                          <a href="#" class="text-black delete-slider" data-id="<%= ad._id %>">
+                            <i class="fas fa-trash-alt"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <p>No Advertisement found.</p>
+            <% } %>
+            
+
+          </div>
+        </div>
+       
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <%- include('../layout/script') %>
+
+    <script>
+      $(document).ready(function domReady() {
+        $(".select-input-type").select2({
+          placeholder: "Input Type",
+        });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let selectOption = document.querySelectorAll(".select-input-type");
+
+        selectOption.forEach((currentValue, index, array) => {
+          currentValue.addEventListener("change", () => {});
+        });
+
+        let itenaryRepetor = document.querySelector("#input-repeator-btn");
+
+        itenaryRepetor.addEventListener("click", (event) => {
+          event.preventDefault();
+          const container = document.querySelector(".repeater-container");
+
+          const newElement = document.createElement("div");
+          newElement.className = "input-repeator-container";
+          newElement.innerHTML = `
+ <div class="input-field-container" style="">
+                <div class="form-box" style="width: 15%">
+                  <div class="form-label">
+                    <label for="input_type">Input Type</label>
+                  </div>
+                  <select
+                    name="inputType"
+                    class="select-input-type form-control"
+                  >
+                    <option>Text</option>
+                    <option>Textarea</option>
+                    <option>Repeator</option>
+                  </select>
+                </div>
+
+                <div class="form-box" style="width: 50%">
+                  <div class="form-label">
+                    <label for="label_name">Label Name</label
+                    ><span class="important">*</span>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="label_name"
+                    id="label_name"
+                  />
+                </div>
+
+                <div class="form-box" style="width: 50%">
+                  <div class="form-label">
+                    <label for="field_name">Field Name</label
+                    ><span class="important">*</span>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="field_name"
+                    id="field_name"
+                  />
+                </div>
+              </div>
+  <div class="delete-btn" id="delete-btn" style="height:30px; width:30px;"><i class="fa-solid fa-minus"></i></div>
+`;
+
+          // Append the new element to the container
+          container.appendChild(newElement);
+
+          deleteButtons = document.querySelectorAll(".delete-btn");
+
+          deleteButtons.forEach((currentValue, index, array) => {
+            currentValue.addEventListener("click", () => {
+              currentValue.parentElement.remove();
+            });
+          });
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Handle delete button functionality
+        const deleteButtons = document.querySelectorAll('.delete-slider');
+        
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+    
+            const sliderId = this.getAttribute('data-id'); // Get slider ID
+            
+            // Trigger SweetAlert2 modal
+            Swal.fire({
+              title: 'Are you sure?',
+              text: 'Do you really want to delete this slider? This action cannot be undone.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Delete',
+              cancelButtonText: 'Cancel'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // If confirmed, send POST request to delete the slider
+                fetch(`/cms/slider/delete/${adsId}`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  }
+                })
+                .then(response => {
+                  if (response.ok) {
+                    // Show success message and reload the page
+                    Swal.fire('Deleted!', 'Your ad has been deleted.', 'success').then(() => {
+                      location.reload(); // Reload the page after successful deletion
+                    });
+                  } else {
+                    Swal.fire('Error!', 'There was an issue deleting the ads.', 'error');
+                  }
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  Swal.fire('Error!', 'There was an issue deleting the ads.', 'error');
+                });
+              }
+            });
+          });
+        });
+      });
+    </script>
+    
+  </body>
+</html>

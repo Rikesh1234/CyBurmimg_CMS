@@ -44,25 +44,35 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('Database connected successfully'))
     .catch(err => console.error('Database connection failed:', err.message));
 
-async function createAdminRole() {
+async function createOrUpdateAdminRole() {
     try {
         // Fetch all permissions
         const allPermissions = await Permission.find();
         const allPermissionIds = allPermissions.map(permission => permission._id);
 
-        // Create the Admin role
-        const adminRole = new Role({
-            name: 'Admin',
-            slug: 'admin',
-            permissions: allPermissionIds,
-            published: true
-        });
+        // Check if the Admin role already exists
+        let adminRole = await Role.findOne({ slug: 'admin' });
 
-        const savedAdminRole = await adminRole.save();
-        console.log('Admin Role created:', savedAdminRole);
-        return savedAdminRole._id;
+        if (adminRole) {
+            // If the role exists, update its permissions
+            adminRole.permissions = allPermissionIds;
+            const updatedAdminRole = await adminRole.save();
+            console.log('Admin Role updated:', updatedAdminRole);
+            return updatedAdminRole._id;
+        } else {
+            // Create the Admin role if it does not exist
+            adminRole = new Role({
+                name: 'Admin',
+                slug: 'admin',
+                permissions: allPermissionIds,
+                published: true
+            });
+            const savedAdminRole = await adminRole.save();
+            console.log('Admin Role created:', savedAdminRole);
+            return savedAdminRole._id;
+        }
     } catch (error) {
-        console.error('Error creating Admin role:', error.message);
+        console.error('Error creating/updating Admin role:', error.message);
     } finally {
         // Properly close the database connection
         try {
@@ -74,4 +84,4 @@ async function createAdminRole() {
     }
 }
 
-createAdminRole();
+createOrUpdateAdminRole();
