@@ -8,8 +8,8 @@ const getPostValidationRules = () => {
   const rules = [];
 
 
-  if (validationConfig.team.teamType) {
-    rules.push(body('teamType').notEmpty().withMessage('Team type is required'));
+  if (validationConfig.team.memberType) {
+    rules.push(body('memberType').notEmpty().withMessage('Team type is required'));
   }
   return rules;
 };
@@ -25,7 +25,7 @@ exports.getTeamPage= async (req,res)=>{
       res.render('teams/team/team_listing',{title:'Team Page', teams});
     }catch (err) {
       console.error(err);
-      res.status(500).send("Server Error");
+      res.status(500).render('404',{title:'Internal Server Error',error:'500',errorMessages:'Something is wrong in the server'})
     }
   }
 
@@ -83,7 +83,7 @@ exports.getTeamEditPage = async (req, res) => {
       });
   } catch (err) {
       console.error(err);
-      res.status(500).send("Server Error");
+      res.status(500).render('404',{title:'Internal Server Error',error:'500',errorMessages:'Something is wrong in the server'})
   }
 };
 
@@ -167,7 +167,7 @@ exports.createTeam = async (req, res) => {
       });
     } else {
       console.error(err);
-      res.status(500).send("Server Error");
+      res.status(500).render('404',{title:'Internal Server Error',error:'500',errorMessages:'Something is wrong in the server'})
     }
   }
 };

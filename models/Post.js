@@ -5,17 +5,18 @@ const mongoose = require('mongoose');
 const postSchema = new mongoose.Schema({
   title: { type: String, required: [true, 'Title is required'] },
   slug: { type: String, required: [true, 'Slug is required'], unique: true },
-  tag_line: { type: String },
-  summary: { type: String },
+  tag_line: { type: String, default: '' }, // Optional field
+  summary: { type: String, default: '' }, // Optional field
   content: { type: String, required: [true, 'Content is required'] },
   category: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: [true, 'Category is required'] }],
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'Author'},
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'Author' },
   tags: { type: [String] },
-  photo_gallery: { type: Boolean, default: false },
+  photo_gallery: { type: Boolean, default: false }, // Indicates if there is a photo gallery
+  gallery: { type: mongoose.Schema.Types.ObjectId, ref: 'Gallery' }, // Reference to Gallery schema
   published: { type: Boolean, default: false },
   published_date: { type: Date, default: Date.now },
-  featured_image: { type: String, default: '/images/default.jpg' },
-  createdAt: { type: Date, default: Date.now }
-});
+  featured_image: { type: String, default: null },
+}, { timestamps: true }); 
 
+// Export the Post model
 module.exports = mongoose.model('Post', postSchema);
