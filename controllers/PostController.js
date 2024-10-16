@@ -91,6 +91,7 @@ exports.getPostCreatePage = async (req, res) => {
         authors,
         formConfig: validationConfig.post,
         customField,
+        gallery_images:[]
       });
     } catch (error) {
       console.error("Error fetching categories:", error);
