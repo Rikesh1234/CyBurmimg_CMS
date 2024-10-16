@@ -279,7 +279,8 @@ exports.getRoleEditPage = async (req, res) => {
     res.render("users/role/role_create_edit", {
       title: "Role Edit Page",
       role, // Pass the role object to the template
-      customField
+      customField,
+      errorMessages:{}
     });
   } catch (err) {
     console.error(err);

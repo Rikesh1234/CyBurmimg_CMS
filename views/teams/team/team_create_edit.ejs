@@ -574,6 +574,64 @@
           .replace(/^-+|-+$/g, "");
         slugInput.val(theSlug);
       });
+
+      const form = document.querySelector("form");
+const fieldsToValidate = [
+  { name: "name", required: true },
+  { name: "designation", required: true },
+  { name: "email", required: true, type: "email" },
+  { name: "facebook", required: false, type: "socialMedia" },
+  { name: "instagram", required: false, type: "socialMedia" },
+  { name: "twitter", required: false, type: "socialMedia" },
+  { name: "linkedin", required: false, type: "socialMedia" }
+];
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const socialMediaRegex = /^(https?:\/\/)?(www\.)?(facebook|instagram|twitter|linkedin)\.com\/[A-Za-z0-9_.-]+$/;
+
+form.addEventListener("submit", function (e) {
+  e.preventDefault(); // Prevent default form submission
+  const validationErrors = validateForm(fieldsToValidate);
+
+  // Check for validation errors
+  if (validationErrors.length > 0) {
+    // Fire SweetAlert with error messages
+    swal("Validation Error", validationErrors.join("\n"), "error");
+  } else {
+    // If no errors, submit the form
+    form.submit(); // Uncomment this line to actually submit the form
+  }
+});
+
+function validateForm(fields) {
+  const errors = [];
+
+  fields.forEach(field => {
+    const value = form[field.name].value.trim();
+
+    // Check if required fields are filled
+    if (field.required && !value) {
+      errors.push(`${capitalize(field.name)} is required.`);
+    }
+
+    // Validate email format
+    if (field.type === "email" && value && !emailRegex.test(value)) {
+      errors.push("Please enter a valid email address.");
+    }
+
+    // Validate social media links
+    if (field.type === "socialMedia" && value && !socialMediaRegex.test(value)) {
+      errors.push(`Please enter a valid ${capitalize(field.name)} link.`);
+    }
+  });
+
+  return errors;
+}
+
+function capitalize(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
     </script>
   </body>
 </html>

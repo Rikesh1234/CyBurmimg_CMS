@@ -4,6 +4,11 @@ const { body, validationResult } = require("express-validator");
 const redis = require("../config/redis");
 const CustomField = require("../models/CustomField");
 
+
+// Delete static page
+const fs = require("fs");
+const path = require("path");
+
 // View static pages listing
 exports.getStaticPagePage = async (req, res) => {
   if (req.session.user) {
@@ -234,22 +239,43 @@ exports.updateStaticPage = [
   },
 ];
 
-// Delete static page
+
 exports.deleteStaticPage = async (req, res) => {
   try {
-    // Try to delete the page by ID
-    const deletedPage = await StaticPage.findByIdAndDelete(req.params.pageId);
-    await redis.del("/cms/static-page");
+    // Find the page by ID to get the featured image path before deleting
+    const page = await StaticPage.findById(req.params.pageId);
 
     // If no page is found, send a 404 response
-    if (!deletedPage) {
+    if (!page) {
       return res.status(404).json({ message: "Page not found" });
+    }
+    console.log(page.featured_image);
+    
+
+    // File path of the featured image (adjust the path to where your uploads are stored)
+    const filePath = path.join(__dirname, `../public${page.featured_image}`);
+
+    // Try to delete the page by ID
+    const deletedPage = await StaticPage.findByIdAndDelete(req.params.pageId);
+
+    // Invalidate the cached post list
+    await redis.del("/cms/static-page");
+
+    // Check if file exists and is not the default image before attempting deletion
+    if (fs.existsSync(filePath) && page.featured_image !== "/images/upload.png") {
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error("Error deleting the file:", err);
+        } else {
+          console.log("File deleted successfully:", filePath);
+        }
+      });
     }
 
     // Respond with success message
     res.status(200).json({ message: "Page deleted successfully" });
   } catch (err) {
-    console.error(err);
+    console.error("Error deleting static page:", err);
     // Handle server errors
     res.status(500).json({ message: "Server Error" });
   }

@@ -8,8 +8,8 @@ const getPostValidationRules = () => {
   const rules = [];
 
 
-  if (validationConfig.team.teamType) {
-    rules.push(body('teamType').notEmpty().withMessage('Team type is required'));
+  if (validationConfig.team.memberType) {
+    rules.push(body('memberType').notEmpty().withMessage('Team type is required'));
   }
   return rules;
 };
@@ -25,7 +25,7 @@ exports.getTeamPage= async (req,res)=>{
       res.render('teams/team/team_listing',{title:'Team Page', teams});
     }catch (err) {
       console.error(err);
-      res.status(500).send("Server Error");
+      res.status(500).render('404',{title:'Internal Server Error',error:'500',errorMessages:'Something is wrong in the server'})
     }
   }
 
@@ -83,7 +83,7 @@ exports.getTeamEditPage = async (req, res) => {
       });
   } catch (err) {
       console.error(err);
-      res.status(500).send("Server Error");
+      res.status(500).render('404',{title:'Internal Server Error',error:'500',errorMessages:'Something is wrong in the server'})
   }
 };
 
@@ -100,6 +100,7 @@ exports.getTeamTypeCreatePage=(req,res)=>{
 
 //view member-type Edit page
 exports.getTeamTypeEditPage=(req,res)=>{
+
     res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page',formConfig: validationConfig.team});
 }
 
@@ -122,10 +123,8 @@ exports.createTeam = async (req, res) => {
       published_date,
     } = req.body;
 
+    
     // Handle featured image upload
-
-    console.log(req.files);
-
     const featured_image = req.files["team_image"]
       ? `/uploads/teams/${req.files["team_image"][0].filename}`
       : "/images/default.jpg";
@@ -168,7 +167,7 @@ exports.createTeam = async (req, res) => {
       });
     } else {
       console.error(err);
-      res.status(500).send("Server Error");
+      res.status(500).render('404',{title:'Internal Server Error',error:'500',errorMessages:'Something is wrong in the server'})
     }
   }
 };
