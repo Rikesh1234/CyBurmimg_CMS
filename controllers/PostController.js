@@ -33,7 +33,6 @@ exports.getPostPage = async (req, res) => {
   try {
     // Fetch all posts from the database
     const posts = await Post.find();
-
     // Render the view and pass the posts to the EJS template
     res.render("posts/post/post_listing", { title: "Post Page", posts });
   } catch (err) {

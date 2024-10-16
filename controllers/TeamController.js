@@ -100,6 +100,7 @@ exports.getTeamTypeCreatePage=(req,res)=>{
 
 //view member-type Edit page
 exports.getTeamTypeEditPage=(req,res)=>{
+
     res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page',formConfig: validationConfig.team});
 }
 
@@ -122,10 +123,8 @@ exports.createTeam = async (req, res) => {
       published_date,
     } = req.body;
 
+    
     // Handle featured image upload
-
-    console.log(req.files);
-
     const featured_image = req.files["team_image"]
       ? `/uploads/teams/${req.files["team_image"][0].filename}`
       : "/images/default.jpg";
