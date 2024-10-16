@@ -162,31 +162,24 @@
                     <% } %>
 
 
-                    <div class="form-box">
-                      <div class="form-label">
-                        <label for="title">Others Feature</label>
-                      </div>
-                      <div class="form-check form-switch">
-                        <label class="form-check-label" for="Photo Gallery">Photo Gallery</label>
-                        <input class="form-check-input" type="checkbox" id="photo_gallery" name="photo_gallery" <%=post
-                          && post.photo_gallery ? 'checked' : '' %> />
-
-                      </div>
+                    <div class="form-check form-switch">
+                      <label class="form-check-label" for="photo_gallery">Photo Gallery</label>
+                      <input class="form-check-input" type="checkbox" id="photo_gallery" name="photo_gallery" <%= post && post.photo_gallery ? 'checked' : '' %> />
                     </div>
-                    <!-- Gallery Images -->
-                    <div class="form-box">
+                    
+                    <!-- Gallery Images (Hidden initially) -->
+                    <div class="form-box" id="gallery-upload-container" style="display: none;">
                       <div class="form-label">
                         <label for="gallery_images">Choose Photos for your gallery</label>
                       </div>
                       <div class="upload-container">
-                        <input id="upload-input" type="file" accept="image/*" multiple name="gallery_images"
-                          style="display: none" />
+                        <input id="upload-input" type="file" accept="image/*" multiple name="gallery_images" style="display: none" />
                         <div id="image-container"></div>
-                        <label for="upload-input">Upload Image</label>
+                        <label for="upload-input" class="upload-label">Upload Image</label>
                       </div>
                     </div>
 
-                    <% if (Array.isArray(customField) && customField.length) { %>
+                    <% if (customField && Array.isArray(customField) && customField.length) { %>
                     <% customField.forEach(field => { %>
                       <% field.target_type.forEach((fields, index) => { %>
                         <% if(fields.slug == 'text'){ %>
@@ -276,6 +269,29 @@
     </section>
     <!-- CONTENT -->
     <%- include('../../layout/script') %>
+
+    <script>
+      // Get the checkbox and the upload container
+      const photoGalleryCheckbox = document.getElementById('photo_gallery');
+      const uploadContainer = document.getElementById('gallery-upload-container');
+    
+      // Function to show or hide the upload container based on checkbox status
+      function toggleUploadContainer() {
+        if (photoGalleryCheckbox.checked) {
+          uploadContainer.style.display = 'block'; // Show upload section
+        } else {
+          uploadContainer.style.display = 'none'; // Hide upload section
+        }
+      }
+    
+      // Call the function on page load to set the correct initial state
+      toggleUploadContainer();
+    
+      // Add event listener to checkbox to toggle visibility when clicked
+      photoGalleryCheckbox.addEventListener('change', toggleUploadContainer);
+    </script>
+
+
       <script>
         ClassicEditor.create(document.querySelector("#description"), {
           toolbar: {
