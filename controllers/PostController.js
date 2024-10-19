@@ -3,11 +3,10 @@ const Author = require("../models/Author");
 const Category = require("../models/Category");
 const CustomField = require("../models/CustomField");
 const validationConfig = require("../config/validationConfig.json");
-const Gallery = require('../models/Gallery')
+const Gallery = require("../models/Gallery");
 
-const path = require('path')
-const fs = require('fs');
-
+const path = require("path");
+const fs = require("fs");
 
 const redis = require("../config/redis");
 const { body, validationResult } = require("express-validator");
@@ -22,18 +21,50 @@ async function fetchCategoriesAndAuthors() {
 const getPostValidationRules = () => {
   const rules = [];
 
+  // Validate the title field if it's included in the config
+  if (validationConfig.post.title) {
+    rules.push(
+      body("title")
+        .notEmpty()
+        .withMessage("Title is required")
+        .isLength({ min: 5 })
+        .withMessage("Title must be at least 5 characters long")
+    );
+  }
+
+  // Validate the slug field if it's included in the config
+  if (validationConfig.post.slug) {
+    rules.push(
+      body("slug")
+        .notEmpty()
+        .withMessage("Slug is required")
+        .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+        .withMessage("Slug must be a URL-friendly string")
+    );
+  }
+
+  // Validate the author field based on the config
   if (validationConfig.post.author) {
     rules.push(body("author").notEmpty().withMessage("Author is required"));
   }
 
+  // Validate the category field based on the config
   if (validationConfig.post.category) {
     rules.push(body("category").notEmpty().withMessage("Category is required"));
   }
 
+  // Validate the content field based on the config
   if (validationConfig.post.content) {
-    rules.push(body("content").notEmpty().withMessage("Content is required"));
+    rules.push(
+      body("content")
+        .notEmpty()
+        .withMessage("Content is required")
+        .isLength({ min: 20 })
+        .withMessage("Content must be at least 20 characters long")
+    );
   }
 
+  // Validate the tags field based on the config
   if (validationConfig.post.tags) {
     rules.push(body("tags").notEmpty().withMessage("Tags are required"));
   }
@@ -91,7 +122,7 @@ exports.getPostCreatePage = async (req, res) => {
         authors,
         formConfig: validationConfig.post,
         customField,
-        gallery_images:[]
+        gallery_images: [],
       });
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -114,12 +145,10 @@ exports.createPost = [
   ...getPostValidationRules(),
 
   async (req, res) => {
-    let gallery = null; // Declare gallery here for access in both try and catch blocks
-    let uploadedGalleryImages = []; // Initialize an array to store uploaded gallery image paths
+    let gallery = null;
+    let uploadedGalleryImages = []; 
 
     try {
-
-      
       let customField = await CustomField.find()
         .populate({
           path: "model", // Populate the 'model' field
@@ -175,13 +204,11 @@ exports.createPost = [
           )
         : [];
 
-        
-
-       //Creating a new gallery entry
-       if (gallery_images.length > 0) {
+      //Creating a new gallery entry
+      if (gallery_images.length > 0) {
         gallery = new Gallery({
           images: gallery_images.map((url) => ({ url })),
-          description: summary || '',
+          description: summary || "",
         });
 
         // Save the gallery to the database
@@ -198,7 +225,7 @@ exports.createPost = [
         author: validationConfig.post.author ? author : undefined,
         category: validationConfig.post.category ? category : undefined,
         tags: validationConfig.post.tags ? tags : undefined,
-        photo_gallery: photo_gallery === 'on',
+        photo_gallery: photo_gallery === "on",
         gallery: gallery ? gallery._id : null,
         published: status === "on",
         published_date: published_date || Date.now(),
@@ -207,7 +234,7 @@ exports.createPost = [
 
       // Save the post to the database
       await newPost.save();
-      
+
       // Invalidate the cached post list
       await redis.del("/cms/post");
 
@@ -216,12 +243,12 @@ exports.createPost = [
     } catch (err) {
       // Clean up the gallery
       if (gallery) {
-        await Gallery.findByIdAndDelete(gallery._id); 
+        await Gallery.findByIdAndDelete(gallery._id);
       }
 
       // Delete uploaded gallery images from the server
       for (const imagePath of uploadedGalleryImages) {
-        const fullPath = path.join(__dirname, '..', imagePath);
+        const fullPath = path.join(__dirname, "..", imagePath);
         fs.unlink(fullPath, (unlinkErr) => {
           if (unlinkErr) {
             console.error(`Failed to delete image: ${fullPath}`, unlinkErr);
@@ -231,10 +258,13 @@ exports.createPost = [
 
       // If featured image was uploaded, delete it too
       if (req.files["featured_image"]) {
-        const featuredImagePath = path.join(__dirname, '..', featured_image);
+        const featuredImagePath = path.join(__dirname, "..", featured_image);
         fs.unlink(featuredImagePath, (unlinkErr) => {
           if (unlinkErr) {
-            console.error(`Failed to delete featured image: ${featuredImagePath}`, unlinkErr);
+            console.error(
+              `Failed to delete featured image: ${featuredImagePath}`,
+              unlinkErr
+            );
           }
         });
       }
@@ -290,27 +320,25 @@ exports.getPostEditPage = async (req, res) => {
       // Find the post by ID
       const post = await Post.findById(postId);
 
-            // In getPostCreatePage
+      // In getPostCreatePage
       const { categories, authors } = await fetchCategoriesAndAuthors();
-
 
       if (!post) {
         return res.status(404).send("Post not found");
       }
 
-      gallery_images = await Gallery.findById(post.gallery)
+      gallery_images = await Gallery.findById(post.gallery);
 
       res.render("posts/post/post_create_edit", {
         title: "Edit Post",
         post,
-        errorMessages: [], 
+        errorMessages: [],
         authors,
         categories,
         formConfig: validationConfig.post,
         customField,
-        gallery_images: gallery_images ? gallery_images.images : [], 
+        gallery_images: gallery_images ? gallery_images.images : [],
       });
-
     } catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
@@ -335,6 +363,36 @@ exports.updatePost = [
   async (req, res) => {
     try {
       const postId = req.params.postId;
+
+      // Check for validation errors
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        const existingPost = await Post.findById(postId);
+        const { categories, authors } = await fetchCategoriesAndAuthors();
+
+        return res.render("posts/post/post_create_edit", {
+          title: "Edit Post",
+          errorMessages: errors.array().map((err) => err.msg),
+          post: {
+            ...existingPost.toObject(),
+            title,
+            slug,
+            tag_line,
+            summary,
+            content,
+            category,
+            author,
+            tags,
+            status: status === "on",
+            published_date,
+          },
+          authors,
+          categories,
+          formConfig: validationConfig.post,
+        });
+      }
+
+      // If validation passes, continue with updating the post
       const {
         title,
         slug,
@@ -349,38 +407,7 @@ exports.updatePost = [
         published_date,
       } = req.body;
 
-      // Check for validation errors
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        // Fetch the existing post and any other necessary data
-        const existingPost = await Post.findById(postId);
-        const authors = await Author.find({ status: "active" }).lean();
-        const categories = await Category.find({ status: "active" }).lean();
-
-        // Return validation errors and repopulate form data
-        return res.render("posts/post/post_create_edit", {
-          title: "Edit Post",
-          errorMessages: errors.array().map((err) => err.msg),
-          post: {
-            ...existingPost.toObject(), 
-            title, 
-            slug,
-            tag_line,
-            summary,
-            content,
-            category,
-            author,
-            tags,
-            published: status === "on",
-            published_date,
-          },
-          authors, 
-          categories, 
-          formConfig: validationConfig.post,
-        });
-      }
-
-      // Handle featured image update if provided
+      // Handle featured image update
       const featured_image = req.files["featured_image"]
         ? `/uploads/post/${req.files["featured_image"][0].filename}`
         : req.body.existing_featured_image;
@@ -392,72 +419,62 @@ exports.updatePost = [
           )
         : [];
 
-      // Find the existing gallery (if any)
-      const existingGallery = await Gallery.findById(req.body.existing_gallery_id);
-      if (existingGallery) {
-        // If gallery exists, update it with new images and retain existing images
-        existingGallery.images = [
-          ...existingGallery.images,
+      // Find the existing post
+      const existingPost = await Post.findById(postId);
+
+      // Check for existing gallery and update if needed
+      let gallery = existingPost.gallery
+        ? await Gallery.findById(existingPost.gallery)
+        : null;
+
+      if (gallery && gallery_images.length > 0) {
+        // Append new images to existing gallery
+        gallery.images = [
+          ...gallery.images,
           ...gallery_images.map((url) => ({ url })),
         ];
-        await existingGallery.save();
-      } else if (gallery_images.length > 0) {
-        // If no existing gallery and new images are provided, create a new gallery
-        const newGallery = new Gallery({
+        await gallery.save();
+      } else if (!gallery && gallery_images.length > 0) {
+        // Create new gallery if not existing and new images provided
+        gallery = new Gallery({
           images: gallery_images.map((url) => ({ url })),
-          description: summary || '',
+          description: summary || "",
         });
-        await newGallery.save();
-        // Optionally, link this new gallery to the post
+        await gallery.save();
       }
 
-      // Create update data dynamically based on formConfig
+      // Prepare update data
       const updateData = {
         title,
         slug,
         tag_line,
         summary,
         content,
-        tags,
-        photo_gallery: gallery_images.length > 0, // Set to true if there are gallery images
-        featured_image,
+        author: validationConfig.post.author ? author : undefined,
+        category: validationConfig.post.category ? category : undefined,
+        tags: validationConfig.post.tags ? tags : undefined,
+        photo_gallery: photo_gallery === "on",
+        gallery: gallery ? gallery._id : existingPost.gallery,
         published: status === "on",
         published_date: published_date || Date.now(),
+        featured_image,
       };
 
-      // Ensure empty values for category and author are not set to old values
-      const updatedCategory =
-        category && category.length > 0 && validationConfig.post.category
-          ? category
-          : undefined;
-      const updatedAuthor =
-        author && author.trim() !== "" && validationConfig.post.author
-          ? author
-          : undefined;
-
-      // Conditionally add `category` and `author` if required
-      if (updatedCategory) updateData.category = updatedCategory;
-      if (updatedAuthor) updateData.author = updatedAuthor;
-
       // Update the post
-      const updatedPost = await Post.findByIdAndUpdate(
-        postId,
-        updateData,
-        { new: true, runValidators: true } // Ensure Mongoose validation is still applied
-      );
+      const updatedPost = await Post.findByIdAndUpdate(postId, updateData, {
+        new: true,
+        runValidators: true,
+      });
 
       if (!updatedPost) {
         return res.status(404).send("Post not found");
       }
 
-      // Invalidate the cached post list
+      // Invalidate cache and redirect
       await redis.del("/cms/post");
-
-      // Redirect after successful update
       return res.redirect("/cms/post");
     } catch (err) {
       console.error(err);
-      // Render a user-friendly error page
       res.status(500).render("404", {
         errorMessages: "Something went wrong on our side. Please inform us!",
         error: "500",
@@ -465,27 +482,30 @@ exports.updatePost = [
     }
   },
 ];
+
 // Controller to handle the delete image request
 exports.deleteImage = async (req, res) => {
   try {
     const imageId = req.params.id;
 
     // Find the gallery that contains the image
-    const gallery = await Gallery.findOne({ 'images._id': imageId });
-    
+    const gallery = await Gallery.findOne({ "images._id": imageId });
+
     if (gallery) {
       // Find the index of the image in the gallery's images array
-      const imageIndex = gallery.images.findIndex(image => image._id.toString() === imageId);
-      
+      const imageIndex = gallery.images.findIndex(
+        (image) => image._id.toString() === imageId
+      );
+
       if (imageIndex > -1) {
         // Get the URL of the image to delete the file from the server
         const imageUrl = gallery.images[imageIndex].url;
 
-        const filePath = path.join(__dirname, '..', 'public', imageUrl); 
+        const filePath = path.join(__dirname, "..", "public", imageUrl);
 
         // Remove the image from the array
         gallery.images.splice(imageIndex, 1);
-        
+
         // Save the updated gallery
         await gallery.save();
 
@@ -493,21 +513,26 @@ exports.deleteImage = async (req, res) => {
         fs.unlink(filePath, (err) => {
           if (err) {
             console.error("Failed to delete file:", err);
-            return res.status(500).json({ success: false, message: 'Failed to delete image file from the server' });
+            return res.status(500).json({
+              success: false,
+              message: "Failed to delete image file from the server",
+            });
           }
 
           // Respond with success
-          res.json({ success: true, message: 'Image removed successfully' });
+          res.json({ success: true, message: "Image removed successfully" });
         });
       } else {
-        res.status(404).json({ success: false, message: 'Image not found in the gallery' });
+        res
+          .status(404)
+          .json({ success: false, message: "Image not found in the gallery" });
       }
     } else {
-      res.status(404).json({ success: false, message: 'Gallery not found' });
+      res.status(404).json({ success: false, message: "Gallery not found" });
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: 'Server error' });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
