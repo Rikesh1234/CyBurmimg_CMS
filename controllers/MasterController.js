@@ -5,10 +5,10 @@ const mailHelper = require("../helper/mailHelper");
 
 exports.sendInquiries = async (req, res) => {
   const from = {
-    address: "karmacharyar@gmail.com",
+    address: "no-reply@goodwill-cleaning.com",
     name: "Goodwill Cleaning",
   };
-  const to = ["karmacharyar4@gmail.com"];
+  const to = ["obitorin36@gmail.com"];
   const subject = "Customer Inquiry";
   console.log(req.body);
   // Render the EJS template and pass data
@@ -48,11 +48,11 @@ exports.sendInquiries = async (req, res) => {
 
 exports.bookOrder = async (req, res) => {
   const from = {
-    address: "karmacharyar@gmail.com",
+    address: "no-reply@goodwill-cleaning.com",
     name: "Goodwill Cleaning",
   };
-  const to = ["karmacharyar4@gmail.com"];
-  const subject = "Customer Inquiry";
+  const to = ["obitorin36@gmail.com"];
+  const subject = "Customer Order";
   console.log(req.body);
   // Render the EJS template and pass data
   const html = await ejs.renderFile(
