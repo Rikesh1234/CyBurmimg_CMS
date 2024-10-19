@@ -1,0 +1,63 @@
+    <!-- team-section -->
+    <div class="team-section">
+        <div class="container">
+          <div class="row">
+            <div class="team-info col-12 col-md-4" data-aos="fade-left">
+              <div class="tagline">Team and Staffs</div>
+              <h2 class="title">Our Team</h2>
+              <p>
+                A small river named Duden flows by their place and supplies it
+                with the necessary regelialia. It is a paradisematic country
+              </p>
+              <a
+                href="our-team.html"
+                class="btn btn-primary btn-round mr-md-4 py-2 px-4"
+                >Learn more <span class="ion-ios-arrow-forward"></span
+              ></a>
+            </div>
+            <div class="team-contains col-12 col-md-8">
+              <div class="row">
+                <% teams.forEach(team => { %>
+                <div class="team-card col-12 col-md-4" data-aos="fade-up">
+                  <div class="img-container w-100">
+                    <img class="w-100" src="<%= team.featured_image ? team.featured_image : './goodwill-cleaning/images/default.png' %>" alt="" />
+                  </div>
+                  <div class="team-member-info">
+                    <div class="bg"></div>
+                    <div class="name"><%= team.name %></div>
+                    <div class="designation"><%= team.designation %></div>
+                    <div
+                      class="team-social-icon"
+                      data-aos="fade-up"
+                      data-aos-delay="100"
+                    >
+
+                    <% if (team.facebook !== null) { %>
+                      <a href="<%= team.facebook %>"
+                        ><i class="team-social fa-brands fa-facebook"></i
+                      ></a>
+                      <% } %>
+                      <% if (team.instagram !== null) { %>
+                      <a href="<%= team.instagram %>"
+                        ><i class="team-social fa-brands fa-instagram"></i
+                      ></a>
+                      <% } %>
+                      <% if (team.twitter !== null) { %>
+                      <a href="<%= team.twitter %>"
+                        ><i class="team-social fa-brands fa-twitter"></i
+                      ></a>
+                      <% } %>
+                      <% if (team.linkedin !== null) { %>
+                      <a href="<%= team.linkedin %>"
+                        ><i class="team-social fa-brands fa-linkedin"></i
+                      ></a>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+                 <% }) %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>

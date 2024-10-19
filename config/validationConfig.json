@@ -1,0 +1,14 @@
+{
+    "post": {
+      "title": true,
+      "slug": true,
+      "content": true,
+      "author": false,
+      "category": true,
+      "tags": false
+    },
+    "team":{
+      "memberType":false
+    }
+  }
+  

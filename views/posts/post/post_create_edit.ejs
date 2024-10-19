@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <%- include('../../layout/link') %>
+
+    <!-- <title>CyBurning</title> -->
+
+    <title>CyBurning - <%= post ? 'Edit Post' : 'Add Post' %>
+    </title>
+
+</head>
+
+<body>
+  <style>
+    .gallery-card {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .gallery-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .gallery-card .card {
+      border: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .gallery-card .card:hover {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-card .card-img-top {
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-card:hover .card-img-top {
+      transform: scale(1.05);
+    }
+
+    .delete-image {
+      font-size: 20px;
+      padding: 0 10px;
+      border: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .delete-image:hover {
+      background-color: #dc3545;
+      color: white;
+    }
+  </style>
+
+  <!-- SIDEBAR -->
+  <%- include('../../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../../layout/header') %>
+        <!-- NAVBAR -->
+        <!-- MAIN -->
+        <main>
+          <div class="head-title">
+            <div class="left">
+              <h1>
+                <%= post ? 'Edit Post' : 'Add Post' %>
+              </h1>
+              <ul class="breadcrumb">
+                <li>
+                  <a href="/cms/dashboard">Dashboard</a>
+                </li>
+                <li><i class="bx bx-chevron-right"></i></li>
+                <li>
+                  <a href="/cms/post">Post</a>
+                </li>
+                <li><i class="bx bx-chevron-right"></i></li>
+                <li>
+                  <!-- <a class="active">Add Post</a> -->
+                  <h1>
+                    <%= post ? 'Edit Post' : 'Add Post' %>
+                  </h1>
+                </li>
+              </ul>
+            </div>
+            <a href="/cms/post" class="btn-create">
+              <i class="fas fa-arrow-left"></i>
+              <span class="text">Back</span>
+            </a>
+          </div>
+          <!-- Display Validation Errors -->
+          <% if (errorMessages && errorMessages.length> 0) { %>
+            <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Validation Error',
+                  html: '<ul><% errorMessages.forEach(function(error) { %><li><%= error %></li><% }); %></ul>',
+                  confirmButtonText: 'Okay'
+                });
+              });
+            </script>
+            <% } %>
+
+              <form action="<%= post ? '/cms/post/edit/' + post._id : '/cms/post/create' %>" method="POST" name="form"
+                enctype="multipart/form-data">
+
+                <div class="form-container">
+                  <div class="post-right-container col-md-7">
+
+                    <!-- Title -->
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="title">Title</label><span class="important">*</span>
+                      </div>
+                      <input type="text" class="form-control" name="title" id="title"
+                        value="<%= post ? post.title : (formData.title || '') %>" />
+
+                    </div>
+
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="slug">Slug</label><span class="important">*</span>
+                      </div>
+                      <input type="text" class="form-control" name="slug" id="slug"
+                        value="<%= post ? post.slug : '' %>" />
+                    </div>
+
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="tag_line">Tag Line</label>
+                      </div>
+                      <input type="text" class="form-control" name="tag_line"
+                        value="<%= post ? post.tag_line : '' %>" />
+                    </div>
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="summary">Summary</label>
+                      </div>
+                      <textarea type="text" class="form-control" name="summary" rows="7"
+                        cols="7"> <%= post ? post.summary : '' %></textarea>
+                    </div>
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="content">Content</label>
+                      </div>
+                      <textarea type="text" class="form-control" name="content" rows="7" cols="7"
+                        id="description"><%= post ? post.content : '' %></textarea>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="category">Category</label>
+                      </div>
+                      <select name="category" class="select-category form-control" multiple="multiple">
+                        <% categories.forEach(category=> { %>
+                       
+                          <option value="<%= category._id %>" <%=post && post.category &&
+                            post.category.toString()===category._id.toString() ? 'selected' : '' %>><%= category.title
+                              %>
+                          </option>
+                          <% }) %>
+                      </select>
+
+                    </div>
+
+                    <!-- Author -->
+                    <% if (formConfig.author) { %>
+
+                      <div class="form-box">
+                        <div class="form-label">
+                          <label for="author">Author</label>
+                        </div>
+                        <select name="author" class="select-author form-control" multiple="multiple">
+                          <% authors.forEach(author=> { %>
+                            <option value="<%= author._id %>" <%=post && post.author &&
+                              post.author.toString()===author._id.toString() ? 'selected' : '' %>> <%= author.name %>
+                            </option>
+                            <% }) %>
+
+                        </select>
+
+                      </div>
+                      <% } %>
+
+                        <% if (formConfig.tags) { %>
+
+
+                          <!-- Tags -->
+                          <div class="form-box">
+                            <div class="form-label">
+                              <label for="tags">Tags</label>
+                            </div>
+                            <select name="tags" class="select-tags form-control" multiple="multiple">
+                              <option value="Tag A" <%=post && post.tags.includes('Tag A') ? 'selected' : '' %>>Tag A
+                              </option>
+                              <option value="Tag B" <%=post && post.tags.includes('Tag B') ? 'selected' : '' %>>Tag B
+                              </option>
+                            </select>
+                          </div>
+
+                          <% } %>
+
+
+                            <div class="form-box">
+                              <div class="form-label">
+                                <label for="title">Others Feature</label>
+                              </div>
+                              <div class="form-check form-switch">
+                                <label class="form-check-label" for="Photo Gallery">Photo Gallery</label>
+                                <input class="form-check-input" type="checkbox" id="photo_gallery" name="photo_gallery"
+                                  <%=post && post.photo_gallery ? 'checked' : '' %> />
+
+                              </div>
+                            </div>
+                            <!-- Gallery Images -->
+                            <div class="form-box">
+                              <div class="form-label">
+                                <label for="gallery_images">Choose Photos for your gallery</label>
+                              </div>
+                              <div class="upload-container">
+                                <input id="upload-input" type="file" accept="image/*" multiple name="gallery_images"
+                                  style="display: none" />
+                                <div id="image-container"></div>
+                                <label for="upload-input">Upload Image</label>
+                              </div>
+                            </div>
+
+                            <div class="container mt-4">
+                              <div class="row justify-content-center">
+                                <% if (typeof gallery_images !=='undefined' && gallery_images.length> 0) { %>
+                                  <% gallery_images.forEach(function(image) { %>
+                                    <div class="col-md-4 gallery-card mb-4" id="image-<%= image._id %>">
+                                      <div class="card shadow-sm" style="position: relative; border-radius: 10px;">
+                                        <!-- Image with rounded corners and a subtle hover effect -->
+                                        <img src="<%= image.url %>" class="card-img-top rounded" alt="Gallery Image"
+                                          style="height: 200px; object-fit: cover; transition: transform 0.3s ease;">
+                                        <div class="card-body text-center">
+                                          <!-- Caption with a clean font style -->
+                                          <p class="card-text text-muted">
+                                            <%= image.caption ? image.caption : 'No caption available' %>
+                                          </p>
+                                        </div>
+
+                                        <!-- Cross button to delete image with hover effect -->
+                                        <button class="btn btn-sm btn-outline-danger delete-image"
+                                          style="position: absolute; top: 10px; right: 10px; border-radius: 50%;"
+                                          data-image-id="<%= image._id %>" data-image-url="<%= image.url %>">
+                                          &times;
+                                        </button>
+                                      </div>
+                                    </div>
+                                    <% }); %>
+                                      <% } else { %>
+                                        <div class="col-12 text-center">
+                                          <p class="text-muted">No images found in the gallery.</p>
+                                        </div>
+                                        <% } %>
+                              </div>
+                            </div>
+
+
+
+                            <% if (Array.isArray(customField) && customField.length> 0) { %>
+                              <% customField.forEach(field=> { %>
+                                <% field.target_type.forEach((fields, index)=> { %>
+                                  <% if(fields.slug=='text' ){ %>
+                                    <div class="form-box">
+                                      <div class="form-label">
+                                        <label for="<%= field.label_name[index] %>">
+                                          <%= field.label_name[index] %>
+                                        </label>
+                                      </div>
+                                      <input type="<%= fields.name %>" class="form-control"
+                                        name="<%= field.field_name[index] %>" id="<%= field.label_name[index] %>"
+                                        value="" />
+                                    </div>
+                                    <% }else if(fields.slug=='textarea' ){ %>
+                                      <div class="form-box">
+                                        <div class="form-label">
+                                          <label for="<%= field.label_name[index] %>">
+                                            <%= field.label_name[index] %>
+                                          </label>
+                                        </div>
+                                        <textarea type="<%= fields.name %>" class="form-control"
+                                          name="<%= field.field_name[index] %>" rows="7" cols="7"></textarea>
+                                      </div>
+                                      <% }else if(fields.slug=='direct-image-uploader' ) { %>
+                                        <div class="form-box">
+                                          <div class="form-label">
+                                            <label for="<%= field.label_name[index] %>">
+                                              <%= field.label_name[index] %>
+                                            </label>
+                                          </div>
+                                          <div class="upload-container-one">
+                                            <input id="custom-upload-input-one" type="file" accept="image/*"
+                                              name="<%= field.field_name[index] %>" hidden />
+                                            <div id="custom-image-container-one" class=" d-flex justify-content-center">
+                                              <img src="/images/upload.png" class="custom-uploaded-image" />
+                                            </div>
+                                            <label for="custom-upload-input-one">Upload Image</label>
+                                          </div>
+                                        </div>
+                                        <% }%>
+                                          <% }) %>
+                                            <% }) %>
+                                              <% } %>
+                  </div>
+
+
+
+                  <div class="post-left-container col-md-4 col-sm-12">
+
+                    <div class="form-box" style="margin-bottom: 15px">
+                      <div class="form-label">
+                        <label for="Published">Published</label>
+                        <div class="form-check form-switch" style="margin-top: 10px">
+                          <label class="form-check-label" for="Status">Status</label>
+                          <input class="form-check-input" type="checkbox" id="status" name="status" <%=post &&
+                            post.status ? 'checked' : '' %> />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="Published_date">Published Date</label>
+                      </div>
+                      <input type="datetime-local" name="date" id="date" class="form-control"
+                        value="<%= post && post.date ? new Date(post.date).toISOString().slice(0, 16) : '' %>"
+                        placeholder="YYYY/MM/DD HH:MM" />
+                    </div>
+
+                    <!-- Featured Image -->
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="featured_image">Featured Image</label>
+                      </div>
+                      <div class="upload-container-one">
+                        <input id="upload-input-one" type="file" accept="image/*" name="featured_image" hidden />
+                        <div id="image-container-one">
+                          <img src="<%= post ? post.featured_image : '/images/upload.png' %>" class="uploaded-image" />
+                        </div>
+                        <label for="upload-input-one">Upload Image</label>
+                      </div>
+                    </div>
+
+                    <input type="submit" class="full-submit-button form-control" />
+                    <div class="button-box">
+                      <input type="submit" class="submit-button form-control" />
+                      <input type="button" class="cancel-button form-control" value="cancel" />
+                    </div>
+                  </div>
+                </div>
+              </form>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+    <%- include('../../layout/script') %>
+
+    <script>
+      // Get the checkbox and the upload container
+      const photoGalleryCheckbox = document.getElementById('photo_gallery');
+      const uploadContainer = document.getElementById('gallery-upload-container');
+    
+      // Function to show or hide the upload container based on checkbox status
+      function toggleUploadContainer() {
+        if (photoGalleryCheckbox.checked) {
+          uploadContainer.style.display = 'block'; // Show upload section
+        } else {
+          uploadContainer.style.display = 'none'; // Hide upload section
+        }
+      }
+    
+      // Call the function on page load to set the correct initial state
+      toggleUploadContainer();
+    
+      // Add event listener to checkbox to toggle visibility when clicked
+      photoGalleryCheckbox.addEventListener('change', toggleUploadContainer);
+    </script>
+
+
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const deleteButtons = document.querySelectorAll('.delete-image');
+
+          deleteButtons.forEach(button => {
+            button.addEventListener('click', async (e) => {
+              e.preventDefault();
+              const imageId = button.getAttribute('data-image-id');
+              const imageUrl = `/gallery/image/${imageId}`;
+
+              if (confirm('Are you sure you want to delete this image?')) {
+                try {
+                  const response = await fetch(imageUrl, {
+                    method: 'DELETE',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    }
+                  });
+
+                  const data = await response.json();
+                  if (data.success) {
+                    // Remove the image card from the UI
+                    const imageCard = document.getElementById(`image-${imageId}`);
+                    imageCard.remove();
+                  } else {
+                    alert('Error deleting the image.');
+                  }
+                } catch (err) {
+                  console.error('Error:', err);
+                }
+              }
+            });
+          });
+        });
+
+        ClassicEditor.create(document.querySelector("#description"), {
+          toolbar: {
+            items: [
+              "exportPDF",
+              "exportWord",
+              "|",
+              "findAndReplace",
+              "selectAll",
+              "|",
+              "heading",
+              "|",
+              "bold",
+              "italic",
+              "strikethrough",
+              "underline",
+              "code",
+              "subscript",
+              "superscript",
+              "removeFormat",
+              "|",
+              "bulletedList",
+              "numberedList",
+              "todoList",
+              "|",
+              "outdent",
+              "indent",
+              "|",
+              "undo",
+              "redo",
+              "-",
+              "fontSize",
+              "fontFamily",
+              "fontColor",
+              "fontBackgroundColor",
+              "highlight",
+              "|",
+              "alignment",
+              "|",
+              "link",
+              "uploadImage",
+              "blockQuote",
+              "insertTable",
+              "mediaEmbed",
+              "codeBlock",
+              "htmlEmbed",
+              "|",
+              "specialCharacters",
+              "horizontalLine",
+              "pageBreak",
+              "|",
+              "textPartLanguage",
+              "|",
+              "sourceEditing",
+            ],
+            shouldNotGroupWhenFull: true,
+          },
+          // Changing the language of the interface requires loading the language file using the <script> tag.
+          // language: 'es',
+          list: {
+            properties: {
+              styles: true,
+              startIndex: true,
+              reversed: true,
+            },
+          },
+          // https://ckeditor.com/docs/ckeditor5/latest/features/headings.html#configuration
+          heading: {
+            options: [
+              {
+                model: "paragraph",
+                title: "Paragraph",
+                class: "ck-heading_paragraph",
+              },
+              {
+                model: "heading1",
+                view: "h1",
+                title: "Heading 1",
+                class: "ck-heading_heading1",
+              },
+              {
+                model: "heading2",
+                view: "h2",
+                title: "Heading 2",
+                class: "ck-heading_heading2",
+              },
+              {
+                model: "heading3",
+                view: "h3",
+                title: "Heading 3",
+                class: "ck-heading_heading3",
+              },
+              {
+                model: "heading4",
+                view: "h4",
+                title: "Heading 4",
+                class: "ck-heading_heading4",
+              },
+              {
+                model: "heading5",
+                view: "h5",
+                title: "Heading 5",
+                class: "ck-heading_heading5",
+              },
+              {
+                model: "heading6",
+                view: "h6",
+                title: "Heading 6",
+                class: "ck-heading_heading6",
+              },
+            ],
+          },
+          fontFamily: {
+            options: [
+              "default",
+              "Arial, Helvetica, sans-serif",
+              "Courier New, Courier, monospace",
+              "Georgia, serif",
+              "Lucida Sans Unicode, Lucida Grande, sans-serif",
+              "Tahoma, Geneva, sans-serif",
+              "Times New Roman, Times, serif",
+              "Trebuchet MS, Helvetica, sans-serif",
+              "Verdana, Geneva, sans-serif",
+            ],
+            supportAllValues: true,
+          },
+          // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-size-feature
+          fontSize: {
+            options: [10, 12, 14, "default", 18, 20, 22],
+            supportAllValues: true,
+          },
+          // Be careful with the setting below. It instructs CKEditor to accept ALL HTML markup.
+          // https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#enabling-all-html-features
+          htmlSupport: {
+            allow: [
+              {
+                name: /.*/,
+                attributes: true,
+                classes: true,
+                styles: true,
+              },
+            ],
+          },
+          // Be careful with enabling previews
+          // https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html#content-previews
+          htmlEmbed: {
+            showPreviews: true,
+          },
+          // https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators
+          link: {
+            decorators: {
+              addTargetToExternalLinks: true,
+              defaultProtocol: "https://",
+              toggleDownloadable: {
+                mode: "manual",
+                label: "Downloadable",
+                attributes: {
+                  download: "file",
+                },
+              },
+            },
+          },
+          // https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html#configuration
+          mention: {
+            feeds: [
+              {
+                marker: "@",
+                feed: [
+                  "@apple",
+                  "@bears",
+                  "@brownie",
+                  "@cake",
+                  "@cake",
+                  "@candy",
+                  "@canes",
+                  "@chocolate",
+                  "@cookie",
+                  "@cotton",
+                  "@cream",
+                  "@cupcake",
+                  "@danish",
+                  "@donut",
+                  "@dragée",
+                  "@fruitcake",
+                  "@gingerbread",
+                  "@gummi",
+                  "@ice",
+                  "@jelly-o",
+                  "@liquorice",
+                  "@macaroon",
+                  "@marzipan",
+                  "@oat",
+                  "@pie",
+                  "@plum",
+                  "@pudding",
+                  "@sesame",
+                  "@snaps",
+                  "@soufflé",
+                  "@sugar",
+                  "@sweet",
+                  "@topping",
+                  "@wafer",
+                ],
+                minimumCharacters: 1,
+              },
+            ],
+          },
+          // The "superbuild" contains more premium features that require additional configuration, disable them below.
+          // Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
+          removePlugins: [
+            // These two are commercial, but you can try them out without registering to a trial.
+            // 'ExportPdf',
+            // 'ExportWord',
+            "AIAssistant",
+            "CKBox",
+            "CKFinder",
+            "EasyImage",
+            // This sample uses the Base64UploadAdapter to handle image uploads as it requires no configuration.
+            // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html
+            // Storing images as Base64 is usually a very bad idea.
+            // Replace it on production website with other solutions:
+            // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html
+            // 'Base64UploadAdapter',
+            "MultiLevelList",
+            "RealTimeCollaborativeComments",
+            "RealTimeCollaborativeTrackChanges",
+            "RealTimeCollaborativeRevisionHistory",
+            "PresenceList",
+            "Comments",
+            "TrackChanges",
+            "TrackChangesData",
+            "RevisionHistory",
+            "Pagination",
+            "WProofreader",
+            // Careful, with the Mathtype plugin CKEditor will not load when loading this sample
+            // from a local file system (file://) - load this site via HTTP server if you enable MathType.
+            "MathType",
+            // The following features are part of the Productivity Pack and require additional license.
+            "SlashCommand",
+            "Template",
+            "DocumentOutline",
+            "FormatPainter",
+            "TableOfContents",
+            "PasteFromOfficeEnhanced",
+            "CaseChange",
+          ],
+        });
+
+        $(document).ready(function domReady() {
+          $(".select-category").select2({
+            placeholder: "Category",
+          });
+
+          $(".select-author").select2({
+            placeholder: "Author",
+          });
+
+          $(".select-tags").select2({
+            placeholder: "Tags",
+          });
+        });
+
+        flatpickr("#date", {
+          enableTime: true,
+          dateFormat: "Y-m-d H:i",
+        });
+      </script>
+
+      <script>
+        $("#title").on("keyup", function () {
+          var theTitle = this.value.toLowerCase().trim();
+          var slugInput = $("#slug");
+          var theSlug = theTitle
+            .replace(/&/g, "-and-")
+            .replace(/[^a-z0-9-]+/g, "-")
+            .replace(/\-\-+/g, "-")
+            .replace(/^-+|-+$/g, "");
+          slugInput.val(theSlug);
+        });
+
+      </script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<section class="mobile-navigation">
+  <div class="mobile-navbar">
+    <div class="logo-section">
+      <!-- Use the correct path for your logo -->
+      <a href="/"><img src="/goodwill-cleaning/images/logo.png" alt="Logo" /></a>
+    </div>
+
+    <i class="fa-solid fa-bars menu-bars"></i>
+    <div class="sidebar">
+      <i class="fa-solid fa-x cross"></i>
+      <ul>
+        <!-- Home Link -->
+        <li class="<%= showingpage == 'home' ? 'selected' : '' %>"><a href="/">Home</a></li>
+        
+         About Link (Checking for 'about-us' page in `pages`) 
+        <% let aboutPage = pages.find(page => page.slug === 'about-us'); %>
+        <% if (aboutPage) { %>
+          <li class="<%= showingpage == aboutPage.slug ? 'selected' : '' %>"><a href="/page/<%= aboutPage.slug %>">About</a></li>
+        <% } %>
+
+         Dynamic Links for Categories (Limiting to 3) 
+        <% categories.slice(0, 3).forEach(cat => { %> 
+          <li class="<%= showingpage === cat.slug ? 'selected' : '' %>"><a href="/category/<%= cat.slug %>"><%= cat.title %></a></li>
+        <% }) %>
+
+         Static Links 
+        <li class="<%= showingpage === 'price' ? 'selected' : '' %>"><a href="/price">Pricing</a></li>
+
+        
+
+         Contact Link 
+        <li class="<%= showingpage == 'contact' ? 'selected' : '' %>"><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Top Navigation for Mobile -->
+  <div class="top-nav py-1">
+    <div class="container">
+      <div class="row">
+        <div class="header-contact-info d-flex justify-content-between gap-5">
+          <div class="header-contact col-12 col-md-8 d-flex align-items-center">
+            <i class="fa-solid fa-phone icon"></i> &nbsp;
+            <span class="gray-text">Phone no: </span> &nbsp;
+            <span class="imp-text"><%= contact.phone %></span> &nbsp; &nbsp;
+            <i class="fa-regular fa-envelope icon"></i> &nbsp;
+            <span class="gray-text">Email: </span> &nbsp;
+            <span class="imp-text"><%= contact.email %></span>
+          </div>
+          <div class="social-media d-flex gap-3 align-items-center">
+            <!-- Assuming `contact.socialLinks` contains URLs for social media -->
+            <a href="<%= contact.socialLinks.facebook %>"><i class="social-icon fa-brands fa-facebook"></i></a>
+            <a href="<%= contact.socialLinks.instagram %>"><i class="social-icon fa-brands fa-instagram"></i></a>
+            <a href="<%= contact.socialLinks.twitter %>"><i class="social-icon fa-brands fa-twitter"></i></a>
+            <a href="<%= contact.socialLinks.linkedin %>"><i class="social-icon fa-brands fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

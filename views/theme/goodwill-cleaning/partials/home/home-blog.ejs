@@ -1,0 +1,27 @@
+    <!-- blog section -->
+    <div class="blog-section">
+        <div class="container">
+          <div class="tagline" data-aos="fade-up">News & Blog</div>
+          <div class="title" data-aos="fade-up">Latest News</div>
+          <div class="row">
+            <% let blogCount = 0; %>
+            <% posts.forEach(post => { %> <% if (post.category[0].slug === 'blog' && blogCount < 3) {
+              %>
+            <div class="blog-card col-12 col-md-4" data-aos="fade-up">
+              <a href="/post/<%= post._id %>">
+                <div class="image-container">
+                  <img class="w-100" src="<%= post.featured_image ? post.featured_image : './goodwill-cleaning/images/default.png' %>" alt="" />
+                </div>
+                <div class="blog-contains">
+                  <div class="heading"><%= post.title %></div>
+                  <span class="date-line"><%= post.createdAt.toDateString() %></span>
+                  <p class="dark-gray-text">
+                    <%-  truncateWords(post.summary, 40) %>
+                  </p>
+                </div>
+              </a>
+            </div>
+            <% } %> <% }) %>
+          </div>
+        </div>
+      </div>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <%- include('../layout/link') %>
+
+    <title>CyBurning</title>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <%- include('../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../layout/header') %>
+      <!-- NAVBAR -->
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>Add Partner</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/cms/dashboard">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a href="/cms/partner">Partner</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active">Add Partner</a>
+              </li>
+            </ul>
+          </div>
+          <a href="/cms/partner" class="btn-create">
+            <i class="fas fa-arrow-left"></i>
+            <span class="text">Back</span>
+          </a>
+        </div>
+
+        <form action="#">
+          <div class="form-container">
+            <div class="post-right-container col-md-7 col-sm-12">
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="name">Name</label
+                  ><span class="important">*</span>
+                </div>
+                <input type="text" class="form-control" name="name" />
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="name">Url</label>
+                </div>
+                <input type="text" class="form-control" name="name" />
+              </div>
+            </div>
+
+            <div class="post-left-container col-md-4 col-sm-12">
+              <div class="form-box" style="margin-bottom: 15px">
+                <div class="form-label">
+                  <label for="Published">Published</label>
+                  <div class="form-check form-switch" style="margin-top: 10px">
+                    <label class="form-check-label" for="Status">Status</label>
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="status"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="Published_date">Published Date</label>
+                </div>
+                <input
+                  type="datetime-local"
+                  name="date"
+                  id="date"
+                  class="form-control"
+                  placeholder="YYYY/MM/HH H:M:S"
+                />
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="Published_date">Featued Image</label>
+                </div>
+                <div class="upload-container-one">
+                  <input
+                    id="upload-input-one"
+                    type="file"
+                    accept="image/*"
+                    hidden
+                  />
+                  <div id="image-container-one">
+                    <img
+                      src="/images/upload.png"
+                      class="uploaded-image"
+                    />
+                  </div>
+                  <label for="upload-input-one">Upload Image</label>
+                </div>
+              </div>
+              <input type="submit" class="full-submit-button form-control" />
+              <input
+                  type="button"
+                  class="cancel-button form-control"
+                  value="cancel"
+                />
+              <div class="button-box">
+                <input type="submit" class="submit-button form-control" />
+                <input
+                  type="button"
+                  class="cancel-button form-control"
+                  value="cancel"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <%- include('../layout/script') %>
+  </body>
+</html>

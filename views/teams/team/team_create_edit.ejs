@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <%- include('../../layout/link') %>
+    <!-- Boxicons -->
+    <link
+      href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <!-- My CSS -->
+    <!-- <link rel="stylesheet" href="/css/style.css" /> -->
+
+    <title>CyBurning</title>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <%- include('../../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../../layout/header') %>
+      <!-- NAVBAR -->
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1><%= team ? 'Edit Team' : 'Add Team' %></h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/cms/dashboard">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a href="/cms/team">Team</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <!-- <a class="active">Add Team</a> -->
+                <h1><%= team ? 'Edit Team' : 'Add Team' %></h1>
+              </li>
+            </ul>
+          </div>
+          <a href="/cms/team" class="btn-create">
+            <i class="fas fa-arrow-left"></i>
+            <span class="text">Back</span>
+          </a>
+        </div>
+        <!-- Display Validation Errors -->
+        <% if (errorMessages && errorMessages.length> 0) { %>
+        <div class="alert alert-danger">
+          <ul>
+            <% errorMessages.forEach(function(error) { %>
+            <li><%= error %></li>
+            <% }); %>
+          </ul>
+        </div>
+        <% } %>
+
+        <form
+          action="<%= team ? '/cms/team/edit/' + team._id : '/cms/team/create' %>"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <div class="form-container">
+            <div class="post-right-container col-md-7 col-sm-12">
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="name">Name</label><span class="important">*</span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="name"
+                  id="name"
+                  value="<%= typeof team !== 'undefined' && team ? team.name : (typeof formData !== 'undefined' && formData.name ? formData.name : '') %>"
+                />
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="designation">Designation</label
+                  ><span class="important">*</span>
+                </div>
+                <input
+                  type="designation"
+                  class="form-control"
+                  name="designation"
+                  value="<%= team ? team.designation : (typeof formData !== 'undefined' && formData.designation || '') %>"
+                />
+              </div>
+              <% if (formConfig.team) { %>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="other_feature">Member Type</label>
+                </div>
+                <select
+                  name="memberType"
+                  class="select-member-type form-control"
+                >
+                  <option>Cat A</option>
+                  <option>Cat B</option>
+                </select>
+              </div>
+              <% } %>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="email">Email</label
+                  ><span class="important">*</span>
+                </div>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  value="<%= team ? team.email : (typeof formData !== 'undefined' && formData.email || '') %>"
+                />
+              </div>
+
+              <div class="social-container">
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="facebook">Facebook</label>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="facebbok"
+                    value="<%= team ? team.facebook : (typeof formData !== 'undefined' && formData.facebook || '') %>"
+                  />
+                </div>
+
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="instagram">Instagram</label>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="instagram"
+                    value="<%= team ? team.instagram : (typeof formData !== 'undefined' && formData.instagram || '') %>"
+                  />
+                </div>
+
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="twitter">Twitter</label>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="twitter"
+                    value="<%= team ? team.twitter : (typeof formData !== 'undefined' && formData.twitter || '') %>"
+                  />
+                </div>
+
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="linkedin">Linkedin</label>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="linkedin"
+                    value="<%= team ? team.linkedin : (typeof formData !== 'undefined' && formData.linkedin || '') %>"
+                  />
+                </div>
+              </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="content">Content</label>
+                </div>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  name="content"
+                  rows="7"
+                  cols="7"
+                  id="description"
+                ></textarea>
+              </div>
+
+
+              <% if (Array.isArray(customField) && customField.length) { %>
+                <% customField.forEach(field => { %>
+                  <% field.target_type.forEach((fields, index) => { %>
+                    <% if(fields.slug == 'text'){ %>
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                      </div>
+                      <input type="<%= fields.name %>" class="form-control" name="<%= field.field_name[index] %>" id="<%= field.label_name[index] %>"
+                        value="" />
+                    </div>
+                    <% }else if(fields.slug == 'textarea'){ %>
+                      <div class="form-box">
+                        <div class="form-label">
+                          <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                        </div>
+                        <textarea type="<%= fields.name %>" class="form-control" name="<%= field.field_name[index] %>" rows="7"
+                          cols="7"></textarea>
+                      </div>
+                    <% }else if(fields.slug == 'direct-image-uploader') { %>
+                      <div class="form-box">
+                        <div class="form-label">
+                          <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                        </div>
+                        <div class="upload-container-one">
+                          <input id="custom-upload-input-one" type="file" accept="image/*" name="<%= field.field_name[index] %>" hidden />
+                          <div id="custom-image-container-one" class=" d-flex justify-content-center">
+                            <img src="/images/upload.png" class="custom-uploaded-image" />
+                          </div>
+                          <label for="custom-upload-input-one">Upload Image</label>
+                        </div>
+                      </div>
+                    <% }%>
+                  <% }) %>
+                <% }) %>
+                <% } %>
+
+            </div>
+
+              <div class="post-left-container col-md-4 col-sm-12">
+                <div class="form-box" style="margin-bottom: 15px">
+                  <div class="form-label">
+                    <label for="Published">Published</label>
+                    <div class="form-check form-switch" style="margin-top: 10px">
+                      <label class="form-check-label" for="Status">Status</label>
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="status"
+                        name="published"
+                        <%= team && team.published ? 'checked' : '' %>
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="Published_date">Published Date</label>
+                  </div>
+                  <input
+                    type="datetime-local"
+                    name="published_date"
+                    id="date"
+                    class="form-control"
+                    value="<%= team && team.date ? new Date(team.published_date).toISOString().slice(0, 16) : '' %>"
+                    placeholder="YYYY/MM/HH H:M:S"
+                  />
+                </div>
+
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="team_image">Featured Image</label>
+                </div>
+                <div class="upload-container-one">
+                  <input
+                    id="upload-input-one"
+                    type="file"
+                    name="team_image"
+                    accept="image/*"
+                    hidden
+                  />
+                  <div id="image-container-one">
+                    <img
+                      src="<%= team ? team.featured_image : '/images/upload.png' %>"
+                      class="uploaded-image"
+                    />
+                  </div>
+                  <label for="upload-input-one">Upload Image</label>
+                </div>
+              </div>
+              <input type="submit" class="full-submit-button form-control" />
+              <input
+                type="button"
+                class="cancel-button form-control"
+                value="cancel"
+              />
+              <div class="button-box">
+                <input type="submit" class="submit-button form-control" />
+                <input
+                  type="button"
+                  class="cancel-button form-control"
+                  value="cancel"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <%- include('../../layout/script') %>
+    <script>
+      ClassicEditor.create(document.querySelector("#description"), {
+        toolbar: {
+          items: [
+            "exportPDF",
+            "exportWord",
+            "|",
+            "findAndReplace",
+            "selectAll",
+            "|",
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "strikethrough",
+            "underline",
+            "code",
+            "subscript",
+            "superscript",
+            "removeFormat",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "todoList",
+            "|",
+            "outdent",
+            "indent",
+            "|",
+            "undo",
+            "redo",
+            "-",
+            "fontSize",
+            "fontFamily",
+            "fontColor",
+            "fontBackgroundColor",
+            "highlight",
+            "|",
+            "alignment",
+            "|",
+            "link",
+            "uploadImage",
+            "blockQuote",
+            "insertTable",
+            "mediaEmbed",
+            "codeBlock",
+            "htmlEmbed",
+            "|",
+            "specialCharacters",
+            "horizontalLine",
+            "pageBreak",
+            "|",
+            "textPartLanguage",
+            "|",
+            "sourceEditing",
+          ],
+          shouldNotGroupWhenFull: true,
+        },
+        // Changing the language of the interface requires loading the language file using the <script> tag.
+        // language: 'es',
+        list: {
+          properties: {
+            styles: true,
+            startIndex: true,
+            reversed: true,
+          },
+        },
+        // https://ckeditor.com/docs/ckeditor5/latest/features/headings.html#configuration
+        heading: {
+          options: [
+            {
+              model: "paragraph",
+              title: "Paragraph",
+              class: "ck-heading_paragraph",
+            },
+            {
+              model: "heading1",
+              view: "h1",
+              title: "Heading 1",
+              class: "ck-heading_heading1",
+            },
+            {
+              model: "heading2",
+              view: "h2",
+              title: "Heading 2",
+              class: "ck-heading_heading2",
+            },
+            {
+              model: "heading3",
+              view: "h3",
+              title: "Heading 3",
+              class: "ck-heading_heading3",
+            },
+            {
+              model: "heading4",
+              view: "h4",
+              title: "Heading 4",
+              class: "ck-heading_heading4",
+            },
+            {
+              model: "heading5",
+              view: "h5",
+              title: "Heading 5",
+              class: "ck-heading_heading5",
+            },
+            {
+              model: "heading6",
+              view: "h6",
+              title: "Heading 6",
+              class: "ck-heading_heading6",
+            },
+          ],
+        },
+        fontFamily: {
+          options: [
+            "default",
+            "Arial, Helvetica, sans-serif",
+            "Courier New, Courier, monospace",
+            "Georgia, serif",
+            "Lucida Sans Unicode, Lucida Grande, sans-serif",
+            "Tahoma, Geneva, sans-serif",
+            "Times New Roman, Times, serif",
+            "Trebuchet MS, Helvetica, sans-serif",
+            "Verdana, Geneva, sans-serif",
+          ],
+          supportAllValues: true,
+        },
+        // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-size-feature
+        fontSize: {
+          options: [10, 12, 14, "default", 18, 20, 22],
+          supportAllValues: true,
+        },
+        // Be careful with the setting below. It instructs CKEditor to accept ALL HTML markup.
+        // https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#enabling-all-html-features
+        htmlSupport: {
+          allow: [
+            {
+              name: /.*/,
+              attributes: true,
+              classes: true,
+              styles: true,
+            },
+          ],
+        },
+        // Be careful with enabling previews
+        // https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html#content-previews
+        htmlEmbed: {
+          showPreviews: true,
+        },
+        // https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators
+        link: {
+          decorators: {
+            addTargetToExternalLinks: true,
+            defaultProtocol: "https://",
+            toggleDownloadable: {
+              mode: "manual",
+              label: "Downloadable",
+              attributes: {
+                download: "file",
+              },
+            },
+          },
+        },
+        // https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html#configuration
+        mention: {
+          feeds: [
+            {
+              marker: "@",
+              feed: [
+                "@apple",
+                "@bears",
+                "@brownie",
+                "@cake",
+                "@cake",
+                "@candy",
+                "@canes",
+                "@chocolate",
+                "@cookie",
+                "@cotton",
+                "@cream",
+                "@cupcake",
+                "@danish",
+                "@donut",
+                "@dragée",
+                "@fruitcake",
+                "@gingerbread",
+                "@gummi",
+                "@ice",
+                "@jelly-o",
+                "@liquorice",
+                "@macaroon",
+                "@marzipan",
+                "@oat",
+                "@pie",
+                "@plum",
+                "@pudding",
+                "@sesame",
+                "@snaps",
+                "@soufflé",
+                "@sugar",
+                "@sweet",
+                "@topping",
+                "@wafer",
+              ],
+              minimumCharacters: 1,
+            },
+          ],
+        },
+        // The "superbuild" contains more premium features that require additional configuration, disable them below.
+        // Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
+        removePlugins: [
+          // These two are commercial, but you can try them out without registering to a trial.
+          // 'ExportPdf',
+          // 'ExportWord',
+          "AIAssistant",
+          "CKBox",
+          "CKFinder",
+          "EasyImage",
+          // This sample uses the Base64UploadAdapter to handle image uploads as it requires no configuration.
+          // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html
+          // Storing images as Base64 is usually a very bad idea.
+          // Replace it on production website with other solutions:
+          // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html
+          // 'Base64UploadAdapter',
+          "MultiLevelList",
+          "RealTimeCollaborativeComments",
+          "RealTimeCollaborativeTrackChanges",
+          "RealTimeCollaborativeRevisionHistory",
+          "PresenceList",
+          "Comments",
+          "TrackChanges",
+          "TrackChangesData",
+          "RevisionHistory",
+          "Pagination",
+          "WProofreader",
+          // Careful, with the Mathtype plugin CKEditor will not load when loading this sample
+          // from a local file system (file://) - load this site via HTTP server if you enable MathType.
+          "MathType",
+          // The following features are part of the Productivity Pack and require additional license.
+          "SlashCommand",
+          "Template",
+          "DocumentOutline",
+          "FormatPainter",
+          "TableOfContents",
+          "PasteFromOfficeEnhanced",
+          "CaseChange",
+        ],
+      });
+
+      flatpickr("#date", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+      });
+    </script>
+
+    <script>
+      $(document).ready(function domReady() {
+        $(".select-member-type").select2({
+          placeholder: "Member Type",
+        });
+      });
+    </script>
+
+    <script>
+      $("#name").on("keyup", function () {
+        var theTitle = this.value.toLowerCase().trim();
+        var slugInput = $("#slug");
+        var theSlug = theTitle
+          .replace(/&/g, "-and-")
+          .replace(/[^a-z0-9-]+/g, "-")
+          .replace(/\-\-+/g, "-")
+          .replace(/^-+|-+$/g, "");
+        slugInput.val(theSlug);
+      });
+
+      const form = document.querySelector("form");
+const fieldsToValidate = [
+  { name: "name", required: true },
+  { name: "designation", required: true },
+  { name: "email", required: true, type: "email" },
+  { name: "facebook", required: false, type: "socialMedia" },
+  { name: "instagram", required: false, type: "socialMedia" },
+  { name: "twitter", required: false, type: "socialMedia" },
+  { name: "linkedin", required: false, type: "socialMedia" }
+];
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const socialMediaRegex = /^(https?:\/\/)?(www\.)?(facebook|instagram|twitter|linkedin)\.com\/[A-Za-z0-9_.-]+$/;
+
+form.addEventListener("submit", function (e) {
+  e.preventDefault(); // Prevent default form submission
+  const validationErrors = validateForm(fieldsToValidate);
+
+  // Check for validation errors
+  if (validationErrors.length > 0) {
+    // Fire SweetAlert with error messages
+    swal("Validation Error", validationErrors.join("\n"), "error");
+  } else {
+    // If no errors, submit the form
+    form.submit(); // Uncomment this line to actually submit the form
+  }
+});
+
+function validateForm(fields) {
+  const errors = [];
+
+  fields.forEach(field => {
+    const value = form[field.name].value.trim();
+
+    // Check if required fields are filled
+    if (field.required && !value) {
+      errors.push(`${capitalize(field.name)} is required.`);
+    }
+
+    // Validate email format
+    if (field.type === "email" && value && !emailRegex.test(value)) {
+      errors.push("Please enter a valid email address.");
+    }
+
+    // Validate social media links
+    if (field.type === "socialMedia" && value && !socialMediaRegex.test(value)) {
+      errors.push(`Please enter a valid ${capitalize(field.name)} link.`);
+    }
+  });
+
+  return errors;
+}
+
+function capitalize(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+    </script>
+  </body>
+</html>

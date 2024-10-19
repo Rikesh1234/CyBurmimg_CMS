@@ -1,0 +1,54 @@
+<!-- Meta tags and title -->
+<%- include('../partials/header/meta_tags') %>
+    <title>Goodwill Cleaning</title>
+
+
+    <!-- Include stylesheets and links -->
+    <%- include('../partials/header/links') %>
+
+
+        <!-- Desktop Navigation -->
+        <%- include('../partials/header/desktop_navigation') %>
+
+            <!-- Mobile Navigation -->
+            <%- include('../partials/header/mobile_navigation') %>
+
+
+                <!-- Inner Hero Section -->
+                <div class="inner-hero" style="background-image: url('<%= post.featured_image ? post.featured_image : '/\images/\default.jpg' %>')">
+
+                    <div class="overlay">
+                        <div class="container">
+                            <div class="page-contains">
+                                <!-- Display the post title dynamically -->
+                                <div class="title" data-aos="fade-up">
+                                    <%= post.title %>
+                                </div>
+                                <ul class="breadcrumb" data-aos="fade-up">
+                                    <li><a href="/">Home</a></li>
+                                    <li><i class="bx bx-chevron-right"></i></li>
+                                    <li><a class="active">
+                                            <%= post.title %>
+                                        </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post Content Section -->
+                <div class="container">
+                    <div class="editor-box py-5" data-aos="fade-up">
+                        <!-- Display the post content dynamically -->
+                        <%- post.content %>
+                    </div>
+                </div>
+
+                <!-- Include Footer -->
+                <%- include('../partials/footer/footer') %>
+
+                    <!-- Include Scripts -->
+                    <%- include('../partials/footer/scripts') %>
+                        </body>
+
+                        </html>

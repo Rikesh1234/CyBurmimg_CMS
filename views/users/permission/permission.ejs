@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <%- include('../../layout/link') %>
+    <title>CyBurning</title>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <%- include('../../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../../layout/header') %>
+      <!-- NAVBAR -->
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>
+              Permission
+            </h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/cms/dashboard">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a href="/cms/user">User</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <!-- <a class="active">Permission</a> -->
+                <h1>
+                  Permission
+                </h1>
+              </li>
+            </ul>
+          </div>
+          <a href="/cms/role" class="btn-create">
+            <i class="fas fa-arrow-left"></i>
+            <span class="text">Back</span>
+          </a>
+        </div>
+     
+
+        <form action="/cms/permissions/<%= role._id %>" method="Post">
+          <div class="form-container" style="display: block">
+            <div class="post-right-container col-md-12 col-sm-12">
+              <% const groupedPermissions = {};
+              allPermissions.forEach(permission => { if
+              (!groupedPermissions[permission.model.name]) {
+              groupedPermissions[permission.model.name] = []; }
+              groupedPermissions[permission.model.name].push(permission); });
+              Object.keys(groupedPermissions).forEach(modelName => { %>
+              <div class="form-box">
+                <label for="title" style="font-size: 18px; font-weight: 500"
+                  ><%= modelName %></label
+                >
+                <div class="check-box-container">
+                  <% groupedPermissions[modelName].forEach(permission => { %>
+                  <div class="checkbox-contains">
+                    <input
+                      type="checkbox"
+                      name="permissions"
+                      value="<%= `${permission.model._id}:${permission.type}` %>"
+                      <%=
+                      rolePermissionMap.has(`${permission.model._id}:${permission.type}`)
+                      ? 'checked' : '' %>
+                    /><%=
+                    permission.type
+                     %><span class="permission-name"
+                      ></span
+                    >
+
+                  </div>
+                  <% }) %>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+            <div
+              class="btn-container"
+              style="
+                margin-top: 25px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                gap: 10px;
+              "
+            >
+              <button
+                type="submit"
+                class="submit-button form-control"
+                style="height: 50px"
+              >
+                Submit
+              </button>
+              <button
+                class="cancel-button form-control"
+                style="height: 50px; display: block"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </main>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <%- include('../layout/link') %>
+    <title>CyBurning</title>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <%- include('../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../layout/header') %>
+      <!-- NAVBAR -->
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>Add Package</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/cms/dashboard">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a href="/cms/setting">Package</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active">Add Package</a>
+              </li>
+            </ul>
+          </div>
+          <a href="/cms/custom-field" class="btn-create">
+            <i class="fas fa-arrow-left"></i>
+            <span class="text">Back</span>
+          </a>
+        </div>
+
+        <form
+          action="<%= package ? '/cms/package/edit/' + package._id : '/cms/package/create' %>"
+          method="POST"
+        >
+          <div class="form-container">
+            <div class="post-right-container col-md-12">
+              <!-- Title Input -->
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Title</label
+                  ><span class="important">*</span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="title"
+                  id="title"
+                  value="<%= package ? package.title : '' %>"
+                  required
+                />
+              </div>
+
+              <!-- Currency and Price Inputs -->
+              <div class="d-flex justify-content-between">
+                <div class="form-box col-5">
+                  <div class="form-label">
+                    <label for="currency">Currency</label
+                    ><span class="important">*</span>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="currency"
+                    id="currency"
+                    value="<%= package ? package.currency : '' %>"
+                    required
+                  />
+                </div>
+
+                <div class="form-box col-5">
+                  <div class="form-label">
+                    <label for="price">Price</label
+                    ><span class="important">*</span>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="price"
+                    id="price"
+                    value="<%= package ? package.price : '' %>"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Includes Repeater -->
+              <div class="includes-repeater">
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="includes">Price includes</label
+                    ><span class="important">*</span>
+                  </div>
+                </div>
+
+                <!-- Loop through 'includes' if editing, otherwise show one empty input -->
+                <% if (package && package.includes && package.includes.length >
+                0) { %> <% package.includes.forEach(function(include) { %>
+                <div class="d-flex gap-3">
+                  <div class="form-box col-8">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="includes"
+                      value="<%= include %>"
+                      required
+                    />
+                  </div>
+                  <div class="delete-btn" style="height: 37px; width: 39px">
+                    <i class="fa-solid fa-minus"></i>
+                  </div>
+                </div>
+                <% }) %> <% } else { %>
+                <!-- Empty input for adding new includes -->
+                <div class="d-flex gap-3">
+                  <div class="form-box col-8">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="includes"
+                      required
+                    />
+                  </div>
+                  <div class="delete-btn" style="height: 37px; width: 39px">
+                    <i class="fa-solid fa-minus"></i>
+                  </div>
+                </div>
+                <% } %>
+              </div>
+
+              <!-- Add Repeater Button -->
+              <div
+                class="btn-container-add"
+                style="display: flex; justify-content: flex-end"
+              >
+                <button
+                  type="button"
+                  class="full-submit-button form-control"
+                  style="width: 200px; margin-top: 25px"
+                  id="field-repeator-btn"
+                >
+                  <i class="fa-solid fa-plus"></i>Add Repeater
+                </button>
+              </div>
+
+              <% if (Array.isArray(customField) && customField.length) { %>
+                <% customField.forEach(field => { %>
+                  <% field.target_type.forEach((fields, index) => { %>
+                    <% if(fields.slug == 'text'){ %>
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                      </div>
+                      <input type="<%= fields.name %>" class="form-control" name="<%= field.field_name[index] %>" id="<%= field.label_name[index] %>"
+                        value="" />
+                    </div>
+                    <% }else if(fields.slug == 'textarea'){ %>
+                      <div class="form-box">
+                        <div class="form-label">
+                          <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                        </div>
+                        <textarea type="<%= fields.name %>" class="form-control" name="<%= field.field_name[index] %>" rows="7"
+                          cols="7"></textarea>
+                      </div>
+                    <% }else if(fields.slug == 'direct-image-uploader') { %>
+                      <div class="form-box">
+                        <div class="form-label">
+                          <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                        </div>
+                        <div class="upload-container-one">
+                          <input id="custom-upload-input-one" type="file" accept="image/*" name="<%= field.field_name[index] %>" hidden />
+                          <div id="custom-image-container-one" class=" d-flex justify-content-center">
+                            <img src="/images/upload.png" class="custom-uploaded-image" />
+                          </div>
+                          <label for="custom-upload-input-one">Upload Image</label>
+                        </div>
+                      </div>
+                    <% }%>
+                  <% }) %>
+                <% }) %>
+                <% } %>
+
+              <!-- Submit and Cancel Buttons -->
+              <div
+                class="btn-container"
+                style="
+                  margin-top: 25px;
+                  display: flex;
+                  justify-content: flex-end;
+                  align-items: center;
+                  width: 100%;
+                  gap: 10px;
+                "
+              >
+                <button
+                  type="submit"
+                  class="submit-button form-control"
+                  style="height: 50px"
+                >
+                  <%= package ? 'Update' : 'Submit' %>
+                </button>
+
+                <button
+                  type="button"
+                  class="cancel-button form-control"
+                  style="height: 50px"
+                  onclick="window.location.href='/cms/package'"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <%- include('../layout/script') %>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let itenaryRepetor = document.querySelector("#field-repeator-btn");
+
+        itenaryRepetor.addEventListener("click", (event) => {
+          event.preventDefault();
+          const container = document.querySelector(".includes-repeater");
+
+          const newElement = document.createElement("div");
+          newElement.className = "d-flex gap-3";
+          newElement.innerHTML = `
+  <div class="form-box col-8">
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="includes"
+                    id="includes"
+                  />
+                </div>
+  <div class="delete-btn" id="delete-btn" style="height:37px; width:39px;"><i class="fa-solid fa-minus"></i></div>
+`;
+
+          // Append the new element to the container
+          container.appendChild(newElement);
+
+          deleteButtons = document.querySelectorAll(".delete-btn");
+
+          deleteButtons.forEach((currentValue, index, array) => {
+            currentValue.addEventListener("click", () => {
+              currentValue.parentElement.remove();
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

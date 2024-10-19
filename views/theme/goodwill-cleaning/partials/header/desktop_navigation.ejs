@@ -1,0 +1,64 @@
+<section class="desktop-navigation">
+  <div class="top-nav py-1" id="top-nav">
+    <div class="container">
+      <div class="row">
+        <div class="header-contact-info d-flex justify-content-between">
+          <div class="header-contact d-flex align-items-center">
+            <i class="fa-solid fa-phone icon"></i> &nbsp;
+            <span class="gray-text">Phone no: </span> &nbsp;
+            <span class="imp-text">+04 20 900 310</span> &nbsp; &nbsp;
+            <i class="fa-regular fa-envelope icon"></i> &nbsp;
+            <span class="gray-text">Email: </span> &nbsp;
+            <span class="imp-text">anilsah37618@gmail.com</span>
+          </div>
+          <div class="social-media d-flex gap-3 align-items-center">
+            <a href="#"><i class="social-icon fa-brands fa-facebook"></i></a>
+            <a href="#"><i class="social-icon fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="social-icon fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="social-icon fa-brands fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="navbar p-0">
+    <div class="container" style="height: 100%">
+      <div class="nav-contain d-flex align-items-center justify-content-between">
+        <div class="logo-section">
+          <a href="/"><img src="/goodwill-cleaning/images/logo.png" /></a>
+        </div>
+        <ul class="d-flex gap-3 align-items-center m-0">
+          <li class="<%= showingpage == 'home' ? 'selected' : '' %>"><a href="/">Home</a></li>
+
+          <% let pageCount = 0; %>
+          <% pages.forEach(page => { %> 
+            <% if (page.slug === 'about-us' && pageCount < 1) { %>
+              <li class="<%= showingpage == page.slug ? 'selected' : '' %>"><a href="/page/<%= page.slug %>">About</a></li>
+              <% pageCount++; %>
+            <% } %>
+          <% }) %>
+
+          <% let catCount = 0; %>
+          <% categories.forEach(cat => { %> 
+            <% if (catCount < 3) { %>
+              <li class="<%= showingpage === cat.slug ? 'selected' : '' %>"><a href="/category/<%= cat.slug %>"><%= cat.title %></a></li>
+              <% catCount++; %>
+            <% } %>
+          <% }) %>
+
+          <li class="<%= showingpage === 'price' ? 'selected' : '' %>"><a href="/price">Pricing</a></li>
+
+          <% let catCount2 = 0; %>
+          <% categories.forEach(cat => { %> 
+            <% if (catCount2 < 4 && catCount2 > 3) { %>
+              <li class="<%= showingpage === cat.slug ? 'selected' : '' %>"><a href="/category/<%= cat.slug %>"><%= cat.name %></a></li>
+              <% } %>
+              <% catCount2++; %>
+          <% }) %>
+
+          <li class="<%= showingpage == 'contact' ? 'selected' : '' %>"><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

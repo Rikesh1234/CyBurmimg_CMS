@@ -1,0 +1,135 @@
+@media (max-width: 700px) {
+
+  body, html {
+    overflow-x: hidden; /* Disable horizontal scrolling */
+  }
+
+    .desktop-navigation {
+      display: none;
+    }
+    .mobile-navigation{
+        display: block;
+    }
+
+    .navbar{
+        height: auto;
+    }
+
+    .about-section .about-left .hours-time {
+      position: absolute;
+      left: 10px;
+      background-color: var(--brand-color-primary);
+      top: -19px;
+      border-radius: 10px;
+    }
+
+    .ml-4 {
+      margin-left: 10px;
+    }
+    
+    .mr-4 {
+      margin-right: 10px;
+    }
+
+    .testomonial-section .test-card .test-image{
+      background-size: cover;
+      height: 48px;
+      border-radius: 50%;
+    }
+
+    .project-card .overlay{
+      position: absolute;
+      top: 0;
+      height: 100%;
+      opacity: 1;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      width: 100%;
+      background-color: rgba(8, 74, 112, 0.7);
+    }
+
+    .blog-card .blog-contains{
+      bottom: 8px;
+      padding: 10px;
+    }
+
+    .blog-card{
+      margin-bottom: 15px;
+    }
+
+    .hero-section .swiper-slide {
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-color: #272626;
+      height: 60vh;
+  }
+
+  .facts-and-figure {
+    background-color: var(--brand-color-secondary);
+    position: absolute;
+    bottom: -59px;
+    width: 100%;
+}
+
+.slider-contains{
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 25px 15px;
+  position: relative;
+  bottom: -45px;
+  left: 27px;
+  background-color: transparent;
+}
+
+.swiper-button-next, .swiper-button-prev {
+ 
+  top: 73px;
+}
+
+  
+
+  }
+
+  @media (min-width: 710px) and (max-width: 1000px) {
+
+    .logo-section img {
+      max-width: 150%;
+  }
+    
+    .hero-section .swiper-slide {
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-color: #272626;
+      height: 60vh;
+  }
+
+  .facts-and-figure {
+    background-color: var(--brand-color-secondary);
+    position: absolute;
+    bottom: -59px;
+    width: 100%;
+}
+.about-section{
+  margin-bottom: 50px;
+}
+
+body{
+  overflow-x: hidden;
+}
+
+.team-member-info .team-social-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.blog-card .blog-contains{
+  left: 21px;
+}
+
+.testomonial-section .test-card .test-image{
+  height: 85px;
+}
+    
+}

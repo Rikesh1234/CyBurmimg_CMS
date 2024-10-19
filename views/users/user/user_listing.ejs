@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../../layout/link') %>
+    <title>CyBurning</title>
+  </head>
+  <body>
+    <!-- SIDEBAR -->
+    <%- include('../../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../../layout/header') %>
+      <!-- NAVBAR -->
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>User</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/cms/dashboard">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active">User</a>
+              </li>
+            </ul>
+          </div>
+          <a href="/cms/user/create" class="btn-create">
+            <i class="fas fa-plus"></i>
+            <span class="text">Create an User</span>
+          </a>
+        </div>
+
+        <div class="search-container">
+          <form onsubmit="event.preventDefault();" role="search">
+            <label for="search">Search for stuff</label>
+            <input
+              id="search"
+              type="search"
+              placeholder="Search..."
+              autofocus
+              required
+            />
+            <button type="submit">Go</button>
+          </form>
+        </div>
+
+        <div class="row">
+          <div class="card-container">
+            
+            <% users.forEach(user => { %>
+            <div class="col-md-6 col-lg-4">
+              <div
+                class="card author author-img-one position-relative overflow-hidden hover-img">
+                <div class="position-relative" style="top: 28px; left: 22px;">
+                  <img
+                    src="<%= user.featured_image ? user.featured_image : '/images/icons/profile.png' %>"
+                    alt="spike-img"
+                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
+                    style="bottom: -15px !important;"
+                    width="40"
+                    height="40"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    data-bs-title="<%= user.username %>"
+                  />
+                  <span class="card-author-name" style="position: relative; top: 7px; left: 49px; font-size: 17px; font-weight: 500;"> <%= user.username %></span>
+                </div>
+                <div class="card-body p-4">
+                  <div class="category-published" style="align-items: center;">
+                    <span class="card-email" style="padding-top: 15px;"><%= user.email %></span>
+                    <label class="wraper" for="something">
+                      <span class="label-text">Published</span>
+                      <div class="switch-wrap">
+                        <input type="checkbox" checked id="<%= user._id %>" />
+                        <div class="switch"></div>
+                      </div>
+                    </label>
+                  </div>
+               
+                  
+                  <div class="d-flex align-items-center gap-4 icon-container">
+                 
+                    <div class="d-flex align-items-center gap-2">
+                      <a href="/cms/user/edit/<%= user._id %>" class="text-black"
+                        ><i class="fas fa-edit"></i
+                      ></a>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <a
+                        href="#"
+                        class="text-black delete-user"
+                        data-id="<%= user._id %>"
+                      ><i class="fas fa-trash-alt"></i
+                      ></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+
+
+          </div>
+        </div>
+        <div class="pagination-container">
+          <ul class="pagination">
+            <li>
+              <a href="#">First</a>
+            </li>
+            <li>
+              <a href="#">Prev</a>
+            </li>
+            <li>
+              <a href="#">1</a>
+            </li>
+            <li class="active">
+              <a href="#">2</a>
+            </li>
+            <li>
+              <a href="#">3</a>
+            </li>
+            <li>
+              <a href="#">Next</a>
+            </li>
+            <li>
+              <a href="#">Last</a>
+            </li>
+          </ul>
+        </div>
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <%- include('../../layout/script') %>
+    
+      <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+          // Handle delete button functionality
+          const deleteButtons = document.querySelectorAll('.delete-user');
+          deleteButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+              event.preventDefault(); // Prevent default link behavior
+              const userId = this.getAttribute('data-id'); // Get user ID
+              // Trigger SweetAlert2 modal
+              Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you really want to delete this user? This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Delete',
+                cancelButtonText: 'Cancel'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // If confirmed, send POST request to delete the user
+                  fetch(`/cms/user/delete/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    }
+                  })
+                  .then(response => {
+                    if (response.ok) {
+                      // Show success message and reload the page
+                      Swal.fire('Deleted!', 'The user has been deleted.', 'success').then(() => {
+                        location.reload(); // Reload the page after successful deletion
+                      });
+                    } else {
+                      Swal.fire('Error!', 'There was an issue deleting the user.', 'error');
+                    }
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error!', 'There was an issue deleting the user.', 'error');
+                  });
+                }
+              });
+            });
+          });
+        });
+        
+      </script>
+  </body>
+</html>

@@ -1,0 +1,138 @@
+<!-- footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div
+        class="company-detail postion-relative col-12 col-md-3"
+        data-aos="fade-up"
+      >
+        <div class="footer-title">Goodwill Company</div>
+        <div class="line"></div>
+        <% pages.forEach(page => { %> <% if (page.slug === 'about-us') { %>
+        <p class="gray-text-dark"><%- truncateWords(page.content, 40) %></p>
+        <% } %> <% }) %>
+        <div class="social-media d-flex gap-3 align-items-center">
+          <a href="#"
+            ><i class="social-icon fa-brands fa-facebook footer-icon"></i
+          ></a>
+          <a href="#"
+            ><i class="social-icon fa-brands fa-instagram footer-icon"></i
+          ></a>
+          <a href="#"
+            ><i class="social-icon fa-brands fa-twitter footer-icon"></i
+          ></a>
+          <a href="#"
+            ><i class="social-icon fa-brands fa-linkedin footer-icon"></i
+          ></a>
+        </div>
+      </div>
+
+      <div
+        class="latest-news postion-relative col-12 col-md-4"
+        data-aos="fade-up"
+      >
+        <div class="footer-title">Recent News</div>
+        <div class="line"></div>
+        <% let blogCount = 0; %> <% posts.forEach(post => { %> <% if
+        (post.category[0].slug === 'blog' && blogCount < 3) { %>
+        <div class="row pb-2">
+          <a href="/post/<%= post._id %>">
+            <div class="image-container col-6 col-md-5">
+              <img
+                src="<%= post.featured_image ? post.featured_image : './goodwill-cleaning/images/default.png' %>"
+                alt="<%= post.title %>"
+                class="w-100"
+              />
+            </div>
+            <div class="col-6 col-md-7">
+              <div class="heading"><%= post.title %></div>
+              <span class="date-line gray-text"
+                ><%= post.createdAt.toDateString() %></span
+              >
+            </div>
+          </a>
+        </div>
+        <% } %> <% }) %>
+
+        
+      </div>
+
+      <div
+        class="quick-links postion-relative col-12 col-md-2"
+        data-aos="fade-up"
+      >
+        <div class="footer-title">Menu</div>
+        <div class="line"></div>
+        <ul>
+          <li class="selected"><a href="/">Home</a></li>
+
+          <% let pageCount = 0; %>
+          <% pages.forEach(page => { %> 
+            <% if (page.slug === 'about-us' && pageCount < 1) { %>
+              <li><a href="/page/<%= page.slug %>">About</a></li>
+              <% pageCount++; %>
+            <% } %>
+          <% }) %>
+
+
+          <% let staticPageCount = 0; %>
+          <% pages.forEach(page => { %> 
+            <% if (staticPageCount < 1) { %>
+              <li><a href="/page/<%= page.slug %>"><%= page.title %></a></li>
+              <% pageCount++; %>
+            <% } %>
+          <% }) %>
+
+          <% let catCount = 0; %>
+          <% categories.forEach(cat => { %> 
+            <% if (catCount < 3) { %>
+              <li><a href="/category/<%= cat.slug %>"><%= cat.title %></a></li>
+              <% catCount++; %>
+            <% } %>
+          <% }) %>
+
+          <li><a href="/price">Pricing</a></li>
+
+          <% let catCount2 = 0; %>
+          <% categories.forEach(cat => { %> 
+            <% if (catCount2 < 4 && catCount2 > 3) { %>
+              <li><a href="/<%= cat.slug %>"><%= cat.name %></a></li>
+              <% } %>
+              <% catCount2++; %>
+          <% }) %>
+
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="contacts postion-relative col-12 col-md-3" data-aos="fade-up">
+        <div class="footer-title">Have a question</div>
+        <div class="line"></div>
+        <div class="row pb-3 align-items-center">
+          <i class="col-2 footer-icon-contact fa-solid fa-location-dot"></i
+          ><span class="col-10 footer-contact address"
+            >30 Gloucester rd Hurstville, Austrila</span
+          >
+        </div>
+        <div class="row pb-3 align-items-center">
+          <i class="col-2 footer-icon-contact fa-solid fa-phone"></i>
+          <span class="col-10 footer-contact phone">+0420900310
+            </span>
+        </div>
+        <div class="row pb-3 align-items-center">
+          <i class="col-2 footer-icon-contact fa-solid fa-envelope"></i>
+          <span class="col-10 footer-contact email"> 
+            anilsah37618@gmail.com+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="copyright-section" data-aos="fade-up">
+    <span class="copy"
+      >Copyright © 2024 Goodwill Cleaning | All rights reserved</span
+    >&nbsp; Site by: <a href="#">CyBurning</a>
+  </div>
+</footer>
+
+<%- include('./scripts') %>

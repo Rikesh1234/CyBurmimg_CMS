@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <%- include('../layout/link') %>
+
+    <title>CyBurning</title>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <%- include('../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../layout/header') %>
+      <!-- NAVBAR -->
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>Add slider</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/cms/dashboard">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a href="/cms/slider">slider</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active">Add slider</a>
+              </li>
+            </ul>
+          </div>
+          <a href="/cms/slider" class="btn-create">
+            <i class="fas fa-arrow-left"></i>
+            <span class="text">Back</span>
+          </a>
+        </div>
+
+        <form action="<%= slider ? `/cms/slider/edit/${slider._id}` : '/cms/slider/create' %>" method="POST" enctype="multipart/form-data">
+          <div class="form-container">
+            <div class="post-right-container col-md-7">
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="title">Title</label><span class="important">*</span>
+                </div>
+                <input type="text" class="form-control" name="title" id="title" value="<%= slider ? slider.title : '' %>" />
+              </div>
+        
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="subtitle">Subtitle</label>
+                </div>
+                <input type="text" class="form-control" name="subtitle" id="subtitle" value="<%= slider ? slider.subtitle : '' %>" />
+              </div>
+
+              <% if (Array.isArray(customField) && customField.length) { %>
+                <% customField.forEach(field => { %>
+                  <% field.target_type.forEach((fields, index) => { %>
+                    <% if(fields.slug == 'text'){ %>
+                    <div class="form-box">
+                      <div class="form-label">
+                        <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                      </div>
+                      <input type="<%= fields.name %>" class="form-control" name="<%= field.field_name[index] %>" id="<%= field.label_name[index] %>"
+                        value="" />
+                    </div>
+                    <% }else if(fields.slug == 'textarea'){ %>
+                      <div class="form-box">
+                        <div class="form-label">
+                          <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                        </div>
+                        <textarea type="<%= fields.name %>" class="form-control" name="<%= field.field_name[index] %>" rows="7"
+                          cols="7"></textarea>
+                      </div>
+                    <% }else if(fields.slug == 'direct-image-uploader') { %>
+                      <div class="form-box">
+                        <div class="form-label">
+                          <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                        </div>
+                        <div class="upload-container-one">
+                          <input id="custom-upload-input-one" type="file" accept="image/*" name="<%= field.field_name[index] %>" hidden />
+                          <div id="custom-image-container-one" class=" d-flex justify-content-center">
+                            <img src="/images/upload.png" class="custom-uploaded-image" />
+                          </div>
+                          <label for="custom-upload-input-one">Upload Image</label>
+                        </div>
+                      </div>
+                    <% }%>
+                  <% }) %>
+                <% }) %>
+                <% } %>
+
+            </div>
+        
+            <div class="post-left-container col-md-4 col-sm-12">
+              <div class="form-box" style="margin-bottom: 15px">
+                <div class="form-label">
+                  <label for="Published">Published</label>
+                  <div class="form-check form-switch" style="margin-top: 10px">
+                    <label class="form-check-label" for="Status">Status</label>
+                    <input class="form-check-input" type="checkbox" name="published" id="status" <%= slider && slider.published ? 'checked' : '' %> />
+                  </div>
+                </div>
+              </div>
+        
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="Published_date">Published Date</label>
+                </div>
+                <input
+                  type="datetime-local"
+                  name="published_date"
+                  id="published_date"
+                  class="form-control"
+                  value="<%= slider ? slider.published_date.toISOString().slice(0,16) : '' %>"
+                  placeholder="YYYY/MM/DD HH:MM"
+                />
+              </div>
+        
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="Published_date">Featured Image</label>
+                </div>
+                <div class="upload-container-one">
+                  <input
+                    id="upload-input-one"
+                    type="file"
+                    name="slider_image"
+                    accept="image/*"
+                    hidden
+                  />
+                  <div id="image-container-one">
+                    <img
+                      src="<%= slider && slider.featured_image ? slider.featured_image : '/images/upload.png' %>"
+                      class="uploaded-image"
+                    />
+                  </div>
+                  <label for="upload-input-one">Upload Image</label>
+                </div>
+              </div>
+              <input type="submit" class="full-submit-button form-control" />
+              <div class="button-box">
+                <input type="submit" class="submit-button form-control" />
+                <input
+                  type="button"
+                  class="cancel-button form-control"
+                  value="cancel"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+        
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+    <%- include('../layout/script') %>
+    
+
+  </body>
+</html>

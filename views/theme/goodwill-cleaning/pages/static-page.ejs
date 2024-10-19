@@ -1,0 +1,47 @@
+
+    <!-- Meta tags and title -->
+    <%- include('../partials/header/meta_tags') %>
+    <title>Goodwill Cleaning</title>
+    
+
+    <!-- Include stylesheets and links -->
+    <%- include('../partials/header/links') %>
+    
+   
+    <!-- Desktop Navigation -->
+    <%- include('../partials/header/desktop_navigation') %>
+
+    <!-- Mobile Navigation -->
+    <%- include('../partials/header/mobile_navigation') %>
+
+  <!-- Inner Hero Section -->
+<div class="inner-hero" style="background-image: url('<%= background_image %>')">
+    <div class="overlay">
+      <div class="container">
+        <div class="page-contains">
+          <div class="title" data-aos="fade-up"><%= pageTitle %></div>
+          <ul class="breadcrumb" data-aos="fade-up">
+            <li><a href="/">Home</a></li>
+            <li><i class="bx bx-chevron-right"></i></li>
+            <li><a class="active"><%= pageTitle %></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Content Section -->
+  <div class="container">
+    <div class="editor-box py-5" data-aos="fade-up">
+      <!-- Use `content` to dynamically render page-specific content -->
+      <%- content %>
+    </div>
+  </div>
+
+    <!-- Include Footer -->
+    <%- include('../partials/footer/footer') %>
+
+    <!-- Include Scripts -->
+    <%- include('../partials/footer/scripts') %>
+  </body>
+</html>

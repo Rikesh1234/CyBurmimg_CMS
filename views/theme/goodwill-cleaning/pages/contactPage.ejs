@@ -1,0 +1,142 @@
+<!-- Meta tags and title -->
+<%- include('../partials/header/meta_tags') %>
+<title>Goodwill Cleaning</title>
+
+<!-- Include stylesheets and links -->
+<%- include('../partials/header/links') %>
+
+<!-- Desktop Navigation -->
+<%- include('../partials/header/desktop_navigation') %>
+
+<!-- Mobile Navigation -->
+<%- include('../partials/header/mobile_navigation') %>
+
+ <!-- Contact Page Content -->
+ <section class="contact-page">
+    <!-- Top Section: Google Map -->
+    <div class="map-container" style="width: 100%; height: 400px;">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345093176!2d144.95373521550363!3d-37.81627974202132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d5df1df5c0b%3A0x5045675218ce6e0!2zTGFuZG1hcmsgU3QsIFZpY3RvcmlhLCBBdXN0cmFsaWE!5e0!3m2!1sen!2sus!4v1665747162364!5m2!1sen!2sus"
+        width="100%"
+        height="100%"
+        style="border: 0"
+        allowfullscreen=""
+        loading="lazy"
+      ></iframe>
+    </div>
+
+    <!-- Bottom Section: Company Info and Contact Form -->
+    <div class="container my-5">
+      <div class="row">
+        <!-- Company Info Section -->
+        <div class="col-12 col-md-6" data-aos="fade-up">
+          <h2 class="mb-4">Our Office</h2>
+          <div class="company-info p-4 bg-light rounded ">
+            <div class="info-item mb-4 d-flex align-items-center">
+              <i class="fa-solid fa-location-dot fa-2x text-primary"></i>
+              <div class="ms-3">
+                <h5>Address</h5>
+                <p>203 Fake St. Mountain View, San Francisco, California, USA</p>
+              </div>
+            </div>
+        
+            <div class="info-item mb-4 d-flex align-items-center">
+              <i class="fa-solid fa-phone fa-2x text-success"></i>
+              <div class="ms-3">
+                <h5>Phone</h5>
+                <p>+ 0420900310</p>
+              </div>
+            </div>
+        
+            <div class="info-item mb-4 d-flex align-items-center">
+              <i class="fa-solid fa-envelope fa-2x text-danger"></i>
+              <div class="ms-3">
+                <h5>Email</h5>
+                <p>anilsah37618@gmail.com</p>
+              </div>
+            </div>
+        
+            <div class="info-item d-flex align-items-center">
+              <i class="fa-solid fa-clock fa-2x text-info"></i>
+              <div class="ms-3">
+                <h5>Office Hours</h5>
+                <p>Mon - Sat: 6:00 AM - 9:00 PM</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form Section -->
+        <div class="col-12 col-md-6" data-aos="fade-up">
+          <h2>Contact Us</h2>
+          <form id="InquiryForm" action="javascript:void(0);" method="post">
+            <div class="form-group mb-3">
+              <label for="name">Full Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label for="email">Email Address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="phone">Phone</label>
+              <input
+                type="text"
+                class="form-control"
+                id="phone"
+                name="phone"
+                placeholder="Enter your Phone Number"
+                required
+              />
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="address">Address</label>
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                name="address"
+                placeholder="Enter your Address"
+                required
+              />
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="message">Message</label>
+              <textarea
+                class="form-control"
+                id="message"
+                name="message"
+                rows="5"
+                placeholder="Enter your message"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- Include Footer -->
+<%- include('../partials/footer/footer') %>
+
+<!-- Include Scripts -->
+<%- include('../partials/footer/scripts') %>

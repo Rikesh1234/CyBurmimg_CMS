@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../../layout/link') %>
+
+    <title>CyBurning</title>
+  </head>
+  <body>
+    <!-- SIDEBAR -->
+    <%- include('../../layout/sidebar') %>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <%- include('../../layout/header') %>
+      <!-- NAVBAR -->
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>Author</h1>
+            <ul class="breadcrumb">
+              <li>
+                <a href="/cms/dashboard">Dashboard</a>
+              </li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li>
+                <a class="active">Author</a>
+              </li>
+            </ul>
+          </div>
+          <a href="/cms/author/create" class="btn-create">
+            <i class="fas fa-plus"></i>
+            <span class="text">Create an Author</span>
+          </a>
+        </div>
+
+        <div class="search-container">
+          <form onsubmit="event.preventDefault();" role="search">
+            <label for="search">Search for stuff</label>
+            <input
+              id="search"
+              type="search"
+              placeholder="Search..."
+              autofocus
+              required
+            />
+            <button type="submit">Go</button>
+          </form>
+        </div>
+
+        <div class="row">
+          <div class="card-container">
+            <% authors.forEach(author => { %>
+
+              <div class="col-md-6 col-lg-4">
+                <div class="card author author-img-one position-relative overflow-hidden hover-img">
+                  <!-- Author Image -->
+                  <div class="position-relative" style="top: 28px; left: 22px;">
+                    <img
+                      src="<%= author.author_image ? author.author_image : '/images/icons/profile.png' %>"
+                      alt="<%= author.name %>"
+                      class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9"
+                      width="40"
+                      height="40"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      data-bs-title="<%= author.name %>"
+                    />
+                    <!-- Author Name -->
+                    <span class="card-author-name" style="position: relative; top: -6px; left: 49px; font-size: 17px; font-weight: 500;">
+                      <%= author.name %>
+                    </span>
+                  </div>
+                  
+                  <div class="card-body p-4">
+                    <!-- Published Switch -->
+                    <div class="category-published" style="justify-content: flex-end;">
+                      <label class="wraper" for="publish_<%= author._id %>">
+                        <span class="label-text">Published</span>
+                        <div class="switch-wrap">
+                          <input type="checkbox" id="publish_<%= author._id %>" <%= author.status === 'active' ? 'checked' : '' %> />
+                          <div class="switch"></div>
+                        </div>
+                      </label>
+                    </div>
+                    
+                    <!-- Author Slug -->
+                    <a class="d-block my-2 text-dark link-primary">
+                      <%= author.slug %>
+                    </a>
+  
+                    <!-- Action Buttons -->
+                    <div class="d-flex align-items-center gap-4 icon-container">
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="/cms/author/edit/<%= author._id %>" class="text-black">
+                          <i class="fas fa-edit"></i>
+                        </a>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <a href="#" class="text-black delete-author" data-id="<%= author._id %>">
+                          <i class="fas fa-trash-alt"></i>
+                        </a>
+                      </div>
+                      <div class="d-flex align-items-center ms-auto default-btn active">
+                        Set as Default
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+
+          </div>
+        </div>
+
+        <div class="pagination-container">
+          <ul class="pagination">
+            <li>
+              <a href="#">First</a>
+            </li>
+            <li>
+              <a href="#">Prev</a>
+            </li>
+            <li>
+              <a href="#">1</a>
+            </li>
+            <li class="active">
+              <a href="#">2</a>
+            </li>
+            <li>
+              <a href="#">3</a>
+            </li>
+            <li>
+              <a href="#">Next</a>
+            </li>
+            <li>
+              <a href="#">Last</a>
+            </li>
+          </ul>
+        </div>
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <%- include('../../layout/script') %>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Attach click event to delete links
+        document.querySelectorAll('.delete-author').forEach(button => {
+          button.addEventListener('click', function (e) {
+            e.preventDefault();
+      
+            const authorId = this.getAttribute('data-id');
+      
+            // Show the SweetAlert confirmation dialog
+            Swal.fire({
+              title: 'Are you sure?',
+              text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // If confirmed, proceed to delete the author
+                deleteAuthor(authorId);
+              }
+            });
+          });
+        });
+      });
+      
+      // Function to handle the deletion
+      function deleteAuthor(authorId) {
+        fetch(`/cms/author/delete/${authorId}`, {
+          method: 'POST', // Use POST if your server expects a POST request
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.message) {
+            // Show success message
+            Swal.fire('Success', data.message, 'success').then(() => {
+              // Reload or redirect to the author listing
+              window.location.href = '/cms/author';
+            });
+          } else {
+            Swal.fire('Error', data.message || 'An error occurred while deleting the author.', 'error');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          Swal.fire('Error', 'An error occurred while deleting the author.', 'error');
+        });
+      }
+      
+    </script>
+  </body>
+</html>
