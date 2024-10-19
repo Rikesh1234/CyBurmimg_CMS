@@ -158,6 +158,7 @@
                       </div>
                       <select name="category" class="select-category form-control" multiple="multiple">
                         <% categories.forEach(category=> { %>
+                       
                           <option value="<%= category._id %>" <%=post && post.category &&
                             post.category.toString()===category._id.toString() ? 'selected' : '' %>><%= category.title
                               %>
@@ -361,6 +362,28 @@
     </section>
     <!-- CONTENT -->
     <%- include('../../layout/script') %>
+
+    <script>
+      // Get the checkbox and the upload container
+      const photoGalleryCheckbox = document.getElementById('photo_gallery');
+      const uploadContainer = document.getElementById('gallery-upload-container');
+    
+      // Function to show or hide the upload container based on checkbox status
+      function toggleUploadContainer() {
+        if (photoGalleryCheckbox.checked) {
+          uploadContainer.style.display = 'block'; // Show upload section
+        } else {
+          uploadContainer.style.display = 'none'; // Hide upload section
+        }
+      }
+    
+      // Call the function on page load to set the correct initial state
+      toggleUploadContainer();
+    
+      // Add event listener to checkbox to toggle visibility when clicked
+      photoGalleryCheckbox.addEventListener('change', toggleUploadContainer);
+    </script>
+
 
       <script>
         document.addEventListener('DOMContentLoaded', () => {
