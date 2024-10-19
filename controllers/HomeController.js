@@ -6,6 +6,8 @@ const Package = require('../models/Package');
 const Category = require("../models/Category");
 const StaticPage = require('../models/StaticPage');
 const Testominal = require("../models/Testominal");
+const Gallery = require("../models/Gallery");
+
 
 const { truncateWords } = require("../helper/truncateWord");
 
@@ -143,9 +145,8 @@ exports.getCategoryListingPage = async (req, res) => {
 // ---------POST DETAIL PAGE ------------------------------------------------------
 exports.getPostDetailPage = async (req, res) => {
   try {
-      
-      showingpage = 'post'
-      
+    const showingpage = 'post';
+    
     // Fetch the post based on `postId` from the request params
     const postId = req.params.postId;
     const post = await Post.findById(postId);
@@ -154,16 +155,30 @@ exports.getPostDetailPage = async (req, res) => {
       return res.status(404).send('Post not found');
     }
 
-    // Render the post detail view, passing the post data
-    res.render('theme/goodwill-cleaning/pages/postDetail', {
-      post,
-      showingpage
+    console.log(post);
+    
+    // If the post has a photo gallery, render the photoDetail view
+    let gallery_images = [];
+    if (post.photo_gallery) {    
+      gallery_images = await Gallery.findById(post.gallery);
+      console.log(gallery_images);
+    }
+
+    // Render the appropriate view based on gallery presence
+    res.render(post.photo_gallery ? 
+      'theme/goodwill-cleaning/pages/photoDetail' : 
+      'theme/goodwill-cleaning/pages/postDetail', {
+        post,
+        showingpage,
+        gallery_images: gallery_images.images // assuming you need the images array from gallery
     });
   } catch (err) {
     console.error('Error fetching post detail:', err);
     res.status(500).send('Server Error');
   }
 };
+
+
 // ---------POST DETAIL PAGE END------------------------------------------------------
 
 

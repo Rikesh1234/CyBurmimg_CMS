@@ -9,21 +9,21 @@ const authorize = (modelName, requiredPermission) => {
             // Check if the session user is set
             if (!req.session.user || !req.session.user.username) {
                 console.error('User session is not properly set');
-                return res.status(401).json({ message: 'Unauthorized' });
+                return res.status(401).redirect('/admin/login')
             }
 
             // Fetch the user by username from the session
             const user = await User.findOne({ username: req.session.user.username });
             if (!user) {
                 console.error('User not found');
-                return res.status(401).json({ message: 'Unauthorized' });
+                return res.status(401).redirect('/admin/login')
             }
 
             // Populate the role of the user
             await user.populate('role');
             if (!user.role) {
                 console.error('Role not found for user');
-                return res.status(401).json({ message: 'Unauthorized' });
+                return res.status(401).redirect('/admin/login')
             }
 
             // Populate permissions for the user's role

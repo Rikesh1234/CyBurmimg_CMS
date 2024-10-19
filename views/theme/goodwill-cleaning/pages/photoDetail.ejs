@@ -1,0 +1,56 @@
+<!-- Meta tags and title -->
+<%- include('../partials/header/meta_tags') %>
+<title>Goodwill Cleaning - Photo Gallery</title>
+
+<!-- Include stylesheets and links -->
+<%- include('../partials/header/links') %>
+
+<!-- Desktop Navigation -->
+<%- include('../partials/header/desktop_navigation') %>
+
+<!-- Mobile Navigation -->
+<%- include('../partials/header/mobile_navigation') %>
+
+<!-- Inner Hero Section -->
+<section class="gallery-container">
+    <div class="row" id="lightgallery" data-masonry='{"percentPosition": true}'>
+        <% if (gallery_images.length > 0) { %>
+            <% gallery_images.forEach(image => { %>
+                <div class="col-lg-4 col-md-6 col-sm-12 gallery-item" data-src="<%= image.url %>">
+                    <a href="<%= image.url %>">
+                        <img src="<%= image.url %>" alt="<%= image.caption || 'Gallery Image' %>" />
+                    </a>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No images available in the gallery.</p>
+        <% } %>
+    </div>
+</section>
+
+
+<!-- Include Footer -->
+<%- include('../partials/footer/footer') %>
+
+<!-- Include Scripts -->
+<%- include('../partials/footer/scripts') %>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var gallery = document.querySelector('#lightgallery');
+        lightGallery(gallery, {
+            selector: '.gallery-item',
+            thumbnail: true,
+            zoom: true,
+        });
+
+        // Masonry Layout
+        var msnry = new Masonry(gallery, {
+            itemSelector: '.gallery-item',
+            columnWidth: '.gallery-item',
+            percentPosition: true,
+        });
+    });
+</script>
+</body>
+</html>

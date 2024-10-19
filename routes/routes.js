@@ -95,6 +95,8 @@ router.post(
 
 router.post("/cms/post/delete/:postId", cacheMiddleware, authorize('Post', 'Delete'), postController.deletePost);
 
+// Route to delete an image from the gallery
+router.delete('/gallery/image/:id', postController.deleteImage);
 
 
 // Author

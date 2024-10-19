@@ -13,6 +13,46 @@
 </head>
 
 <body>
+  <style>
+    .gallery-card {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .gallery-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .gallery-card .card {
+      border: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .gallery-card .card:hover {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-card .card-img-top {
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-card:hover .card-img-top {
+      transform: scale(1.05);
+    }
+
+    .delete-image {
+      font-size: 20px;
+      padding: 0 10px;
+      border: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .delete-image:hover {
+      background-color: #dc3545;
+      color: white;
+    }
+  </style>
+
   <!-- SIDEBAR -->
   <%- include('../../layout/sidebar') %>
     <!-- SIDEBAR -->
@@ -52,7 +92,7 @@
             </a>
           </div>
           <!-- Display Validation Errors -->
-          <% if (errorMessages && errorMessages.length > 0) { %>
+          <% if (errorMessages && errorMessages.length> 0) { %>
             <script>
               document.addEventListener('DOMContentLoaded', function () {
                 Swal.fire({
@@ -63,8 +103,9 @@
                 });
               });
             </script>
-          <% } %>
-              <form action="<%= post ? '/cms/post/edit/' + post._id : '/cms/post/create' %>" method="POST"
+            <% } %>
+
+              <form action="<%= post ? '/cms/post/edit/' + post._id : '/cms/post/create' %>" method="POST" name="form"
                 enctype="multipart/form-data">
 
                 <div class="form-container">
@@ -129,99 +170,144 @@
                     <!-- Author -->
                     <% if (formConfig.author) { %>
 
-                    <div class="form-box">
-                      <div class="form-label">
-                        <label for="author">Author</label>
-                      </div>
-                      <select name="author" class="select-author form-control" multiple="multiple">
-                        <% authors.forEach(author=> { %>
-                          <option value="<%= author._id %>" <%=post && post.author &&
-                            post.author.toString()===author._id.toString() ? 'selected' : '' %>> <%= author.name %>
-                          </option>
-                          <% }) %>
-
-                      </select>
-
-                    </div>
-                    <% } %>
-
-                    <% if (formConfig.tags) { %>
-
-
-                    <!-- Tags -->
-                    <div class="form-box">
-                      <div class="form-label">
-                        <label for="tags">Tags</label>
-                      </div>
-                      <select name="tags" class="select-tags form-control" multiple="multiple">
-                        <option value="Tag A" <%=post && post.tags.includes('Tag A') ? 'selected' : '' %>>Tag A</option>
-                        <option value="Tag B" <%=post && post.tags.includes('Tag B') ? 'selected' : '' %>>Tag B</option>
-                      </select>
-                    </div>
-
-                    <% } %>
-
-
-                    <div class="form-box">
-                      <div class="form-label">
-                        <label for="title">Others Feature</label>
-                      </div>
-                      <div class="form-check form-switch">
-                        <label class="form-check-label" for="Photo Gallery">Photo Gallery</label>
-                        <input class="form-check-input" type="checkbox" id="photo_gallery" name="photo_gallery" <%=post
-                          && post.photo_gallery ? 'checked' : '' %> />
-
-                      </div>
-                    </div>
-                    <!-- Gallery Images -->
-                    <div class="form-box">
-                      <div class="form-label">
-                        <label for="gallery_images">Choose Photos for your gallery</label>
-                      </div>
-                      <div class="upload-container">
-                        <input id="upload-input" type="file" accept="image/*" multiple name="gallery_images"
-                          style="display: none" />
-                        <div id="image-container"></div>
-                        <label for="upload-input">Upload Image</label>
-                      </div>
-                    </div>
-
-                    <% if (Array.isArray(customField) && customField.length) { %>
-                    <% customField.forEach(field => { %>
-                      <% field.target_type.forEach((fields, index) => { %>
-                        <% if(fields.slug == 'text'){ %>
-                        <div class="form-box">
-                          <div class="form-label">
-                            <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
-                          </div>
-                          <input type="<%= fields.name %>" class="form-control" name="<%= field.field_name[index] %>" id="<%= field.label_name[index] %>"
-                            value="" />
+                      <div class="form-box">
+                        <div class="form-label">
+                          <label for="author">Author</label>
                         </div>
-                        <% }else if(fields.slug == 'textarea'){ %>
+                        <select name="author" class="select-author form-control" multiple="multiple">
+                          <% authors.forEach(author=> { %>
+                            <option value="<%= author._id %>" <%=post && post.author &&
+                              post.author.toString()===author._id.toString() ? 'selected' : '' %>> <%= author.name %>
+                            </option>
+                            <% }) %>
+
+                        </select>
+
+                      </div>
+                      <% } %>
+
+                        <% if (formConfig.tags) { %>
+
+
+                          <!-- Tags -->
                           <div class="form-box">
                             <div class="form-label">
-                              <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
+                              <label for="tags">Tags</label>
                             </div>
-                            <textarea type="<%= fields.name %>" class="form-control" name="<%= field.field_name[index] %>" rows="7"
-                              cols="7"></textarea>
+                            <select name="tags" class="select-tags form-control" multiple="multiple">
+                              <option value="Tag A" <%=post && post.tags.includes('Tag A') ? 'selected' : '' %>>Tag A
+                              </option>
+                              <option value="Tag B" <%=post && post.tags.includes('Tag B') ? 'selected' : '' %>>Tag B
+                              </option>
+                            </select>
                           </div>
-                        <% }else if(fields.slug == 'direct-image-uploader') { %>
-                          <div class="form-box">
-                            <div class="form-label">
-                              <label for="<%= field.label_name[index] %>"><%= field.label_name[index] %></label>
-                            </div>
-                            <div class="upload-container-one">
-                              <input id="custom-upload-input-one" type="file" accept="image/*" name="<%= field.field_name[index] %>" hidden />
-                              <div id="custom-image-container-one" class=" d-flex justify-content-center">
-                                <img src="/images/upload.png" class="custom-uploaded-image" />
+
+                          <% } %>
+
+
+                            <div class="form-box">
+                              <div class="form-label">
+                                <label for="title">Others Feature</label>
                               </div>
-                              <label for="custom-upload-input-one">Upload Image</label>
+                              <div class="form-check form-switch">
+                                <label class="form-check-label" for="Photo Gallery">Photo Gallery</label>
+                                <input class="form-check-input" type="checkbox" id="photo_gallery" name="photo_gallery"
+                                  <%=post && post.photo_gallery ? 'checked' : '' %> />
+
+                              </div>
                             </div>
-                          </div>
-                        <% }%>
-                      <% }) %>
-                    <% }) %>
-                    <% } %>
+                            <!-- Gallery Images -->
+                            <div class="form-box">
+                              <div class="form-label">
+                                <label for="gallery_images">Choose Photos for your gallery</label>
+                              </div>
+                              <div class="upload-container">
+                                <input id="upload-input" type="file" accept="image/*" multiple name="gallery_images"
+                                  style="display: none" />
+                                <div id="image-container"></div>
+                                <label for="upload-input">Upload Image</label>
+                              </div>
+                            </div>
+
+                            <div class="container mt-4">
+                              <div class="row justify-content-center">
+                                <% if (typeof gallery_images !=='undefined' && gallery_images.length> 0) { %>
+                                  <% gallery_images.forEach(function(image) { %>
+                                    <div class="col-md-4 gallery-card mb-4" id="image-<%= image._id %>">
+                                      <div class="card shadow-sm" style="position: relative; border-radius: 10px;">
+                                        <!-- Image with rounded corners and a subtle hover effect -->
+                                        <img src="<%= image.url %>" class="card-img-top rounded" alt="Gallery Image"
+                                          style="height: 200px; object-fit: cover; transition: transform 0.3s ease;">
+                                        <div class="card-body text-center">
+                                          <!-- Caption with a clean font style -->
+                                          <p class="card-text text-muted">
+                                            <%= image.caption ? image.caption : 'No caption available' %>
+                                          </p>
+                                        </div>
+
+                                        <!-- Cross button to delete image with hover effect -->
+                                        <button class="btn btn-sm btn-outline-danger delete-image"
+                                          style="position: absolute; top: 10px; right: 10px; border-radius: 50%;"
+                                          data-image-id="<%= image._id %>" data-image-url="<%= image.url %>">
+                                          &times;
+                                        </button>
+                                      </div>
+                                    </div>
+                                    <% }); %>
+                                      <% } else { %>
+                                        <div class="col-12 text-center">
+                                          <p class="text-muted">No images found in the gallery.</p>
+                                        </div>
+                                        <% } %>
+                              </div>
+                            </div>
+
+
+
+                            <% if (Array.isArray(customField) && customField.length> 0) { %>
+                              <% customField.forEach(field=> { %>
+                                <% field.target_type.forEach((fields, index)=> { %>
+                                  <% if(fields.slug=='text' ){ %>
+                                    <div class="form-box">
+                                      <div class="form-label">
+                                        <label for="<%= field.label_name[index] %>">
+                                          <%= field.label_name[index] %>
+                                        </label>
+                                      </div>
+                                      <input type="<%= fields.name %>" class="form-control"
+                                        name="<%= field.field_name[index] %>" id="<%= field.label_name[index] %>"
+                                        value="" />
+                                    </div>
+                                    <% }else if(fields.slug=='textarea' ){ %>
+                                      <div class="form-box">
+                                        <div class="form-label">
+                                          <label for="<%= field.label_name[index] %>">
+                                            <%= field.label_name[index] %>
+                                          </label>
+                                        </div>
+                                        <textarea type="<%= fields.name %>" class="form-control"
+                                          name="<%= field.field_name[index] %>" rows="7" cols="7"></textarea>
+                                      </div>
+                                      <% }else if(fields.slug=='direct-image-uploader' ) { %>
+                                        <div class="form-box">
+                                          <div class="form-label">
+                                            <label for="<%= field.label_name[index] %>">
+                                              <%= field.label_name[index] %>
+                                            </label>
+                                          </div>
+                                          <div class="upload-container-one">
+                                            <input id="custom-upload-input-one" type="file" accept="image/*"
+                                              name="<%= field.field_name[index] %>" hidden />
+                                            <div id="custom-image-container-one" class=" d-flex justify-content-center">
+                                              <img src="/images/upload.png" class="custom-uploaded-image" />
+                                            </div>
+                                            <label for="custom-upload-input-one">Upload Image</label>
+                                          </div>
+                                        </div>
+                                        <% }%>
+                                          <% }) %>
+                                            <% }) %>
+                                              <% } %>
                   </div>
 
 
@@ -262,7 +348,6 @@
                       </div>
                     </div>
 
-
                     <input type="submit" class="full-submit-button form-control" />
                     <div class="button-box">
                       <input type="submit" class="submit-button form-control" />
@@ -276,7 +361,42 @@
     </section>
     <!-- CONTENT -->
     <%- include('../../layout/script') %>
+
       <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const deleteButtons = document.querySelectorAll('.delete-image');
+
+          deleteButtons.forEach(button => {
+            button.addEventListener('click', async (e) => {
+              e.preventDefault();
+              const imageId = button.getAttribute('data-image-id');
+              const imageUrl = `/gallery/image/${imageId}`;
+
+              if (confirm('Are you sure you want to delete this image?')) {
+                try {
+                  const response = await fetch(imageUrl, {
+                    method: 'DELETE',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    }
+                  });
+
+                  const data = await response.json();
+                  if (data.success) {
+                    // Remove the image card from the UI
+                    const imageCard = document.getElementById(`image-${imageId}`);
+                    imageCard.remove();
+                  } else {
+                    alert('Error deleting the image.');
+                  }
+                } catch (err) {
+                  console.error('Error:', err);
+                }
+              }
+            });
+          });
+        });
+
         ClassicEditor.create(document.querySelector("#description"), {
           toolbar: {
             items: [
@@ -555,6 +675,7 @@
             .replace(/^-+|-+$/g, "");
           slugInput.val(theSlug);
         });
+
       </script>
 </body>
 

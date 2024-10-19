@@ -3,8 +3,8 @@
 const mongoose = require('mongoose');
 
 const modelSchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true }, // E.g., 'Post', 'User'
-    path: { type: String, required: true }, // Path to the model file or controller
+    name: { type: String, required: true, unique: true }, 
+    path: { type: String, required: true }, 
   createdAt: { type: Date, default: Date.now}
 
 });
