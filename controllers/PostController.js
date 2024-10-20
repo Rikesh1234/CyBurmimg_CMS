@@ -145,8 +145,8 @@ exports.createPost = [
   ...getPostValidationRules(),
 
   async (req, res) => {
-    let gallery = null;
-    let uploadedGalleryImages = []; 
+    let gallery = null; // Declare gallery here for access in both try and catch blocks
+    let uploadedGalleryImages = []; // Initialize an array to store uploaded gallery image paths
 
     try {
       let customField = await CustomField.find()
@@ -356,6 +356,105 @@ exports.getPostEditPage = async (req, res) => {
 };
 
 // Handle updating a post
+// Utility function to handle validation errors
+const handleValidationErrors = async (req, res, postId, errors) => {
+  const existingPost = await Post.findById(postId).lean();
+  if (!existingPost) {
+    return res.status(404).render("404", {
+      errorMessages: "Post not found",
+      error: "404",
+    });
+  }
+
+  const { categories, authors } = await fetchCategoriesAndAuthors();
+  return res.status(400).render("posts/post/post_create_edit", {
+    title: "Edit Post",
+    errorMessages: errors.array().map((err) => err.msg),
+    post: {
+      ...existingPost,
+      ...req.body, // Pass user-entered data back to the form
+      status: req.body.status === "on",
+    },
+    customField:[],
+    gallery_images: existingPost.gallery_images || [],
+    authors,
+    categories,
+    formConfig: validationConfig.post,
+  });
+};
+
+// Utility function to extract post data from the request
+const extractPostData = (req) => {
+  const {
+    title,
+    slug,
+    tag_line,
+    summary,
+    content,
+    category,
+    author,
+    tags,
+    photo_gallery,
+    status,
+    published_date,
+  } = req.body;
+
+  const featured_image = req.files?.["featured_image"]
+    ? `/uploads/post/${req.files["featured_image"][0].filename}`
+    : req.body.existing_featured_image;
+
+  const gallery_images = req.files?.["gallery_images"]
+    ? req.files["gallery_images"].map(
+        (file) => `/uploads/post/gallery/${file.filename}`
+      )
+    : [];
+
+  return {
+    title,
+    slug,
+    tag_line,
+    summary,
+    content,
+    category,
+    author,
+    tags,
+    photo_gallery,
+    status,
+    published_date,
+    featured_image,
+    gallery_images,
+  };
+};
+
+// Utility function to handle gallery images update
+const updateGalleryImages = async (existingPost, gallery_images, summary) => {
+  let gallery = existingPost.gallery
+    ? await Gallery.findById(existingPost.gallery)
+    : null;
+
+  if (gallery && gallery_images.length > 0) {
+    gallery.images = [...gallery.images, ...gallery_images.map((url) => ({ url }))];
+    await gallery.save();
+  } else if (!gallery && gallery_images.length > 0) {
+    gallery = new Gallery({
+      images: gallery_images.map((url) => ({ url })),
+      description: summary || "",
+    });
+    await gallery.save();
+  }
+
+  return gallery ? gallery._id : existingPost.gallery;
+};
+
+// Utility function to update post data
+const updateExistingPost = async (postId, updateData) => {
+  const updatedPost = await Post.findByIdAndUpdate(postId, updateData, {
+    new: true,
+    runValidators: true,
+  });
+  return updatedPost;
+};
+
 exports.updatePost = [
   // Apply dynamic validation rules based on config
   ...getPostValidationRules(),
@@ -367,32 +466,10 @@ exports.updatePost = [
       // Check for validation errors
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        const existingPost = await Post.findById(postId);
-        const { categories, authors } = await fetchCategoriesAndAuthors();
-
-        return res.render("posts/post/post_create_edit", {
-          title: "Edit Post",
-          errorMessages: errors.array().map((err) => err.msg),
-          post: {
-            ...existingPost.toObject(),
-            title,
-            slug,
-            tag_line,
-            summary,
-            content,
-            category,
-            author,
-            tags,
-            status: status === "on",
-            published_date,
-          },
-          authors,
-          categories,
-          formConfig: validationConfig.post,
-        });
+        return handleValidationErrors(req, res, postId, errors);
       }
 
-      // If validation passes, continue with updating the post
+      // Extract post data from the request
       const {
         title,
         slug,
@@ -405,43 +482,21 @@ exports.updatePost = [
         photo_gallery,
         status,
         published_date,
-      } = req.body;
-
-      // Handle featured image update
-      const featured_image = req.files["featured_image"]
-        ? `/uploads/post/${req.files["featured_image"][0].filename}`
-        : req.body.existing_featured_image;
-
-      // Handle gallery images update
-      let gallery_images = req.files["gallery_images"]
-        ? req.files["gallery_images"].map(
-            (file) => `/uploads/post/gallery/${file.filename}`
-          )
-        : [];
+        featured_image,
+        gallery_images,
+      } = extractPostData(req);
 
       // Find the existing post
       const existingPost = await Post.findById(postId);
-
-      // Check for existing gallery and update if needed
-      let gallery = existingPost.gallery
-        ? await Gallery.findById(existingPost.gallery)
-        : null;
-
-      if (gallery && gallery_images.length > 0) {
-        // Append new images to existing gallery
-        gallery.images = [
-          ...gallery.images,
-          ...gallery_images.map((url) => ({ url })),
-        ];
-        await gallery.save();
-      } else if (!gallery && gallery_images.length > 0) {
-        // Create new gallery if not existing and new images provided
-        gallery = new Gallery({
-          images: gallery_images.map((url) => ({ url })),
-          description: summary || "",
+      if (!existingPost) {
+        return res.status(404).render("404", {
+          errorMessages: "Post not found",
+          error: "404",
         });
-        await gallery.save();
       }
+
+      // Update the gallery if gallery images are provided
+      const updatedGalleryId = await updateGalleryImages(existingPost, gallery_images, summary);
 
       // Prepare update data
       const updateData = {
@@ -450,38 +505,40 @@ exports.updatePost = [
         tag_line,
         summary,
         content,
-        author: validationConfig.post.author ? author : undefined,
-        category: validationConfig.post.category ? category : undefined,
-        tags: validationConfig.post.tags ? tags : undefined,
+        author: validationConfig.post.author ? author : existingPost.author,
+        category: validationConfig.post.category ? category : existingPost.category,
+        tags: validationConfig.post.tags ? tags : existingPost.tags,
         photo_gallery: photo_gallery === "on",
-        gallery: gallery ? gallery._id : existingPost.gallery,
+        gallery: updatedGalleryId,
         published: status === "on",
         published_date: published_date || Date.now(),
         featured_image,
       };
 
       // Update the post
-      const updatedPost = await Post.findByIdAndUpdate(postId, updateData, {
-        new: true,
-        runValidators: true,
-      });
-
+      const updatedPost = await updateExistingPost(postId, updateData);
       if (!updatedPost) {
-        return res.status(404).send("Post not found");
+        return res.status(404).render("404", {
+          errorMessages: "Post not found",
+          error: "404",
+        });
       }
 
-      // Invalidate cache and redirect
+      // Invalidate cache and redirect after successful update
       await redis.del("/cms/post");
       return res.redirect("/cms/post");
+
     } catch (err) {
-      console.error(err);
-      res.status(500).render("404", {
-        errorMessages: "Something went wrong on our side. Please inform us!",
+      console.error("Error in updatePost:", err.message);
+      res.status(500).render("500", {
+        errorMessages: "An unexpected error occurred. Please try again later.",
         error: "500",
       });
     }
   },
 ];
+
+
 
 // Controller to handle the delete image request
 exports.deleteImage = async (req, res) => {
