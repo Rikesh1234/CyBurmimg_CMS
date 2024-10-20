@@ -1,84 +1,150 @@
 <!-- package section -->
 <div class="package-section">
   <div class="container">
-      <div class="tagline" data-aos="fade-up">Price & Plans</div>
-      <div class="title" data-aos="fade-up">Choose Your Perfect Plans</div>
-      <div class="row gap-5" style="justify-content: center">
-          <!-- Loop through the packages array -->
-          <% packages.forEach(pkg => { %>
-          <div class="package-card col-12 col-md-3 pb-4" data-aos="fade-up">
-              <div class="icon-container">
-                  <!-- Placeholder image for package (can be made dynamic if needed) -->
-                  <img class="w-100" src="./goodwill-cleaning/images/small_logo.png" alt="<%= pkg.title %>" />
-              </div>
-              <div class="package-info">
-                  <!-- Display Package Title -->
-                  <div class="heading"><%= pkg.title %></div>
-                  <!-- Display Package Price and Currency -->
-                  <div class="price"><%= pkg.price %> <%= pkg.currency %></div>
-                  <!-- Display Package Includes -->
-                  <ul>
-                      <% if (pkg.includes && Array.isArray(pkg.includes)) { %>
-                          <% pkg.includes.forEach(feature => { %>
-                              <li><i class="fa-solid fa-check"></i> <%= feature %></li>
-                          <% }) %>
-                      <% } else { %>
-                          <li>No features available</li>
-                      <% } %>
-                  </ul>
-                  <!-- Placeholder for "Get Started" button -->
-                  <a href="#" class="btn btn-primary btn-round mr-md-4 py-2 px-4" data-bs-toggle="modal" data-bs-target="#packageModel-<%= pkg._id %>">
-                    Get Started <span class="ion-ios-arrow-forward"></span>
-                </a>
-              </div>
-          </div>
-          <% }) %>
+    <div class="tagline" data-aos="fade-up">Price & Plans</div>
+    <div class="title" data-aos="fade-up">Choose Your Perfect Plans</div>
+    <div class="row gap-5" style="justify-content: center">
+      <!-- Loop through the packages array -->
+      <% packages.forEach(pkg => { %>
+      <div class="package-card col-12 col-md-3 pb-4" data-aos="fade-up">
+        <div class="icon-container">
+          <!-- Placeholder image for package (can be made dynamic if needed) -->
+          <img
+            class="w-100"
+            src="./goodwill-cleaning/images/small_logo.png"
+            alt="<%= pkg.title %>"
+          />
+        </div>
+        <div class="package-info">
+          <!-- Display Package Title -->
+          <div class="heading"><%= pkg.title %></div>
+          <!-- Display Package Price and Currency -->
+          <div class="price"><%= pkg.price %> <%= pkg.currency %></div>
+          <!-- Display Package Includes -->
+          <ul>
+            <% if (pkg.includes && Array.isArray(pkg.includes)) { %> <%
+            pkg.includes.forEach(feature => { %>
+            <li><i class="fa-solid fa-check"></i> <%= feature %></li>
+            <% }) %> <% } else { %>
+            <li>No features available</li>
+            <% } %>
+          </ul>
+          <!-- Placeholder for "Get Started" button -->
+          <a
+            href="#"
+            class="btn btn-primary btn-round mr-md-4 py-2 px-4"
+            data-bs-toggle="modal"
+            data-bs-target="#packageModel-<%= pkg._id %>"
+          >
+            Get Started <span class="ion-ios-arrow-forward"></span>
+          </a>
+        </div>
       </div>
+      <% }) %>
+    </div>
   </div>
 </div>
 
 <!-- Modal Structure -->
 <% packages.forEach(pkg => { %>
-<div class="modal fade" id="packageModel-<%= pkg._id %>" tabindex="-1" aria-labelledby="packageModel-<%= pkg._id %>Label" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title text-center w-100" id="packageModel-<%= pkg._id %>Label">Book Package | <%= pkg.title %></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div
+  class="modal fade"
+  id="packageModel-<%= pkg._id %>"
+  tabindex="-1"
+  aria-labelledby="packageModel-<%= pkg._id %>Label"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5
+          class="modal-title text-center w-100"
+          id="packageModel-<%= pkg._id %>Label"
+        >
+          Book Package | <%= pkg.title %>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body p-4">
+        <!-- Form inside modal -->
+        <form class="bookForm" action="javascript:void(0);" method="post">
+          <input type="text" value="<%= pkg.title %>" name="p_name" hidden />
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="name-<%= pkg._id %>" class="form-label">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                name="name"
+                id="name-<%= pkg._id %>"
+                placeholder="Enter your name"
+                required
+              />
             </div>
-            <div class="modal-body p-4">
-                <!-- Form inside modal -->
-                <form id="getStartedForm">
-                    <div class="row">
-                        <div class="col-md-12 mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Enter your name">
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" placeholder="Enter your email">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="address" placeholder="Enter your address">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" id="message" rows="3" placeholder="Enter your message"></textarea>
-                    </div>
-                </form>
+            <div class="col-md-12 mb-3">
+              <label for="email-<%= pkg._id %>" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                name="email"
+                id="email-<%= pkg._id %>"
+                placeholder="Enter your email"
+                required
+              />
             </div>
-            <div class="modal-footer border-0 d-flex justify-content-center">
-                <button type="button" class="btn btn-primary px-4">Submit</button>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="address-<%= pkg._id %>" class="form-label"
+                >Address</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                name="address"
+                id="address-<%= pkg._id %>"
+                placeholder="Enter your address"
+                required
+              />
             </div>
-        </div>
+            <div class="col-md-6 mb-3">
+              <label for="phone-<%= pkg._id %>" class="form-label"
+                >Phone Number</label
+              >
+              <input
+                type="tel"
+                class="form-control"
+                name="phone"
+                id="phone-<%= pkg._id %>"
+                placeholder="Enter your phone number"
+                required
+              />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="message-<%= pkg._id %>" class="form-label"
+              >Message</label
+            >
+            <textarea
+              class="form-control"
+              id="message-<%= pkg._id %>"
+              name="message"
+              rows="3"
+              placeholder="Enter your message"
+              required
+            ></textarea>
+          </div>
+          <div class="modal-footer border-0 d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary px-4">Submit</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 <% }) %>

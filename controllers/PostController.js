@@ -113,6 +113,8 @@ exports.getPostCreatePage = async (req, res) => {
       // In getPostCreatePage
       const { categories, authors } = await fetchCategoriesAndAuthors();
 
+      
+
       res.render("posts/post/post_create_edit", {
         title: "Create Post",
         errorMessages: [],

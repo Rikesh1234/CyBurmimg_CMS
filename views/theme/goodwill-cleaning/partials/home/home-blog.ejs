@@ -16,7 +16,7 @@
                   <div class="heading"><%= post.title %></div>
                   <span class="date-line"><%= post.createdAt.toDateString() %></span>
                   <p class="dark-gray-text">
-                    <%- post.content %>
+                    <%-  truncateWords(post.summary, 40) %>
                   </p>
                 </div>
               </a>
