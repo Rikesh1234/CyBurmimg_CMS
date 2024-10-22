@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('module-alias/register'); //using alias
 const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -8,6 +9,9 @@ const globalData = require('./middleware/globalData');
 const cacheMiddleware = require('./middleware/cacheMiddleware');
 const sessionMiddleware = require('./middleware/sessionMiddleware');
 
+// Dynamically load specific routes based on the THEME environment variable
+const themeRoutesPath = path.join(__dirname, 'views', 'theme', process.env.THEME, 'routes', 'routes.js');
+const themeRoutes = require(themeRoutesPath);
 
 // Asynchronous function to connect to the MongoDB database
 const connectDB = async () => {
@@ -52,6 +56,7 @@ app.use(globalData);
 app.set('view engine', 'ejs');
 
 // Use application routes
+app.use('/', themeRoutes);
 app.use('/', routes);
 
 
