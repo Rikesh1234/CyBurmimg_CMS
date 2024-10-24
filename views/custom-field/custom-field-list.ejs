@@ -73,9 +73,14 @@
                       ></a>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                      <a href="#" class="text-black"
-                        ><i class="fas fa-trash-alt"></i
-                      ></a>
+                      <a
+                      href="#"
+                      class="text-black delete-field"
+                      data-id="<%= field._id %>"
+                    >
+                      <i class="fas fa-trash-alt"></i>
+                    </a>
+              
                     </div>
                    
                   </div>
@@ -95,6 +100,56 @@
 
     <%- include('../layout/script') %>
 
+    <script>
+
+      document.addEventListener('DOMContentLoaded', () => {
+
+        // Handle delete button functionality
+        const deleteButtons = document.querySelectorAll('.delete-field');
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+            const customFieldId = this.getAttribute('data-id');
+            // Trigger SweetAlert2 modal
+            Swal.fire({
+              title: 'Are you sure?',
+              text: 'Do you really want to delete this custom field? This action cannot be undone.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Delete',
+              cancelButtonText: 'Cancel'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // If confirmed, send custom field request to delete the custom field
+                fetch(`/cms/custom-field/delete/${customFieldId}`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  }
+                })
+                .then(response => {
+                  if (response.ok) {
+                    // Show success message and reload the page
+                    Swal.fire('Deleted!', 'The custom field has been deleted.', 'success').then(() => {
+                      location.reload(); // Reload the page after successful deletion
+                    });
+                  } else {
+                    Swal.fire('Error!', 'There was an issue deleting the custom field.', 'error');
+                  }
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  Swal.fire('Error!', 'There was an issue deleting the custom field.', 'error');
+                });
+              }
+            });
+          });
+        });
+      });
+      
+    </script>
     <script>
       $(document).ready(function domReady() {
         $(".select-input-type").select2({

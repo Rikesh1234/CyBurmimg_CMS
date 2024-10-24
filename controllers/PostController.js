@@ -1,12 +1,19 @@
 const Post = require("../models/Post");
-const Author = require("../models/Author");
+const Author = require("../models/Model");
+const Model = require("../models/Author");
+const Gallery = require("../models/Gallery");
 const Category = require("../models/Category");
 const CustomField = require("../models/CustomField");
-const validationConfig = require("../config/validationConfig.json");
-const Gallery = require("../models/Gallery");
+const CustomFieldValue = require("../models/CustomFieldValue");
 
-const path = require("path");
+const validationConfig = require("../config/validationConfig.json");
+const {
+  fetchCustomFields,
+  saveCustomFieldValues,
+} = require("../helper/customFieldHelper");
+
 const fs = require("fs");
+const path = require("path");
 
 const redis = require("../config/redis");
 const { body, validationResult } = require("express-validator");
@@ -99,21 +106,10 @@ exports.getPostPage = async (req, res) => {
 exports.getPostCreatePage = async (req, res) => {
   if (req.session.user) {
     try {
-      // Fetch all categories  and authors to populate the dropdown
-
-      let customField = await CustomField.find()
-        .populate({
-          path: "model", // Populate the 'model' field
-          match: { path: "../models/Post" }, // Filter to only include models with the specified path
-        })
-        .populate({
-          path: "target_type", // Populate the 'field' field
-        });
-
+      // Fetch custom fields for the Post module
+      const customField = await fetchCustomFields("Post");
       // In getPostCreatePage
       const { categories, authors } = await fetchCategoriesAndAuthors();
-
-      
 
       res.render("posts/post/post_create_edit", {
         title: "Create Post",
@@ -147,19 +143,10 @@ exports.createPost = [
   ...getPostValidationRules(),
 
   async (req, res) => {
-    let gallery = null; // Declare gallery here for access in both try and catch blocks
-    let uploadedGalleryImages = []; // Initialize an array to store uploaded gallery image paths
+    let gallery = null;
+    let uploadedGalleryImages = [];
 
     try {
-      let customField = await CustomField.find()
-        .populate({
-          path: "model", // Populate the 'model' field
-          match: { path: "../models/Post" }, // Filter to only include models with the specified path
-        })
-        .populate({
-          path: "target_type", // Populate the 'field' field
-        });
-
       // Check validation results
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -175,7 +162,7 @@ exports.createPost = [
           categories,
           authors,
           formConfig: validationConfig.post,
-          customField,
+          customField: [],
         });
       }
 
@@ -235,7 +222,24 @@ exports.createPost = [
       });
 
       // Save the post to the database
-      await newPost.save();
+      const savedPost = await newPost.save();
+
+      // Handle custom fields
+      const customFieldData = {};
+
+      const customFields = await fetchCustomFields("Post");
+
+      // Extract custom field values from request body
+      customFields.forEach((field) => {
+        field.field_name.forEach((fieldName) => {
+          if (req.body[fieldName] !== undefined) {
+            customFieldData[fieldName] = req.body[fieldName];
+          }
+        });
+      });
+
+      // Save custom field values
+      await saveCustomFieldValues("Post", savedPost._id, customFieldData);
 
       // Invalidate the cached post list
       await redis.del("/cms/post");
@@ -308,15 +312,6 @@ exports.deletePost = async (req, res) => {
 exports.getPostEditPage = async (req, res) => {
   if (req.session.user) {
     try {
-      let customField = await CustomField.find()
-        .populate({
-          path: "model", // Populate the 'model' field
-          match: { path: "../models/Post" }, // Filter to only include models with the specified path
-        })
-        .populate({
-          path: "target_type", // Populate the 'field' field
-        });
-
       const postId = req.params.postId;
 
       // Find the post by ID
@@ -324,6 +319,28 @@ exports.getPostEditPage = async (req, res) => {
 
       // In getPostCreatePage
       const { categories, authors } = await fetchCategoriesAndAuthors();
+
+      // Fetch the custom fields along with their existing values for this post
+      const customFields = await fetchCustomFields("Post");
+
+      // Fetch the existing custom field values for the post
+      const customFieldValues = await CustomFieldValue.find({
+        entityId: post._id,
+      });
+      // Merge custom field definitions with their values
+      const customField = customFields.map((field) => {
+        // Find the corresponding value record, ensuring val and val.customField are valid
+        const valueRecord = customFieldValues.find(
+          (val) => val?.customField?.toString() === field._id.toString()
+        );
+
+        return {
+          ...field.toObject(),
+          value: valueRecord ? valueRecord.value : "", // Prefill the existing value
+        };
+      });
+
+      console.log(customField);
 
       if (!post) {
         return res.status(404).send("Post not found");
@@ -377,7 +394,7 @@ const handleValidationErrors = async (req, res, postId, errors) => {
       ...req.body, // Pass user-entered data back to the form
       status: req.body.status === "on",
     },
-    customField:[],
+    customField: [],
     gallery_images: existingPost.gallery_images || [],
     authors,
     categories,
@@ -435,7 +452,10 @@ const updateGalleryImages = async (existingPost, gallery_images, summary) => {
     : null;
 
   if (gallery && gallery_images.length > 0) {
-    gallery.images = [...gallery.images, ...gallery_images.map((url) => ({ url }))];
+    gallery.images = [
+      ...gallery.images,
+      ...gallery_images.map((url) => ({ url })),
+    ];
     await gallery.save();
   } else if (!gallery && gallery_images.length > 0) {
     gallery = new Gallery({
@@ -498,7 +518,11 @@ exports.updatePost = [
       }
 
       // Update the gallery if gallery images are provided
-      const updatedGalleryId = await updateGalleryImages(existingPost, gallery_images, summary);
+      const updatedGalleryId = await updateGalleryImages(
+        existingPost,
+        gallery_images,
+        summary
+      );
 
       // Prepare update data
       const updateData = {
@@ -508,7 +532,9 @@ exports.updatePost = [
         summary,
         content,
         author: validationConfig.post.author ? author : existingPost.author,
-        category: validationConfig.post.category ? category : existingPost.category,
+        category: validationConfig.post.category
+          ? category
+          : existingPost.category,
         tags: validationConfig.post.tags ? tags : existingPost.tags,
         photo_gallery: photo_gallery === "on",
         gallery: updatedGalleryId,
@@ -529,7 +555,6 @@ exports.updatePost = [
       // Invalidate cache and redirect after successful update
       await redis.del("/cms/post");
       return res.redirect("/cms/post");
-
     } catch (err) {
       console.error("Error in updatePost:", err.message);
       res.status(500).render("500", {
@@ -539,8 +564,6 @@ exports.updatePost = [
     }
   },
 ];
-
-
 
 // Controller to handle the delete image request
 exports.deleteImage = async (req, res) => {

@@ -269,6 +269,7 @@
                               <% customField.forEach(field=> { %>
                                 <% field.target_type.forEach((fields, index)=> { %>
                                   <% if(fields.slug=='text' ){ %>
+
                                     <div class="form-box">
                                       <div class="form-label">
                                         <label for="<%= field.label_name[index] %>">
@@ -277,7 +278,7 @@
                                       </div>
                                       <input type="<%= fields.name %>" class="form-control"
                                         name="<%= field.field_name[index] %>" id="<%= field.label_name[index] %>"
-                                        value="" />
+                                        value="<%= field.value %>" />
                                     </div>
                                     <% }else if(fields.slug=='textarea' ){ %>
                                       <div class="form-box">
@@ -287,7 +288,7 @@
                                           </label>
                                         </div>
                                         <textarea type="<%= fields.name %>" class="form-control"
-                                          name="<%= field.field_name[index] %>" rows="7" cols="7"></textarea>
+                                          name="<%= field.field_name[index] %>" rows="7" cols="7"><%= field.value[index] %></textarea>
                                       </div>
                                       <% }else if(fields.slug=='direct-image-uploader' ) { %>
                                         <div class="form-box">
