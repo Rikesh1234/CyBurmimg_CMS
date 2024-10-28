@@ -1,6 +1,6 @@
 // models/usomField.js
 const mongoose = require('mongoose');
-
+const CustomFieldValue = require('./CustomFieldValue')
 
 
 // CustomField Schema
@@ -13,6 +13,13 @@ const customFieldSchema = new mongoose.Schema({
   parent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'CustomField', default: null },
   staticId: { type: mongoose.Schema.Types.ObjectId, ref: 'StaticPage', default: null },
   createdAt: { type: Date, default: Date.now }
+});
+
+// Middleware to delete associated CustomFieldValue entries
+customFieldSchema.pre("findOneAndDelete", async function (next) {
+  const customFieldId = this.getQuery()["_id"];
+  await CustomFieldValue.deleteMany({ customField: customFieldId });
+  next();
 });
 
 module.exports = mongoose.model('CustomField', customFieldSchema);

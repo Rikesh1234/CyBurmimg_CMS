@@ -264,52 +264,75 @@
                             </div>
 
 
-
-                            <% if (Array.isArray(customField) && customField.length> 0) { %>
-                              <% customField.forEach(field=> { %>
-                                <% field.target_type.forEach((fields, index)=> { %>
-                                  <% if(fields.slug=='text' ){ %>
-
+                            <% if (Array.isArray(customField) && customField.length > 0) { %>
+                              <% customField.forEach(field => { %>
+                                <% field.target_type.forEach((fields, index) => { %>
+                                  <% const fieldName = field.field_name[index] %>
+                                  <% const fieldValue = field.values && field.values[fieldName] ? field.values[fieldName] : '' %>
+                            
+                                  <% if (fields.slug == 'text') { %>
                                     <div class="form-box">
                                       <div class="form-label">
-                                        <label for="<%= field.label_name[index] %>">
-                                          <%= field.label_name[index] %>
+                                        <label for="<%= field.label_name && field.label_name[index] ? field.label_name[index] : '' %>">
+                                          <%= field.label_name && field.label_name[index] ? field.label_name[index] : '' %>
                                         </label>
                                       </div>
-                                      <input type="<%= fields.name %>" class="form-control"
-                                        name="<%= field.field_name[index] %>" id="<%= field.label_name[index] %>"
-                                        value="<%= field.value %>" />
+                                      <input 
+                                        type="<%= fields.name %>" 
+                                        class="form-control"
+                                        name="<%= fieldName %>"
+                                        id="<%= field.label_name && field.label_name[index] ? field.label_name[index] : '' %>"
+                                        value="<%= fieldValue %>" 
+                                      />
                                     </div>
-                                    <% }else if(fields.slug=='textarea' ){ %>
-                                      <div class="form-box">
-                                        <div class="form-label">
-                                          <label for="<%= field.label_name[index] %>">
-                                            <%= field.label_name[index] %>
-                                          </label>
-                                        </div>
-                                        <textarea type="<%= fields.name %>" class="form-control"
-                                          name="<%= field.field_name[index] %>" rows="7" cols="7"><%= field.value[index] %></textarea>
+                            
+                                  <% } else if (fields.slug == 'textarea') { %>
+                                    <div class="form-box">
+                                      <div class="form-label">
+                                        <label for="<%= field.label_name && field.label_name[index] ? field.label_name[index] : '' %>">
+                                          <%= field.label_name && field.label_name[index] ? field.label_name[index] : '' %>
+                                        </label>
                                       </div>
-                                      <% }else if(fields.slug=='direct-image-uploader' ) { %>
-                                        <div class="form-box">
-                                          <div class="form-label">
-                                            <label for="<%= field.label_name[index] %>">
-                                              <%= field.label_name[index] %>
-                                            </label>
-                                          </div>
-                                          <div class="upload-container-one">
-                                            <input id="custom-upload-input-one" type="file" accept="image/*"
-                                              name="<%= field.field_name[index] %>" hidden />
-                                            <div id="custom-image-container-one" class=" d-flex justify-content-center">
-                                              <img src="/images/upload.png" class="custom-uploaded-image" />
-                                            </div>
-                                            <label for="custom-upload-input-one">Upload Image</label>
-                                          </div>
+                                      <textarea 
+                                        type="<%= fields.name %>" 
+                                        class="form-control"
+                                        name="<%= fieldName %>"
+                                        rows="7" 
+                                        cols="7"
+                                      ><%= fieldValue %></textarea>
+                                    </div>
+                            
+                                  <% } else if (fields.slug == 'direct-image-uploader') { %>
+                                    <div class="form-box">
+                                      <div class="form-label">
+                                        <label for="<%= field.label_name && field.label_name[index] ? field.label_name[index] : '' %>">
+                                          <%= field.label_name && field.label_name[index] ? field.label_name[index] : '' %>
+                                        </label>
+                                      </div>
+                                      <div class="upload-container-one">
+                                        <input 
+                                          id="custom-upload-input-one" 
+                                          type="file" 
+                                          accept="image/*"
+                                          name="<%= fieldName %>" 
+                                          hidden 
+                                        />
+                                        <div id="custom-image-container-one" class="d-flex justify-content-center">
+                                          <% if (fieldValue) { %>
+                                            <img src="<%= fieldValue %>" class="custom-uploaded-image" />
+                                          <% } else { %>
+                                            <img src="/images/upload.png" class="custom-uploaded-image" />
+                                          <% } %>
                                         </div>
-                                        <% }%>
-                                          <% }) %>
-                                            <% }) %>
-                                              <% } %>
+                                        <label for="custom-upload-input-one">Upload Image</label>
+                                      </div>
+                                    </div>
+                                  <% } %>
+                            
+                                <% }) %>
+                              <% }) %>
+                            <% } %>
+                            
                   </div>
 
 
@@ -353,7 +376,7 @@
                     <input type="submit" class="full-submit-button form-control" />
                     <div class="button-box">
                       <input type="submit" class="submit-button form-control" />
-                      <input type="button" class="cancel-button form-control" value="cancel" />
+                    <a href="/cms/post">  <input type="button" class="cancel-button form-control" value="cancel" /></a>
                     </div>
                   </div>
                 </div>

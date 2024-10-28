@@ -145,7 +145,6 @@ exports.createOrUpdateCustomField = async (req, res) => {
 
 exports.createCustomField = async (req, res) => {
   try {
-    console.log(req.body);
 
     // Check if the submission flag is set in the session
     if (req.session.fieldCreated) {

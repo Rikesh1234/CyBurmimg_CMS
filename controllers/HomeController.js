@@ -1,88 +1,107 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const Team = require("../models/Team");
 const Post = require("../models/Post");
-const Package = require('../models/Package');
+const Package = require("../models/Package");
 const Category = require("../models/Category");
-const StaticPage = require('../models/StaticPage');
+const StaticPage = require("../models/StaticPage");
 const Testominal = require("../models/Testominal");
 const Gallery = require("../models/Gallery");
-
+const CustomFieldValue = require("../models/CustomFieldValue");
 
 const { truncateWords } = require("../helper/truncateWord");
 
 //view home page
-exports.getPage = async (req, res) => {  // Mark the function as async
-    try {
-        
-        const showingpage  = 'home';
-        
-        
-        const posts = await Post.find()
-        .sort({ createdAt: -1 })
-        .populate('category'); 
+exports.getPage = async (req, res) => {
+  // Mark the function as async
+  try {
+    const showingpage = "home";
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .populate("category") // Populating the category
+      .populate("author") // Populating the author
+      .lean(); // Using lean() to make post documents plain JS objects
 
-        const categories = await Category.find().populate("parent");
+    // Fetch custom field values for each post
+    const postIds = posts.map((post) => post._id);
+    const customFieldValues = await CustomFieldValue.find({
+      entityId: { $in: postIds },
+    }).populate("customField"); // Optionally populate CustomField for more details
 
-        const pages = await StaticPage.find();
+    // Map custom field values to their corresponding posts
+    posts.forEach((post) => {
+      post.customFields = customFieldValues.filter(
+        (field) => field.entityId.toString() === post._id.toString()
+      );
+    });
 
-        const teams = await Team.find().limit(3);
+    console.log(posts);
 
-        const testomonials = await Testominal.find();
+    const categories = await Category.find().populate("parent");
 
-        const sliders = await Slider.find({ published: true });
+    const pages = await StaticPage.find();
 
-        const theme = process.env.THEME;
-        if (!theme) {
-            return res.status(500).send('Theme is not defined');
-        }
+    const teams = await Team.find().limit(3);
 
-        // Pass the posts data to the template along with the title
-        res.render(`theme/${theme}/index`, { title: 'Home Page', posts, categories, pages, teams, testomonials,sliders, showingpage, truncateWords });
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+    const testomonials = await Testominal.find();
+
+    const sliders = await Slider.find({ published: true });
+
+    const theme = process.env.THEME;
+    if (!theme) {
+      return res.status(500).send("Theme is not defined");
     }
-};
 
+    // Pass the posts data to the template along with the title
+    res.render(`theme/${theme}/index`, {
+      title: "Home Page",
+      posts,
+      categories,
+      pages,
+      teams,
+      testomonials,
+      sliders,
+      showingpage,
+      truncateWords,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
 
 // ---------SELECTED STATIC PAGE------------------------------------------------------
 exports.getStaticPage = async (req, res) => {
   try {
-      
-      const showingpage = req.params.slug;
-      
+    const showingpage = req.params.slug;
+
     // Fetch the page data based on the slug in the URL
     const staticPage = await StaticPage.findOne({ slug: req.params.slug });
 
     if (!staticPage) {
-      return res.status(404).send('Page not found');
+      return res.status(404).send("Page not found");
     }
     console.log(staticPage);
-    
 
     // Define variables to be used in the view
-    const pageTitle = staticPage.title || 'Static Page';
-    const background_image = staticPage.featured_image || '/images/default-bg.jpg'; // default image if not set
-    const content = staticPage.content || '';
+    const pageTitle = staticPage.title || "Static Page";
+    const background_image =
+      staticPage.featured_image || "/images/default-bg.jpg"; // default image if not set
+    const content = staticPage.content || "";
 
     // Render the static page with its specific data
     res.render(`theme/${process.env.THEME}/pages/static-page`, {
       pageTitle,
       background_image,
       content,
-      showingpage
+      showingpage,
     });
-
   } catch (err) {
     console.error("Error fetching static page:", err);
     res.status(500).send("Server Error");
   }
 };
 // ---------SELECTED STATIC PAGE END---------------------------------------------------
-
-
-
 
 // ---------SLIDER------------------------------------------------------
 const Slider = require("../models/Slider");
@@ -95,7 +114,6 @@ exports.getHomePageSlider = async (req, res) => {
     // Render the homepage view with sliders data
     res.render("theme/goodwill-cleaning/index", { sliders });
     console.log(sliders);
-    
   } catch (err) {
     console.error("Error fetching sliders:", err);
     res.status(500).send("Server Error");
@@ -109,9 +127,8 @@ exports.getHomePageSlider = async (req, res) => {
 // Fetch posts for a selected category by slug
 exports.getCategoryListingPage = async (req, res) => {
   try {
-      
-      const showingpage = req.params.slug;
-      
+    const showingpage = req.params.slug;
+
     // Get the category slug from request params
     const categorySlug = req.params.slug;
 
@@ -124,13 +141,15 @@ exports.getCategoryListingPage = async (req, res) => {
     }
 
     // Fetch all posts that belong to the selected category
-    const posts = await Post.find({ category: category._id }).populate("category");
+    const posts = await Post.find({ category: category._id }).populate(
+      "category"
+    );
 
     // Render the category listing page with the fetched posts
     res.render("theme/goodwill-cleaning/pages/postListing", {
       posts,
       category, // Pass the category data to the view
-      showingpage
+      showingpage,
     });
   } catch (err) {
     console.error("Error fetching posts for category:", err);
@@ -138,49 +157,48 @@ exports.getCategoryListingPage = async (req, res) => {
   }
 };
 
-
 // ---------LISTING PAGE END------------------------------------------------------
-
 
 // ---------POST DETAIL PAGE ------------------------------------------------------
 exports.getPostDetailPage = async (req, res) => {
   try {
-    const showingpage = 'post';
-    
+    const showingpage = "post";
+
     // Fetch the post based on `postId` from the request params
     const postId = req.params.postId;
     const post = await Post.findById(postId);
 
     if (!post) {
-      return res.status(404).send('Post not found');
+      return res.status(404).send("Post not found");
     }
 
     console.log(post);
-    
+
     // If the post has a photo gallery, render the photoDetail view
     let gallery_images = [];
-    if (post.photo_gallery) {    
+    if (post.photo_gallery) {
       gallery_images = await Gallery.findById(post.gallery);
       console.log(gallery_images);
     }
 
     // Render the appropriate view based on gallery presence
-    res.render(post.photo_gallery ? 
-      'theme/goodwill-cleaning/pages/photoDetail' : 
-      'theme/goodwill-cleaning/pages/postDetail', {
+    res.render(
+      post.photo_gallery
+        ? "theme/goodwill-cleaning/pages/photoDetail"
+        : "theme/goodwill-cleaning/pages/postDetail",
+      {
         post,
         showingpage,
-        gallery_images: gallery_images.images // assuming you need the images array from gallery
-    });
+        gallery_images: gallery_images.images, // assuming you need the images array from gallery
+      }
+    );
   } catch (err) {
-    console.error('Error fetching post detail:', err);
-    res.status(500).send('Server Error');
+    console.error("Error fetching post detail:", err);
+    res.status(500).send("Server Error");
   }
 };
 
-
 // ---------POST DETAIL PAGE END------------------------------------------------------
-
 
 // ---------PRICE------------------------------------------------------
 
@@ -189,17 +207,15 @@ exports.getPackage = async (req, res) => {
     // Fetch packages from the database
     const packages = await Package.find();
 
-    
-
     // Render the EJS view, passing packages data
-    res.render('theme/goodwill-cleaning/pages/pricePage', {
-      title: 'Package Prices',
+    res.render("theme/goodwill-cleaning/pages/pricePage", {
+      title: "Package Prices",
       packages: packages,
-      showingpage: 'price'
+      showingpage: "price",
     });
   } catch (error) {
-    console.error('Error fetching packages:', error);
-    res.status(500).send('Server Error');
+    console.error("Error fetching packages:", error);
+    res.status(500).send("Server Error");
   }
 };
 // ---------END PRICE------------------------------------------------------

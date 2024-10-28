@@ -108,6 +108,7 @@ exports.getPostCreatePage = async (req, res) => {
     try {
       // Fetch custom fields for the Post module
       const customField = await fetchCustomFields("Post");
+
       // In getPostCreatePage
       const { categories, authors } = await fetchCategoriesAndAuthors();
 
@@ -151,7 +152,6 @@ exports.createPost = [
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         // Fetch categories and authors again to render the form
-        // In createPost validation error handling
         const { categories, authors } = await fetchCategoriesAndAuthors();
 
         return res.render("posts/post/post_create_edit", {
@@ -327,20 +327,27 @@ exports.getPostEditPage = async (req, res) => {
       const customFieldValues = await CustomFieldValue.find({
         entityId: post._id,
       });
-      // Merge custom field definitions with their values
+
       const customField = customFields.map((field) => {
-        // Find the corresponding value record, ensuring val and val.customField are valid
-        const valueRecord = customFieldValues.find(
-          (val) => val?.customField?.toString() === field._id.toString()
+        // Get all value records for this custom field
+        const valueRecords = customFieldValues.filter(
+          (val) => val.customField.toString() === field._id.toString()
         );
+
+        // Create an object that includes all field names and their corresponding values
+        const fieldValues = {};
+        field.field_name.forEach((fieldName, index) => {
+          const valueRecord = valueRecords.find(
+            (val) => val.fieldName === fieldName
+          );
+          fieldValues[fieldName] = valueRecord ? valueRecord.value : "";
+        });
 
         return {
           ...field.toObject(),
-          value: valueRecord ? valueRecord.value : "", // Prefill the existing value
+          values: fieldValues,
         };
       });
-
-      console.log(customField);
 
       if (!post) {
         return res.status(404).send("Post not found");
@@ -542,6 +549,23 @@ exports.updatePost = [
         published_date: published_date || Date.now(),
         featured_image,
       };
+
+      // Handle custom fields
+      const customFields = await fetchCustomFields("Post");
+      const customFieldData = {};
+
+      // Collect custom field values from request
+      customFields.forEach((field) => {
+        // Handle each field name in the array
+        field.field_name.forEach((fieldName) => {
+          if (req.body[fieldName] !== undefined) {
+            customFieldData[fieldName] = req.body[fieldName];
+          }
+        });
+      });
+
+      // Save custom field values for the updated post
+      await saveCustomFieldValues("Post", postId, customFieldData);
 
       // Update the post
       const updatedPost = await updateExistingPost(postId, updateData);
