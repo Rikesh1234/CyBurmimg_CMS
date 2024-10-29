@@ -4,7 +4,6 @@ const { body, validationResult } = require("express-validator");
 const redis = require("../config/redis");
 const CustomField = require("../models/CustomField");
 
-
 // Delete static page
 const fs = require("fs");
 const path = require("path");
@@ -33,15 +32,22 @@ exports.getStaticPagePage = async (req, res) => {
 };
 
 // View static page create form
-exports.getStaticPageCreatePage =  async (req, res) => {
-  
+exports.getStaticPageCreatePage = async (req, res) => {
   if (req.session.user) {
+    let customField = await CustomField.find()
+      .populate({
+        path: "model", // Populate the 'model' field
+        match: { path: "../models/StaticPage" }, // Filter to only include models with the specified path
+      })
+      .populate({
+        path: "target_type", // Populate the 'field' field
+      });
 
     res.render("pages/page_create_edit", {
       title: "Create Static Page",
       page: null,
       errors: [],
-      customField
+      customField,
     });
   } else {
     res.render("404", {
@@ -120,22 +126,21 @@ exports.createStaticPage = [
 ];
 
 // View static page edit form
-exports.getStaticPageEditPage = async (req, res) => {
+exports.getStaticPageEditPage = async (req, res) => { 
   if (req.session.user) {
     try {
-
       let customField = await CustomField.find()
-  .populate({
-    path: 'model',  // Populate the 'model' field
-    match: { path: '../models/StaticPage' } // Filter to only include models with the specified path
-  })
-  .populate({
-    path: 'target_type', // Populate the 'field' field
-  })
-  .populate({
-    path: 'staticId',
-    match: {_id: req.params.pageId}
-  });
+        .populate({
+          path: "model", // Populate the 'model' field
+          match: { path: "../models/StaticPage" }, // Filter to only include models with the specified path
+        })
+        .populate({
+          path: "target_type", // Populate the 'field' field
+        })
+        .populate({
+          path: "staticId",
+          match: { _id: req.params.pageId },
+        });
 
       const page = await StaticPage.findById(req.params.pageId);
       if (!page) return res.status(404).send("Page not found");
@@ -144,7 +149,7 @@ exports.getStaticPageEditPage = async (req, res) => {
         title: "Edit Static Page",
         page,
         errors: [],
-        customField
+        customField,
       });
     } catch (err) {
       console.error(err);
@@ -213,9 +218,9 @@ exports.updateStaticPage = [
           slug,
           content,
           status,
-          tag_line, 
+          tag_line,
           summary,
-          featured_image
+          featured_image,
         },
         { new: true }
       );
@@ -239,7 +244,6 @@ exports.updateStaticPage = [
   },
 ];
 
-
 exports.deleteStaticPage = async (req, res) => {
   try {
     // Find the page by ID to get the featured image path before deleting
@@ -250,7 +254,6 @@ exports.deleteStaticPage = async (req, res) => {
       return res.status(404).json({ message: "Page not found" });
     }
     console.log(page.featured_image);
-    
 
     // File path of the featured image (adjust the path to where your uploads are stored)
     const filePath = path.join(__dirname, `../public${page.featured_image}`);
@@ -262,7 +265,10 @@ exports.deleteStaticPage = async (req, res) => {
     await redis.del("/cms/static-page");
 
     // Check if file exists and is not the default image before attempting deletion
-    if (fs.existsSync(filePath) && page.featured_image !== "/images/upload.png") {
+    if (
+      fs.existsSync(filePath) &&
+      page.featured_image !== "/images/upload.png"
+    ) {
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error("Error deleting the file:", err);

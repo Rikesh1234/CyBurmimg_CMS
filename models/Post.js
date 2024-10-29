@@ -1,6 +1,8 @@
 // models/Post.js
 const mongoose = require('mongoose');
 
+const CustomFieldValue = require('./CustomFieldValue');
+
 // Post Schema
 const postSchema = new mongoose.Schema({
   title: { type: String, required: [true, 'Title is required'] },
@@ -17,6 +19,22 @@ const postSchema = new mongoose.Schema({
   published_date: { type: Date, default: Date.now },
   featured_image: { type: String, default: null },
 }, { timestamps: true }); 
+
+// Middleware to delete associated CustomFieldValue entries when a post is deleted
+postSchema.pre("findOneAndDelete", async function (next) {
+  try {
+    // Get the ID of the post to be deleted
+    const postId = this.getQuery()["_id"];
+
+    // Delete all CustomFieldValue documents associated with this post
+    await CustomFieldValue.deleteMany({ entityId: postId });
+
+    next();
+  } catch (error) {
+    console.error("Error deleting associated CustomFieldValues:", error);
+    next(error);
+  }
+});
 
 // Export the Post model
 module.exports = mongoose.model('Post', postSchema);
