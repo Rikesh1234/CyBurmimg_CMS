@@ -77,7 +77,7 @@ async function createOrUpdateDummyUser() {
             const newUser = new User({
                 username: 'CyBurning',
                 email: 'support@cyburning.com',
-                password: '#!ogin@123', // Ensure password is hashed in your schema
+                password: '#!ogin@123',
                 role: adminRole._id, // Assign the Admin role's ObjectId
                 status: 'active'
             });
