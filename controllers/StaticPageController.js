@@ -72,6 +72,7 @@ exports.createStaticPage = [
         title: "Create Static Page",
         page: req.body,
         errors: errors.array().map((err) => err.msg),
+        customField:[]
       });
     }
 
@@ -149,7 +150,7 @@ exports.getStaticPageEditPage = async (req, res) => {
         title: "Edit Static Page",
         page,
         errors: [],
-        customField,
+        customField:[],
       });
     } catch (err) {
       console.error(err);
@@ -182,6 +183,8 @@ exports.updateStaticPage = [
         title: "Edit Static Page",
         page: req.body, // Pass current form data
         errors: errors.array().map((err) => err.msg),
+        customField:[]
+
       });
     }
 

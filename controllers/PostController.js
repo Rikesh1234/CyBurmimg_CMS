@@ -144,7 +144,7 @@ exports.createPost = [
   ...getPostValidationRules(),
 
   async (req, res) => {
-    let gallery = null;
+    let gallery = [];
     let uploadedGalleryImages = [];
 
     try {
@@ -163,8 +163,10 @@ exports.createPost = [
           authors,
           formConfig: validationConfig.post,
           customField: [],
+          gallery_images: [],
         });
       }
+      
 
       // Extract form data from the request body
       const {
@@ -181,6 +183,8 @@ exports.createPost = [
         published_date,
       } = req.body;
 
+      console.log(status);
+      
       // Handle featured image upload
       const featured_image = req.files["featured_image"]
         ? `/uploads/post/${req.files["featured_image"][0].filename}`
@@ -223,6 +227,8 @@ exports.createPost = [
 
       // Save the post to the database
       const savedPost = await newPost.save();
+
+      
 
       // Handle custom fields
       const customFieldData = {};

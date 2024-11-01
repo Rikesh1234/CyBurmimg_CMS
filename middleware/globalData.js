@@ -12,7 +12,20 @@ module.exports = async (req, res, next) => {
     const pages = await Page.find();
     const packages = await Package.find();
     const posts = await Post.find().sort({ createdAt: -1 }).limit(5);
-
+    const latestBlogs = await Post.find()
+    .populate({
+      path: 'category',
+      match: { slug: 'blog' }
+    })
+    .sort({ createdAt: -1 })
+    .limit(3);
+  
+  // Filter out posts where category didn't match (in case of no blog category)
+  const filteredLatestBlogs = latestBlogs.filter(post => post.category.length > 0);
+  
+  
+  
+    
     
     
     // Replace with your actual contact details fetching logic
@@ -33,6 +46,7 @@ module.exports = async (req, res, next) => {
     res.locals.contact = contact;
     res.locals.packages = packages;
     res.locals.posts = posts;
+    res.locals.latestBlogs = filteredLatestBlogs
     res.locals.truncateWords = truncateWords;
 
 
