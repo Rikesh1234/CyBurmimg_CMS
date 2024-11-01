@@ -3,6 +3,10 @@ package-lock.json
 yarn.lock
 .env
 public/uploads
+public/goodwill-cleaning
+public/ideagen-academy
+views/theme
+
 
 
 

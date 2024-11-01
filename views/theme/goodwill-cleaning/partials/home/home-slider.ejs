@@ -1,8 +1,8 @@
 <section class="hero-section">
-    <div class="overlay"></div>
+    <!-- <div class="overlay"></div>
     <div class="swiper-container">
       <div class="swiper-wrapper">
-        <!-- First Slide -->
+        
         <% sliders.forEach(function(slider) { %>
 
         <div
@@ -26,47 +26,25 @@
             </div>
           </div>
         </div>
-
-        <!-- Second Slide -->
-        <!-- <div
-          class="swiper-slide"
-          style="background-image: url('images/bg_1.jpg')"
-        >
-          <div class="container">
-            <div
-              class="slider-info row align-items-center justify-content-start"
-            >
-              <div class="col-md-6 ftco-animate">
-                <h2 class="subheading" data-aos="fade-up">
-                  Experience our premium cleaning services
-                </h2>
-                <h1
-                  class="mb-4 big-heading"
-                  data-aos="fade-up"
-                  data-aos-delay="100"
-                >
-                  Your comfort is our priority.
-                </h1>
-                <p data-aos="fade-up" data-aos-delay="200">
-                  <a
-                    href="#"
-                    class="btn btn-primary btn-round mr-md-4 py-2 px-4"
-                    >Learn more <span class="ion-ios-arrow-forward"></span
-                  ></a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- Add more slides as needed -->
         <% }) %>
       </div>
 
-      <!-- Add Pagination -->
+
       <div class="swiper-pagination"></div>
-      <!-- Add Navigation -->
+
       <div class="swiper-button-next"></div>
       <div class="swiper-button-prev"></div>
-    </div>
+    </div> -->
+
+    <div class="video-container">
+      <% sliders.forEach(function(slider) { %>
+        <h1 class="mb-4 big-heading d-none" data-aos-delay="100">
+          <%= slider.title %>
+        </h1>
+      <% }) %>
+      <video autoplay muted loop>
+          <source src="/uploads/sliders/intro.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+      </video>
+  </div>
   </section>
