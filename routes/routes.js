@@ -457,12 +457,12 @@ router.get(
   authorize("CustomField", "Create"),
   customFieldController.getCustomFieldCreatePage
 );
-router.post(
-  "/cms/custom-field/create",
-  cacheMiddleware,
-  authorize("CustomField", "Create"),
-  customFieldController.createCustomField
-);
+// router.post(
+//   "/cms/custom-field/create",
+//   cacheMiddleware,
+//   authorize("CustomField", "Create"),
+//   customFieldController.createCustomField
+// );
 
 router.get(
   "/cms/custom-field/edit/:fieldId",

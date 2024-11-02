@@ -3,10 +3,17 @@ const StaticPage = require("../models/StaticPage");
 const { body, validationResult } = require("express-validator");
 const redis = require("../config/redis");
 const CustomField = require("../models/CustomField");
+const CustomFieldValue = require("../models/CustomFieldValue");
+
 
 // Delete static page
 const fs = require("fs");
 const path = require("path");
+
+const {
+  fetchCustomFields,
+  saveCustomFieldValues,
+} = require("../helper/customFieldHelper");
 
 // View static pages listing
 exports.getStaticPagePage = async (req, res) => {
@@ -34,14 +41,7 @@ exports.getStaticPagePage = async (req, res) => {
 // View static page create form
 exports.getStaticPageCreatePage = async (req, res) => {
   if (req.session.user) {
-    let customField = await CustomField.find()
-      .populate({
-        path: "model", // Populate the 'model' field
-        match: { path: "../models/StaticPage" }, // Filter to only include models with the specified path
-      })
-      .populate({
-        path: "target_type", // Populate the 'field' field
-      });
+    const customField = await fetchCustomFields("StaticPage");
 
     res.render("pages/page_create_edit", {
       title: "Create Static Page",
@@ -72,7 +72,7 @@ exports.createStaticPage = [
         title: "Create Static Page",
         page: req.body,
         errors: errors.array().map((err) => err.msg),
-        customField:[]
+        customField: [],
       });
     }
 
@@ -127,30 +127,50 @@ exports.createStaticPage = [
 ];
 
 // View static page edit form
-exports.getStaticPageEditPage = async (req, res) => { 
+exports.getStaticPageEditPage = async (req, res) => {
   if (req.session.user) {
     try {
-      let customField = await CustomField.find()
-        .populate({
-          path: "model", // Populate the 'model' field
-          match: { path: "../models/StaticPage" }, // Filter to only include models with the specified path
-        })
-        .populate({
-          path: "target_type", // Populate the 'field' field
-        })
-        .populate({
-          path: "staticId",
-          match: { _id: req.params.pageId },
+      const page = await StaticPage.findById(req.params.pageId);
+
+      if (!page) return res.status(404).send("Page not found");
+
+      const customFields = await fetchCustomFields(
+        "StaticPage",
+        null,
+        req.params.pageId
+      );
+
+      // Fetch the existing custom field values for the post
+      const customFieldValues = await CustomFieldValue.find({
+        entityId: page._id,
+      });
+
+      const customField = customFields.map((field) => {
+        // Get all value records for this custom field
+        const valueRecords = customFieldValues.filter(
+          (val) => val.customField.toString() === field._id.toString()
+        );
+
+        // Create an object that includes all field names and their corresponding values
+        const fieldValues = {};
+        field.field_name.forEach((fieldName, index) => {
+          const valueRecord = valueRecords.find(
+            (val) => val.fieldName === fieldName
+          );
+          fieldValues[fieldName] = valueRecord ? valueRecord.value : "";
         });
 
-      const page = await StaticPage.findById(req.params.pageId);
-      if (!page) return res.status(404).send("Page not found");
+        return {
+          ...field.toObject(),
+          values: fieldValues,
+        };
+      });
 
       res.render("pages/page_create_edit", {
         title: "Edit Static Page",
         page,
         errors: [],
-        customField:[],
+        customField: customField ?? [],
       });
     } catch (err) {
       console.error(err);
@@ -183,8 +203,7 @@ exports.updateStaticPage = [
         title: "Edit Static Page",
         page: req.body, // Pass current form data
         errors: errors.array().map((err) => err.msg),
-        customField:[]
-
+        customField: [],
       });
     }
 
@@ -212,6 +231,23 @@ exports.updateStaticPage = [
       if (req.file) {
         featured_image = `/uploads/static_pages/${req.file.filename}`;
       }
+
+      // Handle custom fields
+      const customFields = await fetchCustomFields("StaticPage");
+      const customFieldData = {};
+
+      // Collect custom field values from request
+      customFields.forEach((field) => {
+        // Handle each field name in the array
+        field.field_name.forEach((fieldName) => {
+          if (req.body[fieldName] !== undefined) {
+            customFieldData[fieldName] = req.body[fieldName];
+          }
+        });
+      });
+
+      // Save custom field values for the updated page
+      await saveCustomFieldValues("StaticPage", req.params.pageId, customFieldData);
 
       // Update static page
       const updatedPage = await StaticPage.findByIdAndUpdate(

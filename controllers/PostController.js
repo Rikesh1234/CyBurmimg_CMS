@@ -907,15 +907,9 @@ exports.createCategory = [
 //view Category Create page
 exports.getCategoryCreatePage = async (req, res) => {
   try {
-    let customField = await CustomField.find()
-      .populate({
-        path: "model", // Populate the 'model' field
-        match: { path: "../models/Category" }, // Filter to only include models with the specified path
-      })
-      .populate({
-        path: "target_type", // Populate the 'field' field
-      });
+    const customField = await fetchCustomFields("Category");
 
+    
     // Fetch all categories
     const categories = await Category.find();
 
