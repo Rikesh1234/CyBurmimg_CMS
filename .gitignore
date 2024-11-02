@@ -5,8 +5,10 @@ yarn.lock
 public/uploads
 public/goodwill-cleaning
 public/ideagen-academy
-theme
-
+theme/
+public/theme
+routes/themeRoutes.js
+config/themeConfig.js
 
 views/theme/
 

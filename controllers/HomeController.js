@@ -11,6 +11,8 @@ const CustomFieldValue = require("../models/CustomFieldValue");
 
 const { truncateWords } = require("../helper/truncateWord");
 
+const themeConfig = require('../config/themeConfig');
+
 //view home page
 exports.getPage = async (req, res) => {
   // Mark the function as async
@@ -129,6 +131,9 @@ exports.getCategoryListingPage = async (req, res) => {
     // Get the category slug from request params
     const categorySlug = req.params.slug;
     // Find the category by slug
+
+    const customListingPage = themeConfig.CUSTOM_Listing_PAGE;
+
     const category = await Category.findOne({ slug: categorySlug });
 
     // If no category found, return 404
@@ -157,12 +162,42 @@ exports.getCategoryListingPage = async (req, res) => {
         (field) => field.entityId.toString() === post._id.toString()
       );
     });
+
+    let matchingKey = null;
+
+    
+    if(typeof customListingPage !== 'undefined'){
+     // Extract keys from customListingPage
+     const customListingKeys = Object.keys(customListingPage); // Example: ['blog', 'article']
+
+    // Check for matches and stop at the first match
+    for (const key of customListingKeys) {
+        const value = customListingPage[key]; // Get the slug value
+        if (category.slug == value) { // Check for presence in the category slugs
+            matchingKey = key; // Store the matching key
+            break; // Exit the loop on the first match
+        }
+      }
+    }
+
     // Render the category listing page with the fetched posts
+    if(matchingKey != null){
+      res.render(
+          `theme/${process.env.THEME}/pages/${customListingPage[matchingKey]}`,
+        {
+          post,
+          morePosts,
+          showingpage,
+          gallery_images: gallery_images.images, // assuming you need the images array from gallery
+        }
+      );
+    }else{
     res.render(`theme/${process.env.THEME}/pages/postListing`, {
       posts,
       category, // Pass the category data to the view
       showingpage,
     });
+  }
   } catch (err) {
     console.error("Error fetching posts for category:", err);
     res.status(500).send("Server Error");
@@ -176,9 +211,13 @@ exports.getPostDetailPage = async (req, res) => {
   try {
     const showingpage = "post";
 
+    const customDetailPage = themeConfig.CUSTOM_DETAIL_PAGE;
+
     // Fetch the post based on `postId` from the request params
     const postId = req.params.postId;
     const post = await Post.findById(postId).populate("category").lean();
+
+    const categorySlugs = post.category.map(element => element.slug); // Adjust based on the structure of your category
 
     const morePosts = await Post.find({ _id: { $ne: postId } })
       .limit(5)
@@ -195,7 +234,37 @@ exports.getPostDetailPage = async (req, res) => {
       gallery_images = await Gallery.findById(post.gallery);
     }
 
+
+    // Variable to store the first matching key
+    let matchingKey = null;
+
+    
+    if(typeof customDetailPage !== 'undefined'){
+     // Extract keys from customDetailPage
+     const customDetailKeys = Object.keys(customDetailPage); // Example: ['blog', 'article']
+
+    // Check for matches and stop at the first match
+    for (const key of customDetailKeys) {
+        const value = customDetailPage[key]; // Get the slug value
+        if (categorySlugs.includes(value)) { // Check for presence in the category slugs
+            matchingKey = key; // Store the matching key
+            break; // Exit the loop on the first match
+        }
+      }
+    }
+
     // Render the appropriate view based on gallery presence
+    if(matchingKey != null){
+      res.render(
+          `theme/${process.env.THEME}/pages/${customDetailPage[matchingKey]}`,
+        {
+          post,
+          morePosts,
+          showingpage,
+          gallery_images: gallery_images.images, // assuming you need the images array from gallery
+        }
+      );
+    }else{
     res.render(
       post.photo_gallery
         ? `theme/${process.env.THEME}/pages/photoDetail`
@@ -207,6 +276,7 @@ exports.getPostDetailPage = async (req, res) => {
         gallery_images: gallery_images.images, // assuming you need the images array from gallery
       }
     );
+  }
   } catch (err) {
     console.error("Error fetching post detail:", err);
     res.status(500).send("Server Error");
