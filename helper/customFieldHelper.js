@@ -2,17 +2,24 @@ const CustomField = require("../models/CustomField");
 const CustomFieldValue = require("../models/CustomFieldValue");
 const Model = require("../models/Model");
 
-const fetchCustomFields = async (moduleName, entityId = null) => {
+const fetchCustomFields = async (moduleName, entityId = null,pageId=null) => {
   try {
     const model = await Model.findOne({ name: moduleName });
 
     if (!model) {
       throw new Error(`Model not found for name: ${moduleName}`);
     }
-
+    // Set up query to fetch custom fields, adding a staticId filter only for StaticPage model
+    const query = { model: model._id };
+    if (moduleName === "StaticPage" && pageId) {
+      query.staticId = pageId;
+    }
+    
     // Fetch custom fields
-    const customFields = await CustomField.find({ model: model._id })
-      .populate({ path: "target_type" });
+    // const customFields = await CustomField.find({ model: model._id })
+    //   .populate({ path: "target_type" });
+
+      const customFields = await CustomField.find(query).populate({ path: "target_type" });
 
     // If entityId is provided, fetch existing values
     if (entityId) {

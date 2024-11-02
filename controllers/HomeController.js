@@ -26,7 +26,7 @@ exports.getPage = async (req, res) => {
     const postIds = posts.map((post) => post._id);
     const customFieldValues = await CustomFieldValue.find({
       entityId: { $in: postIds },
-    }).populate("customField"); // Optionally populate CustomField for more details
+    }).populate("customField");
 
     // Map custom field values to their corresponding posts
     posts.forEach((post) => {
@@ -35,9 +35,9 @@ exports.getPage = async (req, res) => {
       );
     });
 
-
+    
     const categories = await Category.find().populate("parent");
-  
+
     const pages = await StaticPage.find();
 
     const teams = await Team.find().limit(3);
@@ -50,10 +50,7 @@ exports.getPage = async (req, res) => {
     if (!theme) {
       return res.status(500).send("Theme is not defined");
     }
-    
 
-    
-    
     // Pass the posts data to the template along with the title
     res.render(`theme/${theme}/index`, {
       title: "Home Page",
@@ -114,7 +111,6 @@ exports.getHomePageSlider = async (req, res) => {
 
     // Render the homepage view with sliders data
     res.render("theme/goodwill-cleaning/index", { sliders });
-    console.log(sliders);
   } catch (err) {
     console.error("Error fetching sliders:", err);
     res.status(500).send("Server Error");
@@ -133,6 +129,7 @@ exports.getCategoryListingPage = async (req, res) => {
     const categorySlug = req.params.slug;
     // Find the category by slug
     const category = await Category.findOne({ slug: categorySlug });
+
     // If no category found, return 404
     if (!category) {
       return res.status(404).send("Category not found");
@@ -140,7 +137,25 @@ exports.getCategoryListingPage = async (req, res) => {
     // Fetch all posts that belong to the selected category
     const posts = await Post.find({ category: category._id }).populate(
       "category"
-    );
+    ).lean();
+
+    
+    // Fetch custom field values for each post
+    const postIds = posts.map((post) => post._id);
+
+
+    const customFieldValues = await CustomFieldValue.find({
+      entityId: { $in: postIds },
+    }).populate("customField");
+
+
+
+    // Map custom field values to their corresponding posts
+    posts.forEach((post) => {
+      post.customFields = customFieldValues.filter(
+        (field) => field.entityId.toString() === post._id.toString()
+      );
+    });
     // Render the category listing page with the fetched posts
     res.render(`theme/${process.env.THEME}/pages/postListing`, {
       posts,
@@ -158,20 +173,20 @@ exports.getCategoryListingPage = async (req, res) => {
 // ---------POST DETAIL PAGE ------------------------------------------------------
 exports.getPostDetailPage = async (req, res) => {
   try {
-
-    
     const showingpage = "post";
 
     // Fetch the post based on `postId` from the request params
     const postId = req.params.postId;
-    const post = await Post.findById(postId).populate('category').lean();
+    const post = await Post.findById(postId).populate("category").lean();
 
-    const morePosts = await Post.find({ _id: { $ne: postId } }).limit(5).populate('category').lean(); 
+    const morePosts = await Post.find({ _id: { $ne: postId } })
+      .limit(5)
+      .populate("category")
+      .lean();
 
     if (!post) {
       return res.status(404).send("Post not found");
     }
-
 
     // If the post has a photo gallery, render the photoDetail view
     let gallery_images = [];
@@ -186,7 +201,7 @@ exports.getPostDetailPage = async (req, res) => {
         : `theme/${process.env.THEME}/pages/postDetail`,
       {
         post,
-        morePosts, 
+        morePosts,
         showingpage,
         gallery_images: gallery_images.images, // assuming you need the images array from gallery
       }
