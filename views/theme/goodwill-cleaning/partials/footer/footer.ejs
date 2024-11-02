@@ -33,8 +33,8 @@
       >
         <div class="footer-title">Recent News</div>
         <div class="line"></div>
-        <% let blogCount = 0; %> <% posts.forEach(post => { %> <% if
-        (post.category[0].slug === 'blog' && blogCount < 3) { %>
+        <% latestBlogs.forEach(post => { %> <% if (post.category[0].slug ===
+        'blog') { %>
         <div class="row pb-2">
           <a href="/post/<%= post._id %>">
             <div class="image-container col-6 col-md-5">
@@ -53,8 +53,6 @@
           </a>
         </div>
         <% } %> <% }) %>
-
-        
       </div>
 
       <div
@@ -66,40 +64,23 @@
         <ul>
           <li class="selected"><a href="/">Home</a></li>
 
-          <% let pageCount = 0; %>
-          <% pages.forEach(page => { %> 
-            <% if (page.slug === 'about-us' && pageCount < 1) { %>
-              <li><a href="/page/<%= page.slug %>">About</a></li>
-              <% pageCount++; %>
-            <% } %>
-          <% }) %>
-
-
-          <% let staticPageCount = 0; %>
-          <% pages.forEach(page => { %> 
-            <% if (staticPageCount < 1) { %>
-              <li><a href="/page/<%= page.slug %>"><%= page.title %></a></li>
-              <% pageCount++; %>
-            <% } %>
-          <% }) %>
-
-          <% let catCount = 0; %>
-          <% categories.forEach(cat => { %> 
-            <% if (catCount < 3) { %>
-              <li><a href="/category/<%= cat.slug %>"><%= cat.title %></a></li>
-              <% catCount++; %>
-            <% } %>
-          <% }) %>
+          <% let pageCount = 0; %> <% pages.forEach(page => { %> <% if
+          (page.slug === 'about-us' && pageCount < 1) { %>
+          <li><a href="/page/<%= page.slug %>">About</a></li>
+          <% pageCount++; %> <% } %> <% }) %> <% let staticPageCount = 0; %> <%
+          pages.forEach(page => { %> <% if (staticPageCount < 1) { %>
+          <li><a href="/page/<%= page.slug %>"><%= page.title %></a></li>
+          <% pageCount++; %> <% } %> <% }) %> <% let catCount = 0; %> <%
+          categories.forEach(cat => { %> <% if (catCount < 3) { %>
+          <li><a href="/category/<%= cat.slug %>"><%= cat.title %></a></li>
+          <% catCount++; %> <% } %> <% }) %>
 
           <li><a href="/price">Pricing</a></li>
 
-          <% let catCount2 = 0; %>
-          <% categories.forEach(cat => { %> 
-            <% if (catCount2 < 4 && catCount2 > 3) { %>
-              <li><a href="/<%= cat.slug %>"><%= cat.name %></a></li>
-              <% } %>
-              <% catCount2++; %>
-          <% }) %>
+          <% let catCount2 = 0; %> <% categories.forEach(cat => { %> <% if
+          (catCount2 < 4 && catCount2 > 3) { %>
+          <li><a href="/<%= cat.slug %>"><%= cat.name %></a></li>
+          <% } %> <% catCount2++; %> <% }) %>
 
           <li><a href="/contact">Contact</a></li>
         </ul>
@@ -116,13 +97,13 @@
         </div>
         <div class="row pb-3 align-items-center">
           <i class="col-2 footer-icon-contact fa-solid fa-phone"></i>
-          <span class="col-10 footer-contact phone">+0420900310
-            </span>
+          <span class="col-10 footer-contact phone">+0420900310 </span>
         </div>
         <div class="row pb-3 align-items-center">
           <i class="col-2 footer-icon-contact fa-solid fa-envelope"></i>
-          <span class="col-10 footer-contact email"> 
-            anilsah37618@gmail.com+</span>
+          <span class="col-10 footer-contact email">
+            anilsah37618@gmail.com+</span
+          >
         </div>
       </div>
     </div>
