@@ -112,7 +112,7 @@ exports.getHomePageSlider = async (req, res) => {
     const sliders = await Slider.find({ published: true });
 
     // Render the homepage view with sliders data
-    res.render("theme/goodwill-cleaning/index", { sliders });
+    res.render(`theme/${process.env.THEME}/index`, { sliders });
     console.log(sliders);
   } catch (err) {
     console.error("Error fetching sliders:", err);
@@ -146,7 +146,7 @@ exports.getCategoryListingPage = async (req, res) => {
     );
 
     // Render the category listing page with the fetched posts
-    res.render("theme/goodwill-cleaning/pages/postListing", {
+    res.render(`theme/${process.env.THEME}/pages/postListing`, {
       posts,
       category, // Pass the category data to the view
       showingpage,
@@ -184,8 +184,8 @@ exports.getPostDetailPage = async (req, res) => {
     // Render the appropriate view based on gallery presence
     res.render(
       post.photo_gallery
-        ? "theme/goodwill-cleaning/pages/photoDetail"
-        : "theme/goodwill-cleaning/pages/postDetail",
+        ? `theme/${process.env.THEME}/pages/photoDetail`
+        : `theme/${process.env.THEME}/pages/postDetail`,
       {
         post,
         showingpage,
@@ -208,7 +208,7 @@ exports.getPackage = async (req, res) => {
     const packages = await Package.find();
 
     // Render the EJS view, passing packages data
-    res.render("theme/goodwill-cleaning/pages/pricePage", {
+    res.render(`theme/${process.env.THEME}/pages/pricePage`, {
       title: "Package Prices",
       packages: packages,
       showingpage: "price",
