@@ -663,8 +663,8 @@ footer,
 }
 
 .guide-section .guide-card {
-  background-image: url(/public/images/left-02.png),
-    url(/public/images/right-01.png);
+  background-image: url(/ideagen-academy/images/left-02.png),
+    url(/ideagen-academy/images/right-01.png);
   background-position: left top, right bottom;
   background-repeat: no-repeat;
   padding-bottom: 40px;
@@ -802,7 +802,7 @@ footer,
 /* find Section */
 .find-section {
   position: relative;
-  background-image: url("/public/images/slider-01.jpg"); /* Replace with your image URL */
+  background-image: url("/ideagen-academy/images/slider-01.jpg"); /* Replace with your image URL */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -1025,7 +1025,7 @@ footer li {
   color: #fff;
   z-index: 1;
   position: relative;
-  background: url(/public/images/breadcrumb-bg.png) no-repeat bottom center;
+  background: url(/ideagen-academy/images/breadcrumb-bg.png) no-repeat bottom center;
   background-size: contain;
   background-color: #18150e;
   padding-top: 120px;
@@ -1036,7 +1036,7 @@ footer li {
 
 .breadcrumb::after {
   content: "";
-  background: url(/public/images/listing-bg.png) no-repeat;
+  background: url(/ideagen-academy/images/listing-bg.png) no-repeat;
   background-size: 100% 320%;
   opacity: 25%;
   z-index: -2;

@@ -10,7 +10,7 @@ const cacheMiddleware = require('./middleware/cacheMiddleware');
 const sessionMiddleware = require('./middleware/sessionMiddleware');
 
 // Dynamically load specific routes based on the THEME environment variable
-const themeRoutesPath = path.join(__dirname, 'views', 'theme', process.env.THEME, 'routes', 'routes.js');
+const themeRoutesPath = path.join(__dirname, 'routes', 'themeRoutes.js');
 const themeRoutes = require(themeRoutesPath);
 
 // Asynchronous function to connect to the MongoDB database
