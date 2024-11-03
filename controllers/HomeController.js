@@ -39,7 +39,23 @@ exports.getPage = async (req, res) => {
 
     const categories = await Category.find().populate("parent");
 
-    const pages = await StaticPage.find();
+    const pages = await StaticPage.find().lean();
+
+    // Fetch custom field values for each post
+    const pageIds = pages.map((page) => page._id);
+    const pageCustomFieldValues = await CustomFieldValue.find({
+      entityId: { $in: pageIds },
+    }).populate("customField");
+
+    // Map custom field values to their corresponding posts
+    pages.forEach((page) => {
+      page.customFields = pageCustomFieldValues.filter(
+        (field) => field.entityId.toString() === page._id.toString()
+      );
+    });
+
+    console.log(pages[0].customFields[0]);
+    
 
     const teams = await Team.find().limit(3);
 
@@ -112,7 +128,6 @@ exports.getHomePageSlider = async (req, res) => {
 
     // Render the homepage view with sliders data
     res.render(`theme/${process.env.THEME}/index`, { sliders });
-    console.log(sliders);
   } catch (err) {
     console.error("Error fetching sliders:", err);
     res.status(500).send("Server Error");
@@ -166,8 +181,6 @@ exports.getCategoryListingPage = async (req, res) => {
 
       // Check for matches and stop at the first match
       for (const key of customListingKeys) {
-        console.log(key);
-        console.log(category.slug)
         if (category.slug == key) {
           // Check for presence in the category slugs
           matchingKey = key; // Store the matching key
@@ -182,8 +195,8 @@ exports.getCategoryListingPage = async (req, res) => {
         `theme/${process.env.THEME}/pages/${customListingPage[matchingKey]}`,
         {
           posts,
-        category, // Pass the category data to the view
-        showingpage,
+          category, // Pass the category data to the view
+          showingpage,
         }
       );
     } else {
@@ -250,7 +263,6 @@ exports.getPostDetailPage = async (req, res) => {
         }
       }
     }
-
     // Render the appropriate view based on gallery presence
     if (matchingKey != null) {
       res.render(
