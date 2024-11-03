@@ -138,30 +138,37 @@ exports.getHomePageSlider = async (req, res) => {
 
 // ---------LISTING PAGE END------------------------------------------------------
 
-// Fetch posts for a selected category by slug
+// Fetch posts for a selected category by slug with pagination
 exports.getCategoryListingPage = async (req, res) => {
   try {
     const showingpage = req.params.slug;
-    // Get the category slug from request params
     const categorySlug = req.params.slug;
-    // Find the category by slug
+
+    // Pagination parameters
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+    const limit = parseInt(req.query.limit) || 5; // Default to 5 posts per page
 
     const customListingPage = themeConfig.CUSTOM_LISTING_PAGE;
 
+    // Find the category by slug
     const category = await Category.findOne({ slug: categorySlug });
 
     // If no category found, return 404
     if (!category) {
       return res.status(404).send("Category not found");
     }
-    // Fetch all posts that belong to the selected category
+
+    // Fetch posts for the current page
     const posts = await Post.find({ category: category._id })
       .populate("category")
+      .skip((page - 1) * limit) // Skip posts of previous pages
+      .limit(
+        limit
+      ) // Limit the number of posts returned
       .lean();
 
     // Fetch custom field values for each post
     const postIds = posts.map((post) => post._id);
-
     const customFieldValues = await CustomFieldValue.find({
       entityId: { $in: postIds },
     }).populate("customField");
@@ -174,43 +181,47 @@ exports.getCategoryListingPage = async (req, res) => {
     });
 
     let matchingKey = null;
-
     if (typeof customListingPage !== "undefined") {
-      // Extract keys from customListingPage
-      const customListingKeys = Object.keys(customListingPage); // Example: ['blog', 'article']
-
-      // Check for matches and stop at the first match
+      const customListingKeys = Object.keys(customListingPage);
       for (const key of customListingKeys) {
-        if (category.slug == key) {
-          // Check for presence in the category slugs
-          matchingKey = key; // Store the matching key
-          break; // Exit the loop on the first match
+        if (category.slug === key) {
+          matchingKey = key;
+          break;
         }
       }
     }
 
-    // Render the category listing page with the fetched posts
-    if (matchingKey != null) {
-      res.render(
-        `theme/${process.env.THEME}/pages/${customListingPage[matchingKey]}`,
-        {
-          posts,
-          category, // Pass the category data to the view
-          showingpage,
-        }
-      );
-    } else {
-      res.render(`theme/${process.env.THEME}/pages/postListing`, {
-        posts,
-        category, // Pass the category data to the view
-        showingpage,
-      });
-    }
+    // Get total post count to calculate total pages
+    const totalPosts = await Post.countDocuments({ category: category._id });
+    const totalPages = Math.ceil(totalPosts / limit);
+
+    const pagination = {
+      currentPage: page,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+      nextPage: page < totalPages ? page + 1 : null,
+      prevPage: page > 1 ? page - 1 : null,
+    };
+
+    // Render the category listing page with pagination
+    const template = matchingKey
+      ? `theme/${process.env.THEME}/pages/${customListingPage[matchingKey]}`
+      : `theme/${process.env.THEME}/pages/postListing`;
+
+    res.render(template, {
+      posts,
+      category,
+      showingpage,
+      pagination,
+      limit
+    });
   } catch (err) {
     console.error("Error fetching posts for category:", err);
     res.status(500).send("Server Error");
   }
 };
+
 
 // ---------LISTING PAGE END------------------------------------------------------
 
