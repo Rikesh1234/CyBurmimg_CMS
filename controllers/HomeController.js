@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const Team = require("../models/Team");
 const Post = require("../models/Post");
+const Slider = require("../models/Slider");
 const Package = require("../models/Package");
 const Category = require("../models/Category");
 const StaticPage = require("../models/StaticPage");
@@ -54,8 +55,6 @@ exports.getPage = async (req, res) => {
       );
     });
 
-    console.log(pages[0].customFields[0]);
-    
 
     const teams = await Team.find().limit(3);
 
@@ -91,6 +90,8 @@ exports.getStaticPage = async (req, res) => {
   try {
     const showingpage = req.params.slug;
 
+
+
     // Fetch the page data based on the slug in the URL
     const staticPage = await StaticPage.findOne({ slug: req.params.slug });
 
@@ -103,6 +104,7 @@ exports.getStaticPage = async (req, res) => {
     const background_image =
       staticPage.featured_image || "/images/default-bg.jpg"; // default image if not set
     const content = staticPage.content || "";
+
 
     // Render the static page with its specific data
     res.render(`theme/${process.env.THEME}/pages/static-page`, {
@@ -119,7 +121,6 @@ exports.getStaticPage = async (req, res) => {
 // ---------SELECTED STATIC PAGE END---------------------------------------------------
 
 // ---------SLIDER------------------------------------------------------
-const Slider = require("../models/Slider");
 
 exports.getHomePageSlider = async (req, res) => {
   try {
@@ -162,9 +163,7 @@ exports.getCategoryListingPage = async (req, res) => {
     const posts = await Post.find({ category: category._id })
       .populate("category")
       .skip((page - 1) * limit) // Skip posts of previous pages
-      .limit(
-        limit
-      ) // Limit the number of posts returned
+      .limit(limit) // Limit the number of posts returned
       .lean();
 
     // Fetch custom field values for each post
@@ -204,6 +203,8 @@ exports.getCategoryListingPage = async (req, res) => {
       prevPage: page > 1 ? page - 1 : null,
     };
 
+    console.log(pagination);
+    
     // Render the category listing page with pagination
     const template = matchingKey
       ? `theme/${process.env.THEME}/pages/${customListingPage[matchingKey]}`
@@ -214,14 +215,13 @@ exports.getCategoryListingPage = async (req, res) => {
       category,
       showingpage,
       pagination,
-      limit
+      limit,
     });
   } catch (err) {
     console.error("Error fetching posts for category:", err);
     res.status(500).send("Server Error");
   }
 };
-
 
 // ---------LISTING PAGE END------------------------------------------------------
 
