@@ -144,7 +144,6 @@ exports.getContactPage = async (req, res) => {
     // Fetch custom field values associated with the contact page
     const customFields = await CustomFieldValue.find({ entityId:contactPage._id }).lean();
 
-    console.log(customFields[0]?.value);
     
     // Render the contact page with the custom field values
     res.render(`theme/${process.env.THEME}/pages/contact`, { 
@@ -243,7 +242,6 @@ exports.getCategoryListingPage = async (req, res) => {
       prevPage: page > 1 ? page - 1 : null,
     };
 
-    console.log(pagination);
     
     // Render the category listing page with pagination
     const template = matchingKey
@@ -280,13 +278,34 @@ exports.getPostDetailPage = async (req, res) => {
 
     const categoryName = post.category.map((element) => element.title);
 
-    const morePosts = await Post.find({
-      _id: { $ne: postId },
-      "category.name": categoryName[0],
-    })
-      .limit(5)
-      .populate("category")
-      .lean();
+    const category = await Category.findOne({ title: categoryName[0] }).lean();
+ 
+
+
+  // Use the category ID in the post query
+  const morePosts = await Post.find({
+    _id: { $ne: postId },
+    category: category._id,
+  })
+    .limit(5)
+    .populate("category")
+    .lean();
+
+  // Fetch custom field values for each post
+  const morePostIds = morePosts.map((post) => post._id);
+  const customFieldValues = await CustomFieldValue.find({
+    entityId: { $in: morePostIds },
+  }).populate("customField");
+
+  // Map custom field values to their corresponding posts
+  morePosts.forEach((post) => {
+    morePosts.customFields = customFieldValues.filter(
+      (field) => field.entityId.toString() === post._id.toString()
+    );
+  });
+
+
+
 
     if (!post) {
       return res.status(404).send("Post not found");
