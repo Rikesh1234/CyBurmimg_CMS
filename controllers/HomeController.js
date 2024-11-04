@@ -90,19 +90,23 @@ exports.getStaticPage = async (req, res) => {
   try {
     const showingpage = req.params.slug;
 
-
-
     // Fetch the page data based on the slug in the URL
     const staticPage = await StaticPage.findOne({ slug: req.params.slug });
 
+
     if (!staticPage) {
-      return res.status(404).send("Page not found");
+      return res.status(404).render("404", {
+        title: "Page Not Found",
+        error: "404   ", 
+        errorMessages: "The page you are looking for cannot be found.", 
+      });
     }
+
 
     // Define variables to be used in the view
     const pageTitle = staticPage.title || "Static Page";
     const background_image =
-      staticPage.featured_image || "/images/default-bg.jpg"; // default image if not set
+    staticPage.featured_image || "/images/default-bg.jpg"; // default image if not set
     const content = staticPage.content || "";
 
 
@@ -119,6 +123,42 @@ exports.getStaticPage = async (req, res) => {
   }
 };
 // ---------SELECTED STATIC PAGE END---------------------------------------------------
+
+
+// ---------Contact page---------------------------------------------------
+
+exports.getContactPage = async (req, res) => {
+  try {
+    // Define a unique identifier for the contact page
+    const contactPageIdentifier = 'contact';
+
+    const contactPage = await StaticPage.findOne({slug:'contact'});
+
+    if(!contactPage){
+      res.render(`theme/${process.env.THEME}/pages/contact`, { 
+        showingpage: contactPageIdentifier,
+        customFields:[]
+      });
+    }
+
+    // Fetch custom field values associated with the contact page
+    const customFields = await CustomFieldValue.find({ entityId:contactPage._id }).lean();
+
+    console.log(customFields[0]?.value);
+    
+    // Render the contact page with the custom field values
+    res.render(`theme/${process.env.THEME}/pages/contact`, { 
+      showingpage: 'contact',
+      customFields :customFields[0]?.value
+    });
+  } catch (err) {
+    console.error("Error fetching custom fields for contact page:", err);
+    res.status(500).send("Server Error");
+  }
+};
+// ---------Contact page---------------------------------------------------
+
+
 
 // ---------SLIDER------------------------------------------------------
 

@@ -160,7 +160,7 @@
                         <% categories.forEach(category=> { %>
                        
                           <option value="<%= category._id %>" <%=post && post.category &&
-                            post.category.toString()===category._id.toString() ? 'selected' : '' %>><%= category.title
+                            post.category.toString()===category._id.toString() ? 'selected' : '' %><%= category.title
                               %>
                           </option>
                           <% }) %>

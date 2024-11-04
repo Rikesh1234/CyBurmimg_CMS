@@ -48,6 +48,7 @@ exports.getStaticPageCreatePage = async (req, res) => {
       page: null,
       errors: [],
       customField,
+      formData:{}
     });
   } else {
     res.render("404", {
@@ -70,9 +71,10 @@ exports.createStaticPage = [
       // Re-render form with errors and input values
       return res.render("pages/page_create_edit", {
         title: "Create Static Page",
-        page: req.body,
+        formData: req.body,
         errors: errors.array().map((err) => err.msg),
         customField: [],
+        page:null
       });
     }
 
@@ -201,7 +203,7 @@ exports.updateStaticPage = [
       // Re-render form with errors and input values
       return res.render("pages/page_create_edit", {
         title: "Edit Static Page",
-        page: req.body, // Pass current form data
+        formData: req.body, // Pass current form data
         errors: errors.array().map((err) => err.msg),
         customField: [],
       });

@@ -56,7 +56,7 @@
                   class="form-control"
                   name="title"
                   id="title"
-                  value="<%= page ? page.title : '' %>"
+                  value="<%= page ? page.title : (formData.title || '') %>"
                   
                 />
               </div>
@@ -70,7 +70,7 @@
                   class="form-control"
                   name="slug"
                   id="slug"
-                  value="<%= page ? page.slug : '' %>"
+                  value="<%= page ? page.slug : (formData.slug || '') %>"
                   required
                 />
               </div>
@@ -83,7 +83,7 @@
                   type="text"
                   class="form-control"
                   name="tag_line"
-                  value="<%= page ? page.tag_line : '' %>"
+                  value="<%= page ? page.tag_line : (formData.tag_line || '') %>"
                 />
 
               </div>
@@ -97,7 +97,7 @@
                   name="summary"
                   rows="7"
                   cols="7"
-                ><%= page ? page.summary : '' %></textarea>
+                ><%= page ? page.summary : (formData.summary || '') %></textarea>
               </div>
               <div class="form-box">
                 <div class="form-label">
@@ -110,7 +110,7 @@
                   rows="7"
                   cols="7"
                   id="description"
-                ><%= page ? page.content : '' %></textarea>
+                ><%= page ? page.content : (formData.content || '') %></textarea>
               </div>
 
               <% if (Array.isArray(customField) && customField.length > 0) { %>
@@ -181,6 +181,7 @@
                   <% }) %>
                 <% }) %>
               <% } %>
+              
               
 
             </div>
