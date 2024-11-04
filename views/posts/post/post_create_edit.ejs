@@ -157,14 +157,14 @@
                         <label for="category">Category</label>
                       </div>
                       <select name="category" class="select-category form-control" multiple="multiple">
-                        <% categories.forEach(category=> { %>
-                       
-                          <option value="<%= category._id %>" <%=post && post.category &&
-                            post.category.toString()===category._id.toString() ? 'selected' : '' %><%= category.title
-                              %>
-                          </option>
-                          <% }) %>
-                      </select>
+                        <% categories.forEach(category => { %>
+                            <option value="<%= category._id %>" <%= post && post.category &&
+                                post.category.toString() === category._id.toString() ? 'selected' : '' %>>
+                                <%= category.title %>
+                            </option>
+                        <% }) %>
+                    </select>
+                    
 
                     </div>
 
