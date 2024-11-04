@@ -661,6 +661,9 @@ router.post(
   packageController.deletePackage
 );
 
+//login user profile
+router.get("/cms/user/profile",masterController.getLoginUserData);
+
 router.get("/page/:pageSlug", homeController.getStaticPage);
 
 //mail
@@ -675,5 +678,6 @@ router.use((req, res) => {
     errorMessages: "The page you are looking for cannot be found.", // Default error message
   });
 });
+
 
 module.exports = router;

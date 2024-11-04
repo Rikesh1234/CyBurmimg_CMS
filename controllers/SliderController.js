@@ -5,11 +5,12 @@ const CustomField = require("../models/CustomField");
 //view slider page
 exports.getSliderPage = async (req, res) => {
   try {
+    const showingpage = "slider";
     // Fetch all sliders from the database
     const sliders = await Slider.find();
 
     // Render the view and pass the sliders to the EJS template
-    res.render("slider/slider_listing", { title: "Slider Page", sliders });
+    res.render("slider/slider_listing", { title: "Slider Page", sliders, showingpage });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
@@ -20,6 +21,7 @@ exports.getSliderPage = async (req, res) => {
 //view slider Create page
 // view slider Create page
 exports.getSliderCreatePage = async (req, res) => {
+  const showingpage = "slider";
 
   let customField = await CustomField.find()
   .populate({
@@ -34,7 +36,8 @@ exports.getSliderCreatePage = async (req, res) => {
   res.render("slider/slider_create_edit", {
     title: "Slider Create Page",
     slider: null, // Make sure this is set to `null` for create
-    customField
+    customField,
+    showingpage
   });
 };
 
@@ -43,6 +46,7 @@ exports.getSliderCreatePage = async (req, res) => {
 // view slider Edit page
 exports.getSliderEditPage = async (req, res) => {
   try {
+    const showingpage = "slider";
 
     let customField = await CustomField.find()
   .populate({
@@ -65,7 +69,8 @@ exports.getSliderEditPage = async (req, res) => {
     res.render("slider/slider_create_edit", {
       title: "Slider Edit Page",
       slider,
-      customField
+      customField,
+      showingpage
     });
   } catch (err) {
     console.error(err);

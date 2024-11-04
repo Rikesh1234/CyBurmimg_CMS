@@ -19,6 +19,14 @@ module.exports = async (req, res, next) => {
     })
     .sort({ createdAt: -1 })
     .limit(3);
+
+    if (req.session.user) {
+      res.locals.loginFeaturedImage = req.session.user.featuredImage;
+      res.locals.loginUser = req.session.user.username;
+    } else {
+      res.locals.loginFeaturedImage = null;
+      res.locals.loginUser = null;
+    }
   
   // Filter out posts where category didn't match (in case of no blog category)
   const filteredLatestBlogs = latestBlogs.filter(post => post.category.length > 0);

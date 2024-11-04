@@ -5,7 +5,7 @@ const AdPosition = require("../models/AdPosition");
 const AdType = require("../models/AdType");
 
 exports.getAdsPage = async (req, res) => {
-
+  const showingpage = "advertisement";
   const ads = await Ads.find(); 
 
   if (req.session.user) {
@@ -20,6 +20,7 @@ exports.getAdsPage = async (req, res) => {
       res.render("404", {
         errorMessages: "Something is wrong with our side. Please inform us!",
         error: "500",
+        showingpage
       });
     }
   } else {
@@ -31,6 +32,7 @@ exports.getAdsPage = async (req, res) => {
 };
 
 exports.getAdsCreatePage = async (req, res) => {
+  const showingpage = "advertisement";
   if (req.session.user) {
     try {
       const adPositions = await AdPosition.find().populate("ad_type");
@@ -60,6 +62,7 @@ exports.getAdsCreatePage = async (req, res) => {
         formData: {},
         ads: null,
         adTypesWithPositions,
+        showingpage,
       });
     } catch (error) {
       console.error("Error fetching categories:", error);

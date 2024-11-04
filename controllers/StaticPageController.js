@@ -18,10 +18,11 @@ const {
 // View static pages listing
 exports.getStaticPagePage = async (req, res) => {
   if (req.session.user) {
+    const showingpage = "pages";
     try {
       const pages = await StaticPage.find();
 
-      res.render("pages/page_listing", { title: "Static-Page Page", pages });
+      res.render("pages/page_listing", { title: "Static-Page Page", pages, showingpage });
     } catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
@@ -41,6 +42,7 @@ exports.getStaticPagePage = async (req, res) => {
 // View static page create form
 exports.getStaticPageCreatePage = async (req, res) => {
   if (req.session.user) {
+    const showingpage = "pages";
     const customField = await fetchCustomFields("StaticPage");
 
     res.render("pages/page_create_edit", {
@@ -48,7 +50,8 @@ exports.getStaticPageCreatePage = async (req, res) => {
       page: null,
       errors: [],
       customField,
-      formData:{}
+      formData:{},
+      showingpage
     });
   } else {
     res.render("404", {
@@ -66,6 +69,7 @@ exports.createStaticPage = [
   body("content").notEmpty().withMessage("Content is required"),
 
   async (req, res) => {
+    const showingpage = "pages";
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // Re-render form with errors and input values
@@ -74,7 +78,7 @@ exports.createStaticPage = [
         formData: req.body,
         errors: errors.array().map((err) => err.msg),
         customField: [],
-        page:null
+        page:null,
       });
     }
 
@@ -132,6 +136,7 @@ exports.createStaticPage = [
 exports.getStaticPageEditPage = async (req, res) => {
   if (req.session.user) {
     try {
+      const showingpage = "pages";
       const page = await StaticPage.findById(req.params.pageId);
 
       if (!page) return res.status(404).send("Page not found");
@@ -173,6 +178,7 @@ exports.getStaticPageEditPage = async (req, res) => {
         page,
         errors: [],
         customField: customField ?? [],
+        showingpage
       });
     } catch (err) {
       console.error(err);

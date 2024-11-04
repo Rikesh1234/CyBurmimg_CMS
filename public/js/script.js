@@ -17,6 +17,8 @@ if (window.innerWidth > 1024) {
 
 document.addEventListener("DOMContentLoaded", function () {
   const notifiButton = document.querySelector(".notification");
+  const profileButton = document.querySelector(".profile");
+  const profileDiv = document.querySelector(".profile_dd"); 
   const notifiDiv = document.querySelector(".notification_dd");
   const show_all = document.querySelector(".show_all");
   const notifiPopup = document.querySelector(".popup");
@@ -25,6 +27,10 @@ document.addEventListener("DOMContentLoaded", function () {
   notifiButton.addEventListener("click", (event) => {
     notifiDiv.classList.toggle("notify-active");
   });
+
+  profileButton.addEventListener("click",(event) => {
+    profileDiv.classList.toggle("notify-active");
+  })
 
   show_all.addEventListener("click", (event) => {
     notifiPopup.style.display = "block";

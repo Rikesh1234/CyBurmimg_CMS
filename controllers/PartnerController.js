@@ -3,17 +3,20 @@ const redis = require("../config/redis");
 const CustomField = require("../models/CustomField");
 //view parnters page
 exports.getPartnerPage=(req,res)=>{
-    res.render('partners/partner_listing',{title:'Partner Page'});
+  const showingpage = "partner";
+    res.render('partners/partner_listing',{title:'Partner Page',showingpage});
 }
 
 //view parnters Create page
 exports.getPartnerCreatePage= async (req,res)=>{
-    res.render('partners/partner_create_edit',{title:'Partner Create Page'});
+  const showingpage = "partner";
+    res.render('partners/partner_create_edit',{title:'Partner Create Page',showingpage});
 }
 
 //view parnters Edit page
 exports.getPartnerEditPage=(req,res)=>{
-    res.render('partners/partner_create_edit',{title:'Partner Edit Page'});
+  const showingpage = "partner";
+    res.render('partners/partner_create_edit',{title:'Partner Edit Page',showingpage});
 }
 
 //crud for partner

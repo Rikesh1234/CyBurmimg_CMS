@@ -7,6 +7,7 @@ const validationConfig = require("../config/validationConfig.json");
 
 //view custom-field page
 exports.getCustomFieldPage = async (req, res) => {
+  const showingpage = "customField";
   if (req.session.user) {
     try {
       const customField = await CustomField.find().populate("model");
@@ -14,6 +15,7 @@ exports.getCustomFieldPage = async (req, res) => {
       res.render("custom-field/custom-field-list", {
         title: "Custom Field Page",
         customField,
+        showingpage
       });
     } catch (err) {
       console.error(err);
@@ -33,6 +35,7 @@ exports.getCustomFieldPage = async (req, res) => {
 
 //view custom-field Create page
 exports.getCustomFieldCreatePage = async (req, res) => {
+  const showingpage = "customField";
   if (req.session.user) {
     try {
       const customModels = await Model.find().sort({ name: 1 });
@@ -46,6 +49,7 @@ exports.getCustomFieldCreatePage = async (req, res) => {
         staticField,
         formConfig: validationConfig.field,
         formData: [],
+        showingpage
       });
     } catch (err) {
       console.error(err);
@@ -64,6 +68,7 @@ exports.getCustomFieldCreatePage = async (req, res) => {
 };
 
 exports.getCustomFieldEditPage = async (req, res) => {
+  const showingpage = "customField";
   if (req.session.user) {
     try {
       const fieldId = req.params.fieldId;
@@ -81,6 +86,7 @@ exports.getCustomFieldEditPage = async (req, res) => {
         staticPage,
         staticField,
         formConfig: validationConfig.field,
+        showingpage
       });
     } catch (err) {
       console.error(err);

@@ -118,13 +118,13 @@
   <span class="text">CyBurning</span>
 </a>
 <ul class="side-menu top">
-  <li class="">
+  <li class="<%= showingpage === 'dashboard' ? 'active' : '' %>">
     <a href="/cms/dashboard">
       <i class="bx bxs-dashboard"></i>
       <span class="text">Dashboard</span>
     </a>
   </li>
-  <li class="dropdown active">
+  <li class="dropdown <%= showingpage === 'post' ? 'active' : '' %>">
     <a>
       <i class="bx bx-notepad"></i>
       <span class="text">Post</span>
@@ -142,7 +142,7 @@
       </li> -->
     </ul>
   </li>
-  <li class="dropdown">
+  <li class="dropdown <%= showingpage === 'user' ? 'active' : '' %>">
     <a>
       <i class="bx bx-notepad"></i>
       <span class="text">User</span>
@@ -157,7 +157,7 @@
       </li>
     </ul>
   </li>
-  <li>
+  <li class="<%= showingpage === 'pages' ? 'active' : '' %>">
     <a href="/cms/static-page">
       <i class="bx bxs-doughnut-chart"></i>
       <span class="text">Pages</span>
@@ -179,14 +179,14 @@
     </ul>
   </li> -->
 
-  <li>
+  <li class="<%= showingpage === 'advertisement' ? 'active' : '' %>">
     <a href="/cms/ads">
       <i class="bx bxs-message-dots"></i>
       <span class="text">Advertisement</span>
     </a>
   </li>
 
-  <li>
+  <li class="<%= showingpage === 'testomonial' ? 'active' : '' %>">
     <a href="/cms/testomonial">
       <i class="bx bxs-message-dots"></i>
       <span class="text">Testomonials</span>
@@ -198,7 +198,7 @@
       <span class="text">Partner</span>
     </a>
   </li> -->
-  <li class="dropdown">
+  <li class="dropdown <%= showingpage === 'team' ? 'active' : '' %>">
     <a>
       <i class="bx bx-notepad"></i>
       <span class="text">Team</span>
@@ -214,14 +214,14 @@
     </ul>
   </li>
 
-  <li>
+  <li class="<%= showingpage === 'package' ? 'active' : '' %>">
     <a href="/cms/package">
       <i class="bx bxs-group"></i>
       <span class="text">Package</span>
     </a>
   </li>
 
-  <li>
+  <li class="<%= showingpage === 'slider' ? 'active' : '' %>">
     <a href="/cms/slider">
       <i class="bx bxs-group"></i>
       <span class="text">Slider</span>
@@ -229,7 +229,7 @@
   </li>
 </ul>
 <ul class="side-menu">
-  <li>
+  <li class="<%= showingpage === 'customField' ? 'active' : '' %>">
     <a href="/cms/custom-field">
       <i class="bx bxs-cog"></i>
       <span class="text">Custom Field</span>

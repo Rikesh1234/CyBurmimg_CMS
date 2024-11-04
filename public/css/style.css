@@ -332,6 +332,49 @@ body {
 	border-radius: 50%;
 }
 
+#content nav .profile{
+	position: relative;
+}
+
+.profile_dd{
+	top: 45px !important;
+	right: -47px !important;
+	width: 134px  !important ;
+}
+
+.profile_dd:before {
+    top: -19px !important;
+    right: 55px  !important;
+}
+
+.profile_ul{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	padding: 15px 7px;
+	padding-right: 20px;
+}
+
+.profile_ul .title{
+	font-weight: 600;
+}
+
+.btn-view {
+    padding: 0 16px;
+    background: var(--green);
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-gap: 10px;
+    font-weight: 500;
+}
+
+.btn-view a{
+	color: var(--light) !important;
+}
+
 .notification{
 	position: relative;
 }
