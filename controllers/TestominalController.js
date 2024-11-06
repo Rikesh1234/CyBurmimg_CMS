@@ -5,12 +5,14 @@ const CustomField = require("../models/CustomField");
 //view testomonial page
 exports.getTestomonialPage = async (req, res) => {
   try {
+    const showingpage = "testomonial";
     // Fetch all testimonials from the database
     const testimonials = await Testominal.find();
     
     res.render("testomonial/testomonial_listing", {
       title: "Testimonial Page",
       testimonials,
+      showingpage
     });
   } catch (err) {
     console.error(err);
@@ -20,7 +22,7 @@ exports.getTestomonialPage = async (req, res) => {
 
 // View testimonial Create page
 exports.getTestomonialCreatePage = async (req, res) => {
-
+  const showingpage = "testomonial";
   let customField = await CustomField.find()
   .populate({
     path: 'model',  // Populate the 'model' field
@@ -33,7 +35,8 @@ exports.getTestomonialCreatePage = async (req, res) => {
   res.render("testomonial/testomonial_create_edit", {
     title: "Testimonial Create Page",
     testominal: null,
-    customField
+    customField,
+    showingpage
   });
 };
 
@@ -41,7 +44,7 @@ exports.getTestomonialCreatePage = async (req, res) => {
 // Fetch and render the edit page for a specific testimonial
 exports.getTestomonialEditPage = async (req, res) => {
   try {
-
+    const showingpage = "testomonial";
     let customField = await CustomField.find()
   .populate({
     path: 'model',  // Populate the 'model' field
@@ -64,7 +67,8 @@ exports.getTestomonialEditPage = async (req, res) => {
     res.render("testomonial/testomonial_create_edit", {
       title: "Edit Testimonial",
       testominal, // Pass the testominal object here
-      customField
+      customField,
+      showingpage
     });
   } catch (err) {
     console.error(err);

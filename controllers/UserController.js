@@ -9,6 +9,7 @@ const { validationResult } = require("express-validator");
 
 exports.getRolePermissions = async (req, res) => {
   try {
+    const showingpage = "user";
     const { roleId } = req.params;
 
     // Fetch the role by ID
@@ -37,6 +38,7 @@ exports.getRolePermissions = async (req, res) => {
       role,
       allPermissions,
       rolePermissionMap, // Map of role's permissions for easy lookup
+      showingpage
     });
   } catch (err) {
     console.error(err);
@@ -47,8 +49,10 @@ exports.getRolePermissions = async (req, res) => {
 // Update permissions for a role
 exports.updateRolePermissions = async (req, res) => {
   try {
+    const showingpage = "user";
     const { roleId } = req.params; // The ID of the role to update
     const permissions = req.body.permissions || []; // Permissions submitted by the form
+    
 
     // Ensure permissions is always an array
     const permissionsArray = Array.isArray(permissions)
@@ -106,6 +110,7 @@ exports.savePermissions = (req, res) => {
 //view user page
 exports.getUserPage = async (req, res) => {
   try {
+    const showingpage = "user";
     // Fetch all users from the database
 
     let users = await User.find().populate('role');
@@ -114,7 +119,7 @@ exports.getUserPage = async (req, res) => {
      users = users.filter(user => user.role.name !== 'Admin');
 
     //Render the view and pass the users to the EJS template
-    res.render("users/user/user_listing", { title: "User Page", users });
+    res.render("users/user/user_listing", { title: "User Page", users,showingpage });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
@@ -124,7 +129,7 @@ exports.getUserPage = async (req, res) => {
 //view user Create page
 exports.getUserCreatePage = async (req, res) => {
   try {
-
+    const showingpage = "user";
     let customField = await CustomField.find()
   .populate({
     path: 'model',  // Populate the 'model' field
@@ -169,7 +174,8 @@ exports.getUserCreatePage = async (req, res) => {
       errorMessages: [],
       roles: activeRoles, // Pass the roles for the dropdown
       formData: {}, // Ensure formData is always an object for the form
-      customField
+      customField,
+      showingpage
     });
 
   } catch (err) {
@@ -182,6 +188,7 @@ exports.getUserCreatePage = async (req, res) => {
 //view user Edit page
 exports.getUserEditPage = async (req, res) => {
   try {
+    const showingpage = "user";
     let customField = await CustomField.find()
   .populate({
     path: 'model',  // Populate the 'model' field
@@ -212,7 +219,8 @@ exports.getUserEditPage = async (req, res) => {
       user: user, // Pass the user object
       errorMessages: [],
       roles: activeRoles, // Pass roles for the dropdown
-      customField
+      customField,
+      showingpage
     });
   } catch (err) {
     console.error(err);
@@ -223,14 +231,14 @@ exports.getUserEditPage = async (req, res) => {
 //view role page
 exports.getRolePage = async (req, res) => {
   try{
-
+    const showingpage = "user";
     // Fetch all roles from the database
     let roles = await Role.find();
 
     roles = roles.filter(role => role.name !== 'Admin');
 
       //Render the view and pass the users to the EJS template
-      res.render('users/role/role_listing',{title:'Role Page', roles});
+      res.render('users/role/role_listing',{title:'Role Page', roles,showingpage});
     }catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
@@ -239,7 +247,7 @@ exports.getRolePage = async (req, res) => {
 
 //view role Create page
 exports.getRoleCreatePage = async (req, res) => {
-
+  const showingpage = "user";
   let customField = await CustomField.find()
   .populate({
     path: 'model',  // Populate the 'model' field
@@ -253,13 +261,15 @@ exports.getRoleCreatePage = async (req, res) => {
     title: "Role Create Page",
     role: null,
     errorMessages: [],
-    customField
+    customField,
+    showingpage
   });
 };
 
 //view role Edit page
 exports.getRoleEditPage = async (req, res) => {
   try {
+    const showingpage = "user";
     let customField = await CustomField.find()
   .populate({
     path: 'model',  // Populate the 'model' field
@@ -280,7 +290,8 @@ exports.getRoleEditPage = async (req, res) => {
       title: "Role Edit Page",
       role, // Pass the role object to the template
       customField,
-      errorMessages:{}
+      errorMessages:{},
+      showingpage
     });
   } catch (err) {
     console.error(err);

@@ -6,6 +6,7 @@ const User = require("../models/user");
 //view dashboard page
 exports.getPage= async (req,res)=>{
     if (req.session.user) {
+        const showingpage = "dashboard";
         const packagesCount = await Package.countDocuments();
         const teamCount = await Team.countDocuments();
         const postCount = await Post.countDocuments();
@@ -16,7 +17,7 @@ exports.getPage= async (req,res)=>{
 // Filter out users whose role is Admin
      users = users.filter(user => user.role.name !== 'Admin');
 
-        res.render('dashboard/dashboard',{title:'Dashboard Page', packagesCount, teamCount, postCount, posts, users});
+        res.render('dashboard/dashboard',{title:'Dashboard Page', packagesCount, teamCount, postCount, posts, users, showingpage});
     } else {
         res.render('404',{errorMessages:"Looks Like you are lost!",error:"404"});
     }

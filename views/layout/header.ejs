@@ -54,9 +54,27 @@
       </ul>
     </div>
   </span>
-  <a href="#" class="profile">
-    <img src="/images/icons/profile.png" />
+  <div class="profile">
+  <a href="#" class="profile-link">
+    <img src="<%= loginFeaturedImage %>" />
   </a>
+  <div class="notification_dd profile_dd">
+    <div class="profile_ul">
+        <div class="profile_icon">
+          <span class="icon">
+            <img src="<%= loginFeaturedImage %>" style="height: 42px; width:40px;">
+          </span>
+        </div>
+        <div class="notify_data">
+          <div class="title">Username:</div>
+          <div class="sub_title text-center mb-2"><%= loginUser %></div>
+        </div>
+      <div class="btn-view">
+        <a href="/cms/user/profile/">View All</a>
+      </div>
+    </div>
+  </div>
+  </div>
 </nav>
 
 <div class="popup">

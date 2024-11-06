@@ -1,242 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <%- include('../layout/link') %>
-    <title>CyBurning</title>
-  </head>
 
-  <body>
-    <!-- SIDEBAR -->
-    <%- include('../layout/sidebar') %>
-    <!-- SIDEBAR -->
+<head>
+  <meta charset="UTF-8" />
+  <%- include('../layout/link') %>
+  <title>CyBurning</title>
+</head>
 
-    <!-- CONTENT -->
-    <section id="content">
-      <!-- NAVBAR -->
-      <%- include('../layout/header') %>
-      <!-- NAVBAR -->
+<body>
+  <!-- SIDEBAR -->
+  <%- include('../layout/sidebar') %>
+  <!-- SIDEBAR -->
 
-      <!-- MAIN -->
-      <main>
-        <div class="head-title">
-          <div class="left">
-            <h1>Custom Field</h1>
-            <ul class="breadcrumb">
-              <li>
-                <a href="/cms/dashboard">Dashboard</a>
-              </li>
-              <li><i class="bx bx-chevron-right"></i></li>
-              <li>
-                <a href="/cms/setting">Custom Field</a>
-              </li>
-              <li><i class="bx bx-chevron-right"></i></li>
-              <li>
-                <a class="active">Add Field</a>
-              </li>
-            </ul>
-          </div>
-          <a href="/cms/custom-field" class="btn-create">
-            <i class="fas fa-arrow-left"></i>
-            <span class="text">Back</span>
-          </a>
+  <!-- CONTENT -->
+  <section id="content">
+    <!-- NAVBAR -->
+    <%- include('../layout/header') %>
+    <!-- NAVBAR -->
+
+    <!-- MAIN -->
+    <main>
+      <div class="head-title">
+        <div class="left">
+          <h1>Custom Field</h1>
+          <ul class="breadcrumb">
+            <li>
+              <a href="/cms/dashboard">Dashboard</a>
+            </li>
+            <li><i class="bx bx-chevron-right"></i></li>
+            <li>
+              <a href="/cms/setting">Custom Field</a>
+            </li>
+            <li><i class="bx bx-chevron-right"></i></li>
+            <li>
+              <a class="active">Add Field</a>
+            </li>
+          </ul>
         </div>
+        <a href="/cms/custom-field" class="btn-create">
+          <i class="fas fa-arrow-left"></i>
+          <span class="text">Back</span>
+        </a>
+      </div>
 
-        <form action="/cms/custom-field/create-edit/<%= customField ? customField._id : null %>" method="post">
-          <div class="form-container">
-            <div class="post-right-container col-md-12">
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="title">Title</label
-                  ><span class="important">*</span>
-                </div>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="title"
-                  id="title"
-                  value="<%= customField ? customField.title : (formData.title || '') %>"
-                />
+      <form action="/cms/custom-field/create-edit/<%= customField ? customField._id : null %>" method="post">
+        <div class="form-container">
+          <div class="post-right-container col-md-12">
+            <div class="form-box">
+              <div class="form-label">
+                <label for="title">Title</label><span class="important">*</span>
               </div>
+              <input type="text" class="form-control" name="title" id="title" value="<%= customField ? customField.title : (formData.title || '') %>" />
+            </div>
 
-              <div class="form-box">
-                <div class="form-label">
-                  <label for="model-name">Model Name</label>
-                </div>
-                <select 
-                id="modelSelect"
-                  name="model"
-                  class="model-name form-control"
-                >
+            <div class="form-box">
+              <div class="form-label">
+                <label for="model-name">Model Name</label>
+              </div>
+              <select id="modelSelect" name="model" class="model-name form-control">
                 <% customModels.forEach(models=> { %>
-                  <option value="<%= models._id %>" <%=customField && customField.model &&
+                <option value="<%= models._id %>" <%=customField && customField.model &&
                     customField.model.toString()===models._id.toString() ? 'selected' : '' %>> <%= models.name %>
-                  </option>
-                  <% }) %>
-                </select>
-              </div>
+                </option>
+                <% }) %>
+              </select>
+            </div>
 
-              <div class="setting-input">
-                <% if (Array.isArray(customField.target_type) && customField.target_type.length) { %>
-                <% customField.target_type.forEach((customFields, index)=> { %>
-                <div class="setting-container">
-
-                 
-
-
-                  <div class="form-box" style="width: 25%">
-                    <div class="form-label">
-                      <label for="other_feature">Target Type</label>
-                    </div>
-                    <select
-                      name="target_type"
-                      class="select-target-type form-control"
-                      style="width:100% !important"
-                    >
-                      <% staticField.forEach(field=> { %>
-                      <option value="<%= field._id %>" <%=customFields && customFields &&
+            <div class="setting-input">
+              <% if (customField && Array.isArray(customField.target_type) && customField.target_type.length) { %>
+              <% customField.target_type.forEach((customFields, index)=> { %>
+              <div class="setting-container">
+                <div class="form-box" style="width: 25%">
+                  <div class="form-label">
+                    <label for="other_feature">Target Type</label>
+                  </div>
+                  <select name="target_type" class="select-target-type form-control" style="width:100% !important">
+                    <% staticField.forEach(field=> { %>
+                    <option value="<%= field._id %>" <%=customFields && customFields &&
                         customFields===field._id.toString() ? 'selected' : '' %>> <%= field.name %>
-                      </option>
-                      <% }) %>
-                    </select>
-                  </div>
-
-                  <div class="form-box">
-                    <div class="form-label">
-                      <label for="title">Label Name</label
-                      ><span class="important">*</span>
-                    </div>
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="label_name[]"
-                      id="label_name"
-                      value="<%= customField.label_name[index] ? customField.label_name[index] : (formData[index] ? formData[index] : '') %>"
-                    />
-                  </div>
-
-                  <div class="form-box">
-                    <div class="form-label">
-                      <label for="title">Field Name</label
-                      ><span class="important">*</span>
-                    </div>
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="field_name[]"
-                      id="field_name"
-                      value="<%= customField.field_name[index] ? customField.field_name[index] : (formData[index] ? formData[index] : '') %>"
-                    />
-                  </div>
-  <div class="delete-btn" id="delete-btn" style="height:50px; width:50px;"><i class="fa-solid fa-minus"></i></div>
-</div>
-<% }) %>
-<% } %>
-
-                <div class="extra-setting"></div>
-
-                <div
-                  class="btn-container-add"
-                  style="display: flex; justify-content: flex-end"
-                >
-                  <button
-                    class="full-submit-button form-control"
-                    style="width: 200px; margin-top: 25px; float: right"
-                    id="field-repeator-btn"
-                  >
-                    <i class="fa-solid fa-plus"></i>Add Repeator
-                  </button>
+                    </option>
+                    <% }) %>
+                  </select>
                 </div>
-              </div>
 
-              <div class="static-page-field">  
                 <div class="form-box">
                   <div class="form-label">
-                    <label for="page">Static Field</label>
+                    <label for="title">Label Name</label><span class="important">*</span>
                   </div>
-                  <select name="page" class="select-page form-control" multiple="multiple">
-                    <% staticPage.forEach(page=> { %>
-                      <option value="<%= page._id %>" <%=customField && customField.staticId &&
-                        customField.staticId===page._id.toString() ? 'selected' : '' %>> <%= page.title %>
-                      </option>
-                      <% }) %>
-
-                  </select>
-
+                  <input type="text" class="form-control" name="label_name[]" id="label_name" value="<%= customField.label_name[index] ? customField.label_name[index] : (formData[index] ? formData[index] : '') %>" />
                 </div>
-              </div>
 
-              <div class="btn-container" style="margin-top: 25px; display: flex; justify-content: flex-end; align-items: center; width: 100%; gap: 10px;">
-                <button class="submit-button form-control" style="height: 50px;">Submit</button>
-                <button class="cancel-button form-control" style="height: 50px; display: block;">Cancel</button>
+                <div class="form-box">
+                  <div class="form-label">
+                    <label for="title">Field Name</label><span class="important">*</span>
+                  </div>
+                  <input type="text" class="form-control" name="field_name[]" id="field_name" value="<%= customField.field_name[index] ? customField.field_name[index] : (formData[index] ? formData[index] : '') %>" />
+                </div>
+                <div class="delete-btn" id="delete-btn" style="height:50px; width:50px;"><i class="fa-solid fa-minus"></i></div>
+              </div>
+              <% }) %>
+              <% } %>
+
+              <div class="extra-setting"></div>
+
+              <div class="btn-container-add" style="display: flex; justify-content: flex-end">
+                <button class="full-submit-button form-control" style="width: 200px; margin-top: 25px; float: right" id="field-repeator-btn">
+                  <i class="fa-solid fa-plus"></i>Add Repeator
+                </button>
+              </div>
             </div>
+
+            <div class="static-page-field">
+              <div class="form-box">
+                <div class="form-label">
+                  <label for="page">Static Field</label>
+                </div>
+                <select name="page" class="select-page form-control" multiple="multiple">
+                  <% staticPage.forEach(page=> { %>
+                  <option value="<%= page._id %>" <%=customField && customField.staticId &&
+                        customField.staticId===page._id.toString() ? 'selected' : '' %>> <%= page.title %>
+                  </option>
+                  <% }) %>
+
+                </select>
+
+              </div>
+            </div>
+
+            <div class="btn-container" style="margin-top: 25px; display: flex; justify-content: flex-end; align-items: center; width: 100%; gap: 10px;">
+              <button class="submit-button form-control" style="height: 50px;">Submit</button>
+              <button class="cancel-button form-control" style="height: 50px; display: block;">Cancel</button>
             </div>
           </div>
-        </form>
-      </main>
-      <!-- MAIN -->
-    </section>
-    <!-- CONTENT -->
+        </div>
+      </form>
+    </main>
+    <!-- MAIN -->
+  </section>
+  <!-- CONTENT -->
 
 
 
-    <% customModels.forEach(models=> { %>
-      <% if (customField && customField.staticId && models.name == 'StaticPage') { %>
-        <% if (models._id == customField.modal) { %>
-          <script>
-            document.querySelector('.static-page-field').classList.remove('d-none');
-          </script>
-          <% } %>
-        <% } %>
+  <% customModels.forEach(models=> { %>
+  <% if (customField && customField.staticId && models.name == 'StaticPage') { %>
+  <% if (models._id == customField.modal) { %>
+  <script>
+    document.querySelector('.static-page-field').classList.remove('d-none');
+  </script>
+  <% } %>
+  <% } %>
 
-      <% }) %>
+  <% }) %>
 
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-         
-  const modelSelect = document.querySelector('#modelSelect');
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
 
-  modelSelect.addEventListener('change', function() {
-    console.log('Change event fired!');
-    
-    const selectedModelName = this.options[this.selectedIndex].text;
-    console.log('Selected model name:', selectedModelName);
+      const modelSelect = document.querySelector('#modelSelect');
 
-    if (selectedModelName === 'StaticPage') {
-      document.querySelector('.static-page-field').classList.remove('d-none');
-    } else {
-      document.querySelector('.static-page-field').classList.add('d-none');
-    }
-  });
-});
+      modelSelect.addEventListener('change', function() {
+        console.log('Change event fired!');
 
-      </script>
+        const selectedModelName = this.options[this.selectedIndex].text;
+        console.log('Selected model name:', selectedModelName);
 
-    <script>
-      $(document).ready(function domReady() {
-        $(".select-page").select2({
-          placeholder: "Static Page",
-        });
+        if (selectedModelName === 'StaticPage') {
+          document.querySelector('.static-page-field').classList.remove('d-none');
+        } else {
+          document.querySelector('.static-page-field').classList.add('d-none');
+        }
       });
-    </script>
+    });
+  </script>
 
-    <script>
-      $(document).ready(function domReady() {
-        $(".model-name").select2({
-          placeholder: "Model Name",
-        });
+  <script>
+    $(document).ready(function domReady() {
+      $(".select-page").select2({
+        placeholder: "Static Page",
       });
+    });
+  </script>
 
-      document.addEventListener("DOMContentLoaded", function () {
-        let itenaryRepetor = document.querySelector("#field-repeator-btn");
+  <script>
+    $(document).ready(function domReady() {
+      $(".model-name").select2({
+        placeholder: "Model Name",
+      });
+    });
 
-        itenaryRepetor.addEventListener("click", (event) => {
-          event.preventDefault();
-          const container = document.querySelector(".extra-setting");
+    document.addEventListener("DOMContentLoaded", function() {
+      let itenaryRepetor = document.querySelector("#field-repeator-btn");
 
-          const newElement = document.createElement("div");
-          newElement.className = "setting-container";
-          newElement.innerHTML = `
+      itenaryRepetor.addEventListener("click", (event) => {
+        event.preventDefault();
+        const container = document.querySelector(".extra-setting");
+
+        const newElement = document.createElement("div");
+        newElement.className = "setting-container";
+        newElement.innerHTML = `
    <div class="form-box" style="width: 25%">
                     <div class="form-label">
                       <label for="other_feature">Target Type</label>
@@ -281,20 +241,21 @@
   <div class="delete-btn" id="delete-btn" style="height:50px; width:50px;"><i class="fa-solid fa-minus"></i></div>
 `;
 
-          // Append the new element to the container
-          container.appendChild(newElement);
+        // Append the new element to the container
+        container.appendChild(newElement);
 
-          deleteButtons = document.querySelectorAll(".delete-btn");
+        deleteButtons = document.querySelectorAll(".delete-btn");
 
-          deleteButtons.forEach((currentValue, index, array) => {
-            currentValue.addEventListener("click", () => {
-              currentValue.parentElement.remove();
-            });
+        deleteButtons.forEach((currentValue, index, array) => {
+          currentValue.addEventListener("click", () => {
+            currentValue.parentElement.remove();
           });
         });
       });
-    </script>
+    });
+  </script>
 
-<%- include('../layout/script') %>
-  </body>
+  <%- include('../layout/script') %>
+</body>
+
 </html>

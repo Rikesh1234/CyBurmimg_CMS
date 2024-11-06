@@ -1,5 +1,3 @@
-
-
 require('dotenv').config();
 const mongoose = require('mongoose');
 const Field = require('../../models/Fields');
@@ -32,10 +30,9 @@ async function createFields() {
     } catch (error) {
         console.error('Error creating field:', error.message);
     } finally {
-        // Close the database connection once all models are created
-        mongoose.connection.close(() => {
-            console.log('Database connection closed.');
-        });
+        // Close the database connection without a callback
+        await mongoose.connection.close();
+        console.log('Database connection closed.');
     }
 }
 

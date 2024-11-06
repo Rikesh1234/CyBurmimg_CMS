@@ -3,9 +3,14 @@ package-lock.json
 yarn.lock
 .env
 public/uploads
-views/theme
+public/goodwill-cleaning
+public/ideagen-academy
+theme/
+public/theme
+routes/themeRoutes.js
+config/themeConfig.js
 
-
+views/theme/
 
 # Logs
 logs

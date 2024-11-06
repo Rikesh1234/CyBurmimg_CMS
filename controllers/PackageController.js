@@ -7,11 +7,12 @@ const CustomField = require("../models/CustomField");
 //view package page
 exports.getPackagePage = async (req, res) => {
   try {
+    const showingpage = "package";
     // Fetch all packages from the database
     const packages = await Package.find();
 
     // Render the view and pass the packages to the EJS template
-    res.render('package/package_listing', { title: 'Package Page', packages });
+    res.render('package/package_listing', { title: 'Package Page', packages, showingpage });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
@@ -21,6 +22,7 @@ exports.getPackagePage = async (req, res) => {
 
 //view package Create page
 exports.getPackageCreatePage = async (req, res) => {
+  const showingpage = "package";
 
   let customField = await CustomField.find()
   .populate({
@@ -34,7 +36,8 @@ exports.getPackageCreatePage = async (req, res) => {
   res.render('package/package_create_edit', {
     title: 'Package Create Page',
     package: null, 
-    customField
+    customField,
+    showingpage
   });
 };
 
@@ -42,7 +45,8 @@ exports.getPackageCreatePage = async (req, res) => {
 // Handle package creation
 exports.createPackage = async (req, res) => {
   try {
-    console.log(req.body);
+    const showingpage = "package";
+
     
     const { title, currency, price, includes } = req.body;
 
@@ -54,7 +58,8 @@ exports.createPackage = async (req, res) => {
       title,
       currency,
       price,
-      includes: includesArray
+      includes: includesArray,
+      showingpage
     });
 
     // Save the package to the database
@@ -74,6 +79,7 @@ exports.createPackage = async (req, res) => {
 // Get Package Edit Page
 exports.getPackageEditPage = async (req, res) => {
   try {
+    const showingpage = "package";
     let customField = await CustomField.find()
   .populate({
     path: 'model',  // Populate the 'model' field
@@ -92,7 +98,8 @@ exports.getPackageEditPage = async (req, res) => {
     res.render('package/package_create_edit', {
       title: 'Edit Package',
       package: packageData, // Pass the package data to the template
-      customField
+      customField,
+      showingpage
     });
   } catch (error) {
     console.error('Error fetching package for edit:', error);

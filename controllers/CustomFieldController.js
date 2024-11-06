@@ -3,27 +3,28 @@ const CustomField = require("../models/CustomField");
 const StaticPage = require("../models/StaticPage");
 const StaticField = require("../models/Fields");
 const redis = require("../config/redis");
-const validationConfig = require('../config/validationConfig.json');
+const validationConfig = require("../config/validationConfig.json");
 
 //view custom-field page
 exports.getCustomFieldPage = async (req, res) => {
+  const showingpage = "customField";
   if (req.session.user) {
-    try{
+    try {
+      const customField = await CustomField.find().populate("model");
 
-      const customField = await CustomField.find().populate('model');
-
-    res.render("custom-field/custom-field-list", {
-      title: "Custom Field Page",
-      customField,
-    });
-  }catch(err){
-    console.error(err);
-    res.status(500).send("Server Error");
-    res.render("404", {
+      res.render("custom-field/custom-field-list", {
+        title: "Custom Field Page",
+        customField,
+        showingpage
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Server Error");
+      res.render("404", {
         errorMessages: "Something is wrong with our side. Please inform us!",
         error: "500",
       });
-  }
+    }
   } else {
     res.render("404", {
       errorMessages: "Looks Like you are lost!",
@@ -34,29 +35,30 @@ exports.getCustomFieldPage = async (req, res) => {
 
 //view custom-field Create page
 exports.getCustomFieldCreatePage = async (req, res) => {
+  const showingpage = "customField";
   if (req.session.user) {
-      try{
+    try {
       const customModels = await Model.find().sort({ name: 1 });
       const staticPage = await StaticPage.find().lean();
       const staticField = await StaticField.find();
-  
       res.render("custom-field/custom-field-create", {
         title: "Custom Field Create Page",
         customModels,
-        customField:null,
+        customField: null,
         staticPage,
         staticField,
-        formConfig: validationConfig.field
+        formConfig: validationConfig.field,
+        formData: [],
+        showingpage
       });
-    }catch(err){
+    } catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
       res.render("404", {
-          errorMessages: "Something is wrong with our side. Please inform us!",
-          error: "500",
-        });
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
     }
-    
   } else {
     res.render("404", {
       errorMessages: "Looks Like you are lost!",
@@ -66,33 +68,34 @@ exports.getCustomFieldCreatePage = async (req, res) => {
 };
 
 exports.getCustomFieldEditPage = async (req, res) => {
+  const showingpage = "customField";
   if (req.session.user) {
-      try{
-        const fieldId = req.params.fieldId;
+    try {
+      const fieldId = req.params.fieldId;
 
-        const customField = await CustomField.findById(fieldId);
+      const customField = await CustomField.findById(fieldId);
 
       const customModels = await Model.find().sort({ name: 1 });
       const staticPage = await StaticPage.find().lean();
       const staticField = await StaticField.find();
-  
+
       res.render("custom-field/custom-field-create", {
         title: "Custom Field Create Page",
         customModels,
         customField,
         staticPage,
         staticField,
-        formConfig: validationConfig.field
+        formConfig: validationConfig.field,
+        showingpage
       });
-    }catch(err){
+    } catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
       res.render("404", {
-          errorMessages: "Something is wrong with our side. Please inform us!",
-          error: "500",
-        });
+        errorMessages: "Something is wrong with our side. Please inform us!",
+        error: "500",
+      });
     }
-    
   } else {
     res.render("404", {
       errorMessages: "Looks Like you are lost!",
@@ -103,8 +106,18 @@ exports.getCustomFieldEditPage = async (req, res) => {
 
 exports.createOrUpdateCustomField = async (req, res) => {
   try {
+    console.log(req.body);
+
     // Capture the fields from the request body
-    const { title, model, target_type, label_name, field_name, parent_id, staticId } = req.body;
+    const {
+      title,
+      model,
+      target_type,
+      label_name,
+      field_name,
+      parent_id,
+      page,
+    } = req.body;
     const customFieldId = req.params.fieldId; // For updating
 
     // Find or create the custom field
@@ -119,19 +132,19 @@ exports.createOrUpdateCustomField = async (req, res) => {
     customField.label_name = label_name || []; // Directly assign label_name as an array
     customField.field_name = field_name || []; // Directly assign field_name as an array
     customField.parent_id = parent_id || null;
-    customField.staticId = staticId || null;
+    customField.staticId = page || null;
 
     // Save the custom field
     await customField.save();
 
     // Fetch updated custom fields list
-    const customFields = await CustomField.find().populate('model');
+    const customFields = await CustomField.find().populate("model");
 
     // Render the custom field list with a success message
     res.render("custom-field/custom-field-list", {
       title: "Custom Field Page",
       message: "Custom field created/updated successfully.",
-      customField: customFields
+      customField: customFields,
     });
   } catch (error) {
     console.error("Error while creating/updating custom field:", error);
@@ -143,16 +156,19 @@ exports.createOrUpdateCustomField = async (req, res) => {
   }
 };
 
-
-
-
-//crudsfor custom-field
 exports.createCustomField = async (req, res) => {
   try {
+    // Check if the submission flag is set in the session
+    if (req.session.fieldCreated) {
+      // If the flag is set, this means the form was submitted previously
+      // So, redirect back to the custom field listing without creating a new field
+      return res.redirect("/cms/custom-field");
+    }
+
     // Extract form data from the request body
     const { title, model, target_type, label_name, field_name } = req.body;
 
-    // Create a new team object
+    // Create a new custom field object
     const newField = new CustomField({
       title,
       model,
@@ -161,15 +177,21 @@ exports.createCustomField = async (req, res) => {
       field_name,
     });
 
-    // Save the team to the database
+    // Save the custom field to the database
     await newField.save();
 
-    // Invalidate the cached team list
+    // Invalidate the cached custom field list
     await redis.del("/cms/custom-field");
 
-    // Redirect to the team listing page after successful creation
+    // Set the session flag to indicate a field has been created
+    req.session.fieldCreated = true;
+
+    // Redirect to the custom field listing page after successful creation
     res.redirect("/cms/custom-field");
   } catch (err) {
+    // Reset the flag in case of error to allow future submissions
+    req.session.fieldCreated = false;
+
     if (err.name === "ValidationError") {
       const errorMessages = Object.values(err.errors).map(
         (error) => error.message
@@ -188,6 +210,11 @@ exports.createCustomField = async (req, res) => {
         error: "500",
       });
     }
+  } finally {
+    // Reset the flag after a brief delay to avoid duplicate submissions
+    setTimeout(() => {
+      req.session.fieldCreated = false;
+    }, 1000); // Adjust the delay as needed
   }
 };
 

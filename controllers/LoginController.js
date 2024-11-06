@@ -35,7 +35,7 @@ exports.getAuth = async (req, res) => {
     const isMatch = await user.comparePassword(password);
     if (isMatch) {
       // Proceed with session handling or token generation
-      req.session.user = { username };
+      req.session.user = { username, featuredImage: user.featuredImage };
       res.redirect("/cms/dashboard");
     } else {
         res.render('login/login', { errorMessage: 'Invalid Password!', imageUrl: randomImageUrl });

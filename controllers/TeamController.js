@@ -18,11 +18,12 @@ const getPostValidationRules = () => {
 //view member page
 exports.getTeamPage= async (req,res)=>{
     try{
+      const showingpage = "team";
       // Fetch all team from the database
       const teams= await Team.find();
 
       //Render the view and pass the users to the EJS template
-      res.render('teams/team/team_listing',{title:'Team Page', teams});
+      res.render('teams/team/team_listing',{title:'Team Page', teams,showingpage});
     }catch (err) {
       console.error(err);
       res.status(500).render('404',{title:'Internal Server Error',error:'500',errorMessages:'Something is wrong in the server'})
@@ -31,6 +32,7 @@ exports.getTeamPage= async (req,res)=>{
 
 //view member Create page
 exports.getTeamCreatePage = async (req, res) => {
+  const showingpage = "team";
   let customField = await CustomField.find()
   .populate({
     path: 'model',  // Populate the 'model' field
@@ -45,7 +47,8 @@ exports.getTeamCreatePage = async (req, res) => {
       team: null,
       errorMessages: [],
       formConfig:validationConfig.team,
-      customField
+      customField,
+      showingpage
   });
 };
 
@@ -53,7 +56,7 @@ exports.getTeamCreatePage = async (req, res) => {
 //view member Edit page
 exports.getTeamEditPage = async (req, res) => {
   try {
-
+    const showingpage = "team";
     let customField = await CustomField.find()
   .populate({
     path: 'model',  // Populate the 'model' field
@@ -78,7 +81,8 @@ exports.getTeamEditPage = async (req, res) => {
           team, 
           errorMessages: [],
           formConfig:validationConfig.team,
-          customField
+          customField,
+          showingpage
 
       });
   } catch (err) {
@@ -90,18 +94,20 @@ exports.getTeamEditPage = async (req, res) => {
 
 //view member-type page
 exports.getTeamTypePage=(req,res)=>{
-    res.render('teams/memberType/memberType_listing',{title:'Team Type Page'});
+  const showingpage = "team";
+    res.render('teams/memberType/memberType_listing',{title:'Team Type Page', showingpage});
 }
 
 //view member-type Create page
 exports.getTeamTypeCreatePage=(req,res)=>{
-    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Create Page',formConfig: validationConfig.team});
+  const showingpage = "team";
+    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Create Page',formConfig: validationConfig.team, showingpage});
 }
 
 //view member-type Edit page
 exports.getTeamTypeEditPage=(req,res)=>{
-
-    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page',formConfig: validationConfig.team});
+  const showingpage = "team";
+    res.render('teams/memberType/memberType_create_edit',{title:'Team Type Edit Page',formConfig: validationConfig.team,showingpage});
 }
 
 
