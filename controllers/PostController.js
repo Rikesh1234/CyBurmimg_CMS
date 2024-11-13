@@ -16,6 +16,7 @@ const fs = require("fs");
 const path = require("path");
 
 const redis = require("../config/redis");
+const paginate = require("../helper/pagination");
 const { body, validationResult } = require("express-validator");
 
 // Fetch author and categories
@@ -80,12 +81,20 @@ const getPostValidationRules = () => {
 };
 //view post page
 exports.getPostPage = async (req, res) => {
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 10;
+
   if (req.session.user) {
     try {
-      // Fetch all posts from the database
-      const posts = await Post.find();
-      // Render the view and pass the posts to the EJS template
-      res.render("posts/post/post_listing", { title: "Post Page", posts });
+      const paginationResult = await paginate(Post, page, limit);
+      res.render("posts/post/post_listing", {
+        title: "Post Page",
+        posts: paginationResult.data,
+        currentPage: paginationResult.currentPage,
+        totalPages: paginationResult.totalPages,
+        hasNextPage: paginationResult.hasNextPage,
+        hasPrevPage: paginationResult.hasPrevPage,
+      });
     } catch (err) {
       console.error(err);
       res.status(500).send("Server Error");
@@ -102,6 +111,7 @@ exports.getPostPage = async (req, res) => {
   }
 };
 
+
 //view post Create page
 exports.getPostCreatePage = async (req, res) => {
   if (req.session.user) {
@@ -112,7 +122,6 @@ exports.getPostCreatePage = async (req, res) => {
       // In getPostCreatePage
       const { categories, authors } = await fetchCategoriesAndAuthors();
 
-      console.log(categories);
       
       res.render("posts/post/post_create_edit", {
         title: "Create Post",
@@ -185,7 +194,6 @@ exports.createPost = [
         published_date,
       } = req.body;
 
-      console.log(status);
       
       // Handle featured image upload
       const featured_image = req.files["featured_image"]
@@ -816,17 +824,33 @@ exports.deleteAuthor = async (req, res) => {
 
 //view Category page
 exports.getCategoryPage = async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // Current page, default to 1
+  const limit = parseInt(req.query.limit) || 10; // Limit per page, default to 10
+  const skip = (page - 1) * limit;
+
   try {
-    const categories = await Category.find().populate("parent");
-    // Pass categories to the view
+    // Fetch total count of categories for pagination calculations
+    const totalCategories = await Category.countDocuments();
+    const totalPages = Math.ceil(totalCategories / limit);
+
+    // Fetch categories with pagination
+    const categories = await Category.find()
+      .populate("parent")
+      .skip(skip)
+      .limit(limit);
+
+    // Render the view with pagination data
     res.render("posts/category/category_listing", {
       title: "Category Page",
       categories,
+      currentPage: page,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
-    res.status(500).send("Server Error");
-    res.render("404", {
+    res.status(500).render("404", {
       errorMessages: "Something is wrong with our side. Please inform us!",
       error: "500",
     });
