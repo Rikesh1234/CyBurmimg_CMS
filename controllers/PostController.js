@@ -89,6 +89,7 @@ exports.getPostPage = async (req, res) => {
       const paginationResult = await paginate(Post, page, limit);
       res.render("posts/post/post_listing", {
         title: "Post Page",
+        showingpage : 'post',
         posts: paginationResult.data,
         currentPage: paginationResult.currentPage,
         totalPages: paginationResult.totalPages,
