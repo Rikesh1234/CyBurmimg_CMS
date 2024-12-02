@@ -547,3 +547,84 @@ exports.submitStudentForm = async (req, res) => {
 };
 
 // ---------STUDENT FORM END  FORM NEW POST------------------------------------------------------
+
+
+// ---------STUDENT FORM FOR NEW POST------------------------------------------------------
+
+// Controller to handle teacher form submission
+exports.submitTeacherForm = async (req, res) => {
+  try {
+    const { teacherName, level, teacherMessage, tutoringDays, teacherDistrict, teacherLocation, teacherPhone, teacherEmail } = req.body;
+
+    // Validate required field: teacherName
+    if (!teacherName) {
+      return res.status(400).json({
+        error: "Missing required field: teacherName",
+      });
+    }
+
+    // Initialize an array to store category IDs
+    let categoryIds = [];
+
+    // Validate and fetch the selected Level (Category)
+    let levelCategory;
+    if (level) {
+      levelCategory = await Category.findOne({ slug: level });
+      if (!levelCategory) {
+        return res.status(400).json({ error: "Invalid level (category)" });
+      }
+      categoryIds.push(levelCategory._id); // Save selected level category ID
+    }
+
+    // Create and save a new Post
+    const post = new Post({
+      title: teacherName, 
+      slug: teacherName.toLowerCase().replace(/\s+/g, "-"),
+      summary: teacherMessage,
+      content: "Teacher submission form",
+      category: categoryIds,
+      published: false,
+    });
+
+    const savedPost = await post.save();
+
+    // Prepare custom field data explicitly
+    const customFieldData = {
+      'Name': teacherName,
+      'Level': level,
+      'Tutoring Days': tutoringDays || [],
+      'District': teacherDistrict,
+      'Location': teacherLocation,
+      'Phone': teacherPhone,
+      'Email': teacherEmail,
+      'Message': teacherMessage
+    };
+
+    // Remove undefined or null values
+    Object.keys(customFieldData).forEach(key => {
+      if (customFieldData[key] === undefined || customFieldData[key] === null) {
+        delete customFieldData[key];
+      }
+    });
+
+    // Save custom field values
+    await saveCustomFieldValues("Post", savedPost._id, customFieldData);
+
+    // Send successful response
+    res.status(201).json({
+      message: "Teacher submission saved successfully as a post.",
+      post: savedPost,
+      customFieldData,
+      categories: {
+        level: levelCategory ? levelCategory.slug : null,
+      },
+    });
+  } catch (error) {
+    console.error("Error in submitTeacherForm:", error);
+    res.status(500).json({
+      error: "Internal server error",
+      details: error.message,
+    });
+  }
+};
+// ---------STUDENT FORM FOR NEW POST------------------------------------------------------
