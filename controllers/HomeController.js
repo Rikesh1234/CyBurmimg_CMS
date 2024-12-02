@@ -9,6 +9,12 @@ const StaticPage = require("../models/StaticPage");
 const Testominal = require("../models/Testominal");
 const Gallery = require("../models/Gallery");
 const CustomFieldValue = require("../models/CustomFieldValue");
+const logger = require("../logger");
+
+const {
+  fetchCustomFields,
+  saveCustomFieldValues,
+} = require("../helper/customFieldHelper");
 
 const { truncateWords } = require("../helper/truncateWord");
 
@@ -55,7 +61,6 @@ exports.getPage = async (req, res) => {
       );
     });
 
-
     const teams = await Team.find().limit(3);
 
     const testomonials = await Testominal.find();
@@ -93,22 +98,19 @@ exports.getStaticPage = async (req, res) => {
     // Fetch the page data based on the slug in the URL
     const staticPage = await StaticPage.findOne({ slug: req.params.slug });
 
-
     if (!staticPage) {
       return res.status(404).render("404", {
         title: "Page Not Found",
-        error: "404   ", 
-        errorMessages: "The page you are looking for cannot be found.", 
+        error: "404   ",
+        errorMessages: "The page you are looking for cannot be found.",
       });
     }
-
 
     // Define variables to be used in the view
     const pageTitle = staticPage.title || "Static Page";
     const background_image =
-    staticPage.featured_image || "/images/default-bg.jpg"; // default image if not set
+      staticPage.featured_image || "/images/default-bg.jpg"; // default image if not set
     const content = staticPage.content || "";
-
 
     // Render the static page with its specific data
     res.render(`theme/${process.env.THEME}/pages/static-page`, {
@@ -124,32 +126,33 @@ exports.getStaticPage = async (req, res) => {
 };
 // ---------SELECTED STATIC PAGE END---------------------------------------------------
 
-
 // ---------Contact page---------------------------------------------------
 
 exports.getContactPage = async (req, res) => {
   try {
     // Define a unique identifier for the contact page
-    const contactPageIdentifier = 'contact';
+    const contactPageIdentifier = "contact";
 
-    const contactPage = await StaticPage.findOne({slug:'contact'});
+    const contactPage = await StaticPage.findOne({ slug: "contact" });
 
-    if(!contactPage){
-      res.render(`theme/${process.env.THEME}/pages/contact`, { 
+    if (!contactPage) {
+      res.render(`theme/${process.env.THEME}/pages/contact`, {
         showingpage: contactPageIdentifier,
-        customFields:[]
+        customFields: [],
       });
     }
 
     // Fetch custom field values associated with the contact page
-    const customFields = await CustomFieldValue.find({ entityId:contactPage._id }).lean();
+    const customFields = await CustomFieldValue.find({
+      entityId: contactPage._id,
+    }).lean();
 
     console.log(customFields[0]?.value);
-    
+
     // Render the contact page with the custom field values
-    res.render(`theme/${process.env.THEME}/pages/contact`, { 
-      showingpage: 'contact',
-      customFields :customFields[0]?.value
+    res.render(`theme/${process.env.THEME}/pages/contact`, {
+      showingpage: "contact",
+      customFields: customFields[0]?.value,
     });
   } catch (err) {
     console.error("Error fetching custom fields for contact page:", err);
@@ -157,8 +160,6 @@ exports.getContactPage = async (req, res) => {
   }
 };
 // ---------Contact page---------------------------------------------------
-
-
 
 // ---------SLIDER------------------------------------------------------
 
@@ -244,7 +245,7 @@ exports.getCategoryListingPage = async (req, res) => {
     };
 
     console.log(pagination);
-    
+
     // Render the category listing page with pagination
     const template = matchingKey
       ? `theme/${process.env.THEME}/pages/${customListingPage[matchingKey]}`
@@ -366,3 +367,183 @@ exports.getPackage = async (req, res) => {
   }
 };
 // ---------END PRICE------------------------------------------------------
+
+// ---------NEW POST----------------------------------------------------------
+// exports.createNewPost = async (req, res) => {
+//   try {
+//     const {
+//       title,
+//       slug,
+//       tag_line,
+//       summary,
+//       content,
+//       category,
+//       author,
+//       tags,
+//       photo_gallery,
+//       gallery,
+//       published,
+//       featured_image,
+//     } = req.body;
+
+//     // Validate required fields
+//     if (!title || !content || !category || !slug) {
+//       return res.status(400).json({
+//         error: 'Title, content, slug, and category are required fields.',
+//       });
+//     }
+
+//     // Create a new post instance
+//     const post = new Post({
+//       title,
+//       slug,
+//       tag_line,
+//       summary,
+//       content,
+//       category,
+//       author,
+//       tags,
+//       photo_gallery,
+//       gallery,
+//       published,
+//       featured_image,
+//     });
+
+//     // Save the post to the database
+//     const savedPost = await post.save();
+
+//     // Respond with success
+//     res.status(201).json({
+//       message: 'Post created successfully',
+//       post: savedPost,
+//     });
+//   } catch (error) {
+//     // Check for duplicate slug error
+//     if (error.code === 11000 && error.keyPattern && error.keyPattern.slug) {
+//       return res.status(400).json({
+//         error: 'Slug must be unique. The provided slug already exists.',
+//       });
+//     }
+
+//     // Log and return server error
+//     console.error('Error creating post:', error);
+//     res.status(500).json({ error: 'Server error. Please try again later.' });
+//   }
+// };
+
+// ---------END NEW POST------------------------------------------------------
+
+// ---------STUDENT FORM FOR NEW POST------------------------------------------------------
+
+// Controller to handle form submission
+exports.submitStudentForm = async (req, res) => {
+  try {
+    const { studentName, level, subjectStudent, studentMessage, tutionType } = req.body;
+
+    // Validate only studentName
+    if (!studentName) {
+      return res.status(400).json({
+        error: "Missing required field: studentName",
+      });
+    }
+
+    // Initialize an array to store category IDs
+    let categoryIds = [];
+
+    // Validate and fetch the selected Level (child category of 'level')
+    let levelCategory;
+    if (level) {
+      levelCategory = await Category.findOne({ slug: level });
+      if (!levelCategory) {
+        return res.status(400).json({ error: "Invalid level (category)" });
+      }
+      categoryIds.push(levelCategory._id); // Save selected level category ID
+    }
+
+    // Validate and fetch selected Subjects (child categories of 'subject')
+    let subjectCategories = [];
+    if (subjectStudent && subjectStudent.length > 0) {
+      subjectCategories = await Category.find({ slug: { $in: subjectStudent } });
+      if (subjectCategories.length !== subjectStudent.length) {
+        return res.status(400).json({ error: "Invalid subject(s) selected" });
+      }
+      categoryIds = [...categoryIds, ...subjectCategories.map(subject => subject._id)]; // Save subject category IDs
+    }
+
+    
+    // Create and save a new Post
+    const post = new Post({
+      title: studentName,
+      slug: studentName.toLowerCase().replace(/\s+/g, "-"),
+      summary: studentMessage || "No message provided",
+      content: "Student form submission",
+      category: categoryIds, // Store all selected category IDs
+      published: true,
+      
+      // Optional: Add additional metadata if needed
+      metadata: {
+        level: level ? {
+          id: levelCategory._id,
+          slug: levelCategory.slug,
+          title: levelCategory.title
+        } : null,
+        subjects: subjectCategories.map(subject => ({
+          id: subject._id,
+          slug: subject.slug,
+          title: subject.title
+        }))
+      }
+    });
+
+    const savedPost = await post.save();
+
+    // Fetch custom fields dynamically for the 'Post' model
+    const customFields = await fetchCustomFields("Post");
+
+    // Normalize and map request body to custom fields
+    const normalizedRequestBody = {};
+    Object.keys(req.body).forEach((key) => {
+      normalizedRequestBody[key.toLowerCase().replace(/\s+/g, "")] = req.body[key];
+    });
+
+    // Extract and store only the required custom fields
+    const customFieldData = {};
+
+    customFields.forEach((field) => {
+      field.field_name.forEach((fieldName) => {
+        const normalizedFieldName = fieldName.toLowerCase().replace(/\s+/g, "");
+
+        if (normalizedRequestBody[normalizedFieldName] !== undefined) {
+          customFieldData[fieldName] = normalizedRequestBody[normalizedFieldName];
+        }
+      });
+    });
+
+    // Explicitly add Tuition Type to custom field data if it exists
+    if (tutionType) {
+      customFieldData['Tuition Type'] = tutionType;
+    }
+
+    // Save custom field values
+    await saveCustomFieldValues("Post", savedPost._id, customFieldData);
+
+    // Send successful response
+    res.status(201).json({
+      message: "Tutor request submitted and saved successfully",
+      post: savedPost,
+      customFieldData,
+      categories: {
+        level: levelCategory ? levelCategory.slug : null,
+        subjects: subjectStudent || []
+      }
+    });
+  } catch (error) {
+    console.error("Error in submitStudentForm:", error);
+    res.status(500).json({
+      error: "Internal server error",
+      details: error.message,
+    });
+  }
+};
+
+// ---------STUDENT FORM END  FORM NEW POST------------------------------------------------------

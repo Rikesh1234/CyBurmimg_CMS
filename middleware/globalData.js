@@ -4,6 +4,12 @@ const Page = require('../models/StaticPage');
 const Package = require('../models/Package');
 const Post = require("../models/Post");
 
+const {
+  fetchCustomFields,
+  saveCustomFieldValues,
+} = require("../helper/customFieldHelper");
+
+
 const { truncateWords } = require("../helper/truncateWord");
 
 module.exports = async (req, res, next) => {
@@ -19,15 +25,12 @@ module.exports = async (req, res, next) => {
     })
     .sort({ createdAt: -1 })
     .limit(3);
+
+    const customField = await fetchCustomFields("Post");
+
   
   // Filter out posts where category didn't match (in case of no blog category)
-  const filteredLatestBlogs = latestBlogs.filter(post => post.category.length > 0);
-  
-  
-  
-    
-    
-    
+  const filteredLatestBlogs = latestBlogs.filter(post => post.category.length > 0);  
     // Replace with your actual contact details fetching logic
     const contact = {
       phone: '+04 20 900 310',
@@ -39,6 +42,7 @@ module.exports = async (req, res, next) => {
         linkedin: '#'
       }
     };
+    
 
     // Attach categories, pages, and contact to res.locals for global access
     res.locals.categories = categories;
@@ -48,7 +52,11 @@ module.exports = async (req, res, next) => {
     res.locals.posts = posts;
     res.locals.latestBlogs = filteredLatestBlogs
     res.locals.truncateWords = truncateWords;
+    res.locals.customField = customField
 
+    
+
+    
 
     next();
   } catch (err) {

@@ -159,6 +159,7 @@ exports.createPost = [
     let uploadedGalleryImages = [];
 
     try {
+      
       // Check validation results
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -336,6 +337,7 @@ exports.getPostEditPage = async (req, res) => {
       // In getPostCreatePage
       const { categories, authors } = await fetchCategoriesAndAuthors();
 
+      
       // Fetch the custom fields along with their existing values for this post
       const customFields = await fetchCustomFields("Post");
 
