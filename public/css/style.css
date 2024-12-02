@@ -1657,8 +1657,19 @@ input:checked + .switch::after {
 	flex-direction: column;
  }
 
- .suggestion-container .owl-nav{
+ .suggestion-container .owl-nav .owl-prev,
+ .suggestion-container .owl-nav .owl-next{
 	position: absolute;
-	top: 0;
+	top: 36%;
+	font-size: 50px !important;
+	color: #52cf71 !important;
+ }
+
+ .suggestion-container .owl-nav .owl-prev{
+	left: 0;
+ }
+
+ .suggestion-container .owl-nav .owl-next{
+	right: 0;
  }
 

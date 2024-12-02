@@ -5,6 +5,7 @@ const Gallery = require("../models/Gallery");
 const Category = require("../models/Category");
 const CustomField = require("../models/CustomField");
 const CustomFieldValue = require("../models/CustomFieldValue");
+const themeConfig = require("../config/themeConfig");
 
 const validationConfig = require("../config/validationConfig.json");
 const {
@@ -18,6 +19,7 @@ const path = require("path");
 const redis = require("../config/redis");
 const paginate = require("../helper/pagination");
 const { body, validationResult } = require("express-validator");
+const { Console } = require("console");
 
 // Fetch author and categories
 async function fetchCategoriesAndAuthors() {
@@ -89,7 +91,7 @@ exports.getPostPage = async (req, res) => {
       const paginationResult = await paginate(Post, page, limit);
       res.render("posts/post/post_listing", {
         title: "Post Page",
-        showingpage : 'post',
+        showingpage: "post",
         posts: paginationResult.data,
         currentPage: paginationResult.currentPage,
         totalPages: paginationResult.totalPages,
@@ -112,7 +114,6 @@ exports.getPostPage = async (req, res) => {
   }
 };
 
-
 //view post Create page
 exports.getPostCreatePage = async (req, res) => {
   if (req.session.user) {
@@ -124,7 +125,6 @@ exports.getPostCreatePage = async (req, res) => {
       // In getPostCreatePage
       const { categories, authors } = await fetchCategoriesAndAuthors();
 
-      
       res.render("posts/post/post_create_edit", {
         title: "Create Post",
         errorMessages: [],
@@ -135,7 +135,7 @@ exports.getPostCreatePage = async (req, res) => {
         formConfig: validationConfig.post,
         customField,
         gallery_images: [],
-        showingpage
+        showingpage,
       });
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -180,7 +180,6 @@ exports.createPost = [
           gallery_images: [],
         });
       }
-      
 
       // Extract form data from the request body
       const {
@@ -197,7 +196,6 @@ exports.createPost = [
         published_date,
       } = req.body;
 
-      
       // Handle featured image upload
       const featured_image = req.files["featured_image"]
         ? `/uploads/post/${req.files["featured_image"][0].filename}`
@@ -240,8 +238,6 @@ exports.createPost = [
 
       // Save the post to the database
       const savedPost = await newPost.save();
-
-      
 
       // Handle custom fields
       const customFieldData = {};
@@ -375,6 +371,107 @@ exports.getPostEditPage = async (req, res) => {
 
       gallery_images = await Gallery.findById(post.gallery);
 
+      const suggestionPost = null;
+      if (themeConfig.POST_SUGGESTION_MODULE) {
+        const customSuggestionCategory = themeConfig.POST_SUGGESTION_CATEGORY;
+        let matchingKey = null;
+        if (typeof customSuggestionCategory !== "undefined") {
+          const customSuggestionKeys = Object.keys(customSuggestionCategory);
+          const categorySlugs = categories.map((category) => category.slug);
+          for (const key of customSuggestionKeys) {
+            if (categorySlugs.includes(key)) {
+              // Check for presence in the category slugs
+              matchingKey = key; // Store the matching key
+              break; // Exit the loop on the first match
+            }
+          }
+          if (matchingKey !== null) {
+            const categoryId = await Category.find({
+              slug: customSuggestionCategory[matchingKey],
+            }).select("_id");
+            const searchPosts = await Post.find({
+              category: categoryId._id,
+            });
+
+            if (!searchPosts || searchPosts.length === 0) {
+              console.log("No posts found.");
+            } else {
+              // Collect all post IDs
+              const postIds = searchPosts.map((post) => post._id);
+
+              // Fetch all custom field values for these posts
+              const suggestionParameter = themeConfig.POST_SUGGESTION_PARAMETER;
+              const suggestionParameterKeys = Object.keys(
+                themeConfig.POST_SUGGESTION_PARAMETER
+              );
+              let customFieldValues = await CustomFieldValue.find({
+                entityId: { $in: postIds },
+              }).populate("customField"); // Optional: Populate customField details if needed
+
+              let filteredCustomFieldValues = [...customFieldValues]; // Clone to preserve original data
+              let filteredSearchPost = [...searchPosts];
+
+              for (const keys of suggestionParameterKeys) {
+                if (suggestionParameter[keys] == "custom_field") {
+                  customField.forEach((field, index) => {
+                    const fieldName = field.field_name[index];
+                    const fieldValue =
+                      field.values && field.values[fieldName]
+                        ? field.values[fieldName]
+                        : null;
+
+                    if (fieldValue) {
+                      // Filter only if fieldValue exists
+                      filteredCustomFieldValues =
+                        filteredCustomFieldValues.filter((field) => {
+                          return (
+                            field.customField.fieldName === keys &&
+                            field.customField.value === fieldValue
+                          );
+                        });
+                    }
+                  });
+                }else if(suggestionParameter[keys] == "category"){
+                  const keyId = await Category.find({
+                    slug: keys,
+                  }).select("_id");
+                  categories.forEach((field, index) => {
+                    if(field.parent == keyId){
+                      searchPosts
+                    }
+                  });
+                }
+              }
+
+              // Organize custom field values by post ID
+              const customFieldMap = customFieldValues.reduce(
+                (acc, fieldValue) => {
+                  const postId = fieldValue.entityId.toString();
+                  if (!acc[postId]) {
+                    acc[postId] = [];
+                  }
+                  acc[postId].push({
+                    customField: fieldValue.customField,
+                    fieldName: fieldValue.fieldName,
+                    value: fieldValue.value,
+                  });
+                  return acc;
+                },
+                {}
+              );
+
+              // Combine posts with their custom field values
+              const postsWithCustomFields = searchPosts.map((post) => ({
+                ...post.toObject(),
+                customFields: customFieldMap[post._id.toString()] || [],
+              }));
+
+              console.log("Posts with Custom Fields:", JSON.stringify(postsWithCustomFields, null, 2));
+            }
+          }
+        }
+      }
+
       res.render("posts/post/post_create_edit", {
         title: "Edit Post",
         post,
@@ -384,7 +481,7 @@ exports.getPostEditPage = async (req, res) => {
         formConfig: validationConfig.post,
         customField,
         gallery_images: gallery_images ? gallery_images.images : [],
-        showingpage
+        showingpage,
       });
     } catch (err) {
       console.error(err);
@@ -671,7 +768,7 @@ exports.getAuthorPage = async (req, res) => {
     res.render("posts/author/author_listing", {
       title: "Author Page",
       authors,
-      showingpage
+      showingpage,
     });
   } catch (err) {
     console.error(err);
@@ -684,7 +781,7 @@ exports.getAuthorCreatePage = (req, res) => {
   res.render("posts/author/author_create_edit", {
     title: "Author Create Page",
     author: null,
-    showingpage
+    showingpage,
   });
 };
 
@@ -758,7 +855,7 @@ exports.getAuthorEditPage = async (req, res) => {
     res.render("posts/author/author_create_edit", {
       title: "Edit Author",
       author: author, // Pass the author object to the template
-      showingpage
+      showingpage,
     });
   } catch (err) {
     console.error(err);
@@ -858,6 +955,7 @@ exports.getCategoryPage = async (req, res) => {
       totalPages,
       hasNextPage: page < totalPages,
       hasPrevPage: page > 1,
+      showingpage: "category",
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -947,7 +1045,6 @@ exports.getCategoryCreatePage = async (req, res) => {
     const showingpage = "post";
     const customField = await fetchCustomFields("Category");
 
-    
     // Fetch all categories
     const categories = await Category.find();
 
@@ -958,7 +1055,7 @@ exports.getCategoryCreatePage = async (req, res) => {
       categories, // Pass categories to view
       formData: {},
       customField,
-      showingpage
+      showingpage,
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -1075,7 +1172,7 @@ exports.getCategoryEditPage = async (req, res) => {
       cat,
       formConfig: validationConfig.post,
       customField,
-      showingpage
+      showingpage,
     });
   } catch (err) {
     console.error(err);
