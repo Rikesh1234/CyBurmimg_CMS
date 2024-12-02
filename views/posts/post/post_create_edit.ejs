@@ -156,14 +156,15 @@
                       <div class="form-label">
                         <label for="category">Category</label>
                       </div>
-                      <select name="category" class="select-category form-control" multiple="multiple">
+                      <select name="category[]" class="select-category form-control" multiple="multiple">
                         <% categories.forEach(category => { %>
-                            <option value="<%= category._id %>" <%= post && post.category &&
-                                post.category.toString() === category._id.toString() ? 'selected' : '' %>>
-                                <%= category.title %>
-                            </option>
+                          <option value="<%= category._id %>" 
+                              <%= post && post.category && post.category.map(cat => cat.toString()).includes(category._id.toString()) ? 'selected' : '' %> >
+                              <%= category.title %>
+                          </option>
                         <% }) %>
-                    </select>
+                      </select>
+                      
                     
 
                     </div>
