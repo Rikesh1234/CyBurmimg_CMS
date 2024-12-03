@@ -56,7 +56,7 @@ app.use(globalData);
 app.set('view engine', 'ejs');
 
 // Use application routes
-// app.use('/', themeRoutes);
+app.use('/', themeRoutes);
 app.use('/', routes);
 
 

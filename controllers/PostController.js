@@ -839,15 +839,6 @@ exports.deleteAuthor = async (req, res) => {
 //view Category page
 exports.getCategoryPage = async (req, res) => {
   try {
-<<<<<<<<< Temporary merge branch 1
-    const showingpage = "post";
-    const categories = await Category.find().populate("parent");
-    // Pass categories to the view
-    res.render("posts/category/category_listing", {
-      title: "Category Page",
-      categories,
-      showingpage
-=========
     // Fetch total count of categories for pagination calculations
     const totalCategories = await Category.countDocuments();
     const totalPages = Math.ceil(totalCategories / limit);
@@ -866,7 +857,7 @@ exports.getCategoryPage = async (req, res) => {
       totalPages,
       hasNextPage: page < totalPages,
       hasPrevPage: page > 1,
->>>>>>>>> Temporary merge branch 2
+      showingpage: "category",
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
