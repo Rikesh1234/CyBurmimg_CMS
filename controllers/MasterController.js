@@ -4,6 +4,10 @@ const path = require("path");
 const mailHelper = require("../helper/mailHelper");
 const User = require("../models/user");
 const CustomField = require("../models/CustomField");
+const provincesData = require("../data/provinces.json");
+const districtsData = require("../data/districts.json");
+const municipalitiesData = require("../data/municipalities.json");
+
 
 exports.sendInquiries = async (req, res) => {
   const from = {
@@ -129,4 +133,45 @@ exports.getLoginUserData = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
+
+//nepal division
+exports.getProvinces= async (req, res) => {
+  try{
+    console.log(provincesData);
+    res.json(provincesData["provinces"]);
+  } catch(err){
+    console.error(err);
+  }
+}
+
+exports.getDistricts= async (req, res) => {
+  try{
+    const {province} = req.params;
+    const districts= districtsData.districts[province];
+    if(districts){
+      console.log(districts);
+      res.json(districts);
+    }else{
+      res.status(404).json({error: "Provnce not found"});
+    }
+  } catch(err){
+    console.error(err);
+  }
+}
+
+exports.getMunicipalities= async (req, res) => {
+  try{
+    const {district} = req.params;
+    const municipalities= municipalitiesData.municipalities[district];
+    if(municipalities){
+      res.json(municipalities);
+    }else{
+      res.status(404).json({error: "District not found"});
+    }
+  } catch(err){
+    console.error(err);
+  }
+}
+
+
 
