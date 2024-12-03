@@ -6,8 +6,8 @@ const redis = require('redis');
 
 // Create and configure the Redis client
 const redisClient = redis.createClient({
-    host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT || 6379,
+  url: process.env.REDIS_HOST,
+  password: process.env.REDIS_PASSWORD 
 });
 
 // Handle Redis client connection readiness
