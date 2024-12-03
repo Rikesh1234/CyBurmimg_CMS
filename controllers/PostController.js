@@ -7,6 +7,8 @@ const CustomField = require("../models/CustomField");
 const CustomFieldValue = require("../models/CustomFieldValue");
 const themeConfig = require("../config/themeConfig");
 
+const homeController = require("./HomeController");
+
 const validationConfig = require("../config/validationConfig.json");
 const {
   fetchCustomFields,
@@ -20,12 +22,13 @@ const redis = require("../config/redis");
 const paginate = require("../helper/pagination");
 const { body, validationResult } = require("express-validator");
 const { Console } = require("console");
+const { SlowBuffer } = require("buffer");
 
 // Fetch author and categories
 async function fetchCategoriesAndAuthors() {
-  const categories = await Category.find({ status: "active" }).lean();
+  const category = await Category.find({ status: "active" }).lean();
   const authors = await Author.find({ status: "active" }).lean();
-  return { categories, authors };
+  return { category, authors };
 }
 
 const getPostValidationRules = () => {
@@ -123,19 +126,20 @@ exports.getPostCreatePage = async (req, res) => {
       const customField = await fetchCustomFields("Post");
 
       // In getPostCreatePage
-      const { categories, authors } = await fetchCategoriesAndAuthors();
+      const { category, authors } = await fetchCategoriesAndAuthors();
 
       res.render("posts/post/post_create_edit", {
         title: "Create Post",
         errorMessages: [],
         formData: {},
         post: null,
-        categories,
+        categories: category,
         authors,
         formConfig: validationConfig.post,
         customField,
         gallery_images: [],
         showingpage,
+        postsWithCustomFields : null,
       });
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -162,19 +166,18 @@ exports.createPost = [
     let uploadedGalleryImages = [];
 
     try {
-      
       // Check validation results
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         // Fetch categories and authors again to render the form
-        const { categories, authors } = await fetchCategoriesAndAuthors();
+        const { category, authors } = await fetchCategoriesAndAuthors();
 
         return res.render("posts/post/post_create_edit", {
           title: "Create Post",
           errorMessages: errors.array().map((err) => err.msg),
           formData: req.body,
           post: null,
-          categories,
+          categories: category,
           authors,
           formConfig: validationConfig.post,
           customField: [],
@@ -335,9 +338,8 @@ exports.getPostEditPage = async (req, res) => {
       const post = await Post.findById(postId);
 
       // In getPostCreatePage
-      const { categories, authors } = await fetchCategoriesAndAuthors();
+      const { category, authors } = await fetchCategoriesAndAuthors();
 
-      
       // Fetch the custom fields along with their existing values for this post
       const customFields = await fetchCustomFields("Post");
 
@@ -373,117 +375,19 @@ exports.getPostEditPage = async (req, res) => {
 
       gallery_images = await Gallery.findById(post.gallery);
 
-      const suggestionPost = null;
-      if (themeConfig.POST_SUGGESTION_MODULE) {
-        const customSuggestionCategory = themeConfig.POST_SUGGESTION_CATEGORY;
-        let matchingKey = null;
-        if (typeof customSuggestionCategory !== "undefined") {
-          const customSuggestionKeys = Object.keys(customSuggestionCategory);
-          const categorySlugs = categories.map((category) => category.slug);
-          for (const key of customSuggestionKeys) {
-            if (categorySlugs.includes(key)) {
-              // Check for presence in the category slugs
-              matchingKey = key; // Store the matching key
-              break; // Exit the loop on the first match
-            }
-          }
-          if (matchingKey !== null) {
-            const categoryId = await Category.find({
-              slug: customSuggestionCategory[matchingKey],
-            }).select("_id");
-            const searchPosts = await Post.find({
-              category: categoryId._id,
-            });
-
-            if (!searchPosts || searchPosts.length === 0) {
-              console.log("No posts found.");
-            } else {
-              // Collect all post IDs
-              const postIds = searchPosts.map((post) => post._id);
-
-              // Fetch all custom field values for these posts
-              const suggestionParameter = themeConfig.POST_SUGGESTION_PARAMETER;
-              const suggestionParameterKeys = Object.keys(
-                themeConfig.POST_SUGGESTION_PARAMETER
-              );
-              let customFieldValues = await CustomFieldValue.find({
-                entityId: { $in: postIds },
-              }).populate("customField"); // Optional: Populate customField details if needed
-
-              let filteredCustomFieldValues = [...customFieldValues]; // Clone to preserve original data
-              let filteredSearchPost = [...searchPosts];
-
-              for (const keys of suggestionParameterKeys) {
-                if (suggestionParameter[keys] == "custom_field") {
-                  customField.forEach((field, index) => {
-                    const fieldName = field.field_name[index];
-                    const fieldValue =
-                      field.values && field.values[fieldName]
-                        ? field.values[fieldName]
-                        : null;
-
-                    if (fieldValue) {
-                      // Filter only if fieldValue exists
-                      filteredCustomFieldValues =
-                        filteredCustomFieldValues.filter((field) => {
-                          return (
-                            field.customField.fieldName === keys &&
-                            field.customField.value === fieldValue
-                          );
-                        });
-                    }
-                  });
-                }else if(suggestionParameter[keys] == "category"){
-                  const keyId = await Category.find({
-                    slug: keys,
-                  }).select("_id");
-                  categories.forEach((field, index) => {
-                    if(field.parent == keyId){
-                      searchPosts
-                    }
-                  });
-                }
-              }
-
-              // Organize custom field values by post ID
-              const customFieldMap = customFieldValues.reduce(
-                (acc, fieldValue) => {
-                  const postId = fieldValue.entityId.toString();
-                  if (!acc[postId]) {
-                    acc[postId] = [];
-                  }
-                  acc[postId].push({
-                    customField: fieldValue.customField,
-                    fieldName: fieldValue.fieldName,
-                    value: fieldValue.value,
-                  });
-                  return acc;
-                },
-                {}
-              );
-
-              // Combine posts with their custom field values
-              const postsWithCustomFields = searchPosts.map((post) => ({
-                ...post.toObject(),
-                customFields: customFieldMap[post._id.toString()] || [],
-              }));
-
-              console.log("Posts with Custom Fields:", JSON.stringify(postsWithCustomFields, null, 2));
-            }
-          }
-        }
-      }
+      const suggestionPost = await homeController.getSuggestionPost(post,category,customField);
 
       res.render("posts/post/post_create_edit", {
         title: "Edit Post",
         post,
         errorMessages: [],
         authors,
-        categories,
+        categories: category,
         formConfig: validationConfig.post,
         customField,
         gallery_images: gallery_images ? gallery_images.images : [],
         showingpage,
+        suggestionPost,
       });
     } catch (err) {
       console.error(err);
@@ -512,7 +416,7 @@ const handleValidationErrors = async (req, res, postId, errors) => {
     });
   }
 
-  const { categories, authors } = await fetchCategoriesAndAuthors();
+  const { getCategoryPage, authors } = await fetchCategoriesAndAuthors();
   return res.status(400).render("posts/post/post_create_edit", {
     title: "Edit Post",
     errorMessages: errors.array().map((err) => err.msg),
@@ -524,7 +428,7 @@ const handleValidationErrors = async (req, res, postId, errors) => {
     customField: [],
     gallery_images: existingPost.gallery_images || [],
     authors,
-    categories,
+    categories: category,
     formConfig: validationConfig.post,
   });
 };

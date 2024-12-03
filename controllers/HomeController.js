@@ -282,33 +282,28 @@ exports.getPostDetailPage = async (req, res) => {
     const categoryName = post.category.map((element) => element.title);
 
     const category = await Category.findOne({ title: categoryName[0] }).lean();
- 
 
+    // Use the category ID in the post query
+    const morePosts = await Post.find({
+      _id: { $ne: postId },
+      category: category._id,
+    })
+      .limit(5)
+      .populate("category")
+      .lean();
 
-  // Use the category ID in the post query
-  const morePosts = await Post.find({
-    _id: { $ne: postId },
-    category: category._id,
-  })
-    .limit(5)
-    .populate("category")
-    .lean();
+    // Fetch custom field values for each post
+    const morePostIds = morePosts.map((post) => post._id);
+    const customFieldValues = await CustomFieldValue.find({
+      entityId: { $in: morePostIds },
+    }).populate("customField");
 
-  // Fetch custom field values for each post
-  const morePostIds = morePosts.map((post) => post._id);
-  const customFieldValues = await CustomFieldValue.find({
-    entityId: { $in: morePostIds },
-  }).populate("customField");
-
-  // Map custom field values to their corresponding posts
-  morePosts.forEach((post) => {
-    morePosts.customFields = customFieldValues.filter(
-      (field) => field.entityId.toString() === post._id.toString()
-    );
-  });
-
-
-
+    // Map custom field values to their corresponding posts
+    morePosts.forEach((post) => {
+      morePosts.customFields = customFieldValues.filter(
+        (field) => field.entityId.toString() === post._id.toString()
+      );
+    });
 
     if (!post) {
       return res.status(404).send("Post not found");
@@ -459,7 +454,8 @@ exports.getPackage = async (req, res) => {
 // Controller to handle form submission
 exports.submitStudentForm = async (req, res) => {
   try {
-    const { studentName, level, subjectStudent, studentMessage, tutionType } = req.body;
+    const { studentName, level, subjectStudent, studentMessage, tutionType } =
+      req.body;
 
     // Validate only studentName
     if (!studentName) {
@@ -484,14 +480,18 @@ exports.submitStudentForm = async (req, res) => {
     // Validate and fetch selected Subjects (child categories of 'subject')
     let subjectCategories = [];
     if (subjectStudent && subjectStudent.length > 0) {
-      subjectCategories = await Category.find({ slug: { $in: subjectStudent } });
+      subjectCategories = await Category.find({
+        slug: { $in: subjectStudent },
+      });
       if (subjectCategories.length !== subjectStudent.length) {
         return res.status(400).json({ error: "Invalid subject(s) selected" });
       }
-      categoryIds = [...categoryIds, ...subjectCategories.map(subject => subject._id)]; // Save subject category IDs
+      categoryIds = [
+        ...categoryIds,
+        ...subjectCategories.map((subject) => subject._id),
+      ]; // Save subject category IDs
     }
 
-    
     // Create and save a new Post
     const post = new Post({
       title: studentName,
@@ -500,20 +500,22 @@ exports.submitStudentForm = async (req, res) => {
       content: "Student form submission",
       category: categoryIds, // Store all selected category IDs
       published: true,
-      
+
       // Optional: Add additional metadata if needed
       metadata: {
-        level: level ? {
-          id: levelCategory._id,
-          slug: levelCategory.slug,
-          title: levelCategory.title
-        } : null,
-        subjects: subjectCategories.map(subject => ({
+        level: level
+          ? {
+              id: levelCategory._id,
+              slug: levelCategory.slug,
+              title: levelCategory.title,
+            }
+          : null,
+        subjects: subjectCategories.map((subject) => ({
           id: subject._id,
           slug: subject.slug,
-          title: subject.title
-        }))
-      }
+          title: subject.title,
+        })),
+      },
     });
 
     const savedPost = await post.save();
@@ -524,7 +526,8 @@ exports.submitStudentForm = async (req, res) => {
     // Normalize and map request body to custom fields
     const normalizedRequestBody = {};
     Object.keys(req.body).forEach((key) => {
-      normalizedRequestBody[key.toLowerCase().replace(/\s+/g, "")] = req.body[key];
+      normalizedRequestBody[key.toLowerCase().replace(/\s+/g, "")] =
+        req.body[key];
     });
 
     // Extract and store only the required custom fields
@@ -535,14 +538,15 @@ exports.submitStudentForm = async (req, res) => {
         const normalizedFieldName = fieldName.toLowerCase().replace(/\s+/g, "");
 
         if (normalizedRequestBody[normalizedFieldName] !== undefined) {
-          customFieldData[fieldName] = normalizedRequestBody[normalizedFieldName];
+          customFieldData[fieldName] =
+            normalizedRequestBody[normalizedFieldName];
         }
       });
     });
 
     // Explicitly add Tuition Type to custom field data if it exists
     if (tutionType) {
-      customFieldData['Tuition Type'] = tutionType;
+      customFieldData["Tuition Type"] = tutionType;
     }
 
     // Save custom field values
@@ -555,8 +559,8 @@ exports.submitStudentForm = async (req, res) => {
       customFieldData,
       categories: {
         level: levelCategory ? levelCategory.slug : null,
-        subjects: subjectStudent || []
-      }
+        subjects: subjectStudent || [],
+      },
     });
   } catch (error) {
     console.error("Error in submitStudentForm:", error);
@@ -569,13 +573,21 @@ exports.submitStudentForm = async (req, res) => {
 
 // ---------STUDENT FORM END  FORM NEW POST------------------------------------------------------
 
-
 // ---------STUDENT FORM FOR NEW POST------------------------------------------------------
 
 // Controller to handle teacher form submission
 exports.submitTeacherForm = async (req, res) => {
   try {
-    const { teacherName, level, teacherMessage, tutoringDays, teacherDistrict, teacherLocation, teacherPhone, teacherEmail } = req.body;
+    const {
+      teacherName,
+      level,
+      teacherMessage,
+      tutoringDays,
+      teacherDistrict,
+      teacherLocation,
+      teacherPhone,
+      teacherEmail,
+    } = req.body;
 
     // Validate required field: teacherName
     if (!teacherName) {
@@ -599,7 +611,7 @@ exports.submitTeacherForm = async (req, res) => {
 
     // Create and save a new Post
     const post = new Post({
-      title: teacherName, 
+      title: teacherName,
       slug: teacherName.toLowerCase().replace(/\s+/g, "-"),
       summary: teacherMessage,
       content: "Teacher submission form",
@@ -611,18 +623,18 @@ exports.submitTeacherForm = async (req, res) => {
 
     // Prepare custom field data explicitly
     const customFieldData = {
-      'Name': teacherName,
-      'Level': level,
-      'Tutoring Days': tutoringDays || [],
-      'District': teacherDistrict,
-      'Location': teacherLocation,
-      'Phone': teacherPhone,
-      'Email': teacherEmail,
-      'Message': teacherMessage
+      Name: teacherName,
+      Level: level,
+      "Tutoring Days": tutoringDays || [],
+      District: teacherDistrict,
+      Location: teacherLocation,
+      Phone: teacherPhone,
+      Email: teacherEmail,
+      Message: teacherMessage,
     };
 
     // Remove undefined or null values
-    Object.keys(customFieldData).forEach(key => {
+    Object.keys(customFieldData).forEach((key) => {
       if (customFieldData[key] === undefined || customFieldData[key] === null) {
         delete customFieldData[key];
       }
@@ -649,3 +661,156 @@ exports.submitTeacherForm = async (req, res) => {
   }
 };
 // ---------STUDENT FORM FOR NEW POST------------------------------------------------------
+
+// ------------Suggestion Post--------------------------------------------------------------
+exports.getSuggestionPost = async (post,category,customField) => {
+  try {
+    if (themeConfig.POST_SUGGESTION_MODULE) {
+      const customSuggestionCategory = themeConfig.POST_SUGGESTION_CATEGORY;
+      let matchingKey = null;
+      if (typeof customSuggestionCategory !== "undefined") {
+        const customSuggestionKeys = Object.keys(customSuggestionCategory);
+        const categorySlugs = [];
+
+        category.forEach((category) => {
+          post.category.forEach((cat) => {
+            if (cat.toString() === category._id.toString()) {
+              categorySlugs.push(category.slug);
+            }
+          });
+        });
+
+        for (const key of customSuggestionKeys) {
+          if (categorySlugs.includes(key)) {
+            // Check for presence in the category slugs
+            matchingKey = key; // Store the matching key
+            break; // Exit the loop on the first match
+          }
+        }
+        if (matchingKey !== null) {
+          let searchPosts = [];
+          const categoryId = await Category.find({
+            slug: customSuggestionCategory[matchingKey],
+          }).select("_id");
+          if (categoryId.length > 0) {
+            const categoryIds = categoryId.map((cat) => cat._id); // Extract all _id values into an array
+            searchPosts = await Post.find({
+              category: { $in: categoryIds }, // Match posts where category is in the array of IDs
+            });
+          } else {
+            console.log("No categories found for the given slug.");
+          }
+          if (!searchPosts || searchPosts.length === 0) {
+            console.log("No posts found.");
+          } else {
+            // Collect all post IDs
+            const postIds = searchPosts.map((post) => post._id);
+
+            // Fetch all custom field values for these posts
+            const suggestionParameter = themeConfig.POST_SUGGESTION_PARAMETER;
+            const suggestionParameterKeys = Object.keys(
+              themeConfig.POST_SUGGESTION_PARAMETER
+            );
+            let customFieldValues = await CustomFieldValue.find({
+              entityId: { $in: postIds },
+            }).populate("customField"); // Optional: Populate customField details if needed
+
+            let filteredCustomFieldValues = [...customFieldValues]; // Clone to preserve original data
+            let filteredSearchPost = [...searchPosts];
+            let foundCustomFieldValues = [];
+
+            for (const keys of suggestionParameterKeys) {
+              if (suggestionParameter[keys] == "custom_field") {
+                customField.forEach((field, index) => {
+                  const fieldName = field.field_name[index];
+                  const fieldValue =
+                    field.values && field.values[fieldName]
+                      ? field.values[fieldName]
+                      : null;
+
+                  if (fieldValue) {
+                    // Find the first matching custom field
+                    const found = customFieldValues.find((customFieldValue) => {
+                      return (
+                        customFieldValue.customField.fieldName === fieldName &&
+                        customFieldValue.customField.value === fieldValue
+                      );
+                    });
+
+                    // Store the found data if it exists
+                    if (found) {
+                      foundCustomFieldValues.push(found);
+                    }
+                  }
+                });
+              } else if (suggestionParameter[keys] == "category") {
+                const keyId = await Category.find({
+                  slug: keys,
+                }).select("_id");
+
+                // Extract `_id` values from keyId into an array
+                // const keyIds = keyId.map((key) => key._id.toString());
+
+                const categoryPost = [];
+
+                // Collect matching categories
+                category.forEach((category) => {
+                  post.category.forEach((cat) => {
+                    if (cat.toString() === category._id.toString()) {
+                      categoryPost.push(category);
+                    }
+                  });
+                });
+
+                categoryPost.forEach((field) => {
+                  if (field.parent == keyId) {
+                    filteredSearchPost = filteredSearchPost.filter((cat) => {
+                      return (
+                        field.parent.toString() === cat.category.toString()
+                      );
+                    });
+                  }
+                });
+              }
+            }
+
+            // Organize custom field values by post ID
+            const customFieldMap = filteredCustomFieldValues.reduce(
+              (acc, fieldValue) => {
+                const postId = fieldValue.entityId.toString();
+                if (!acc[postId]) {
+                  acc[postId] = [];
+                }
+                acc[postId].push({
+                  customField: fieldValue.customField,
+                  fieldName: fieldValue.fieldName,
+                  value: fieldValue.value,
+                });
+                return acc;
+              },
+              {}
+            );
+
+            // Combine posts with their custom field values
+            const postsWithCustomFields = searchPosts.map((post) => ({
+              ...post.toObject(),
+              customFields: customFieldMap[post._id.toString()] || [],
+            }));
+
+           
+            return postsWithCustomFields;
+          }
+        }
+      }
+    }else{
+      return null;
+    }
+  } catch (error) {
+    console.error("error:", error);
+    res.status(500).json({
+      error: "Internal server error",
+      details: error.message,
+    });
+  }
+};
+// ------------Suggestion Post--------------------------------------------------------------

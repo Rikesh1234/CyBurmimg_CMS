@@ -380,43 +380,26 @@
                     <a href="/cms/post">  <input type="button" class="cancel-button form-control" value="cancel" /></a>
                     </div>
 
+                    <% if (suggestionPost !== null) { %>
+                  
                     <div class="suggestion-container mt-3">
                       <div class="suggestion-owl-carousel owl-carousel">
                         <!-- Card 1 -->
+                          <%=  suggestionPost %>   
+                        <% if (Array.isArray(suggestionPost) && suggestionPost.length > 0) { %>
+                          <% suggestionPost.forEach(posts => { %>
                         <div class="suggestion-id-card">
-                          <img src="https://via.placeholder.com/120" alt="Profile Picture">
-                          <h4>John Doe</h4>
-                          <p>Software Engineer</p>
-                          <div class="details">
-                            <span><strong>ID:</strong> 12345</span>
-                            <span><strong>Email:</strong> john.doe@example.com</span>
-                            <span><strong>Phone:</strong> +1234567890</span>
-                          </div>
+                          <img src="<%= posts ? posts.featured_image : '/images/upload.png' %>" alt="Profile Picture">
+                          <h4><%= posts.title %></h4>
+                          <p><%= posts.tag_line %></p>
+                          
                         </div>
-                        <!-- Card 2 -->
-                        <div class="suggestion-id-card">
-                          <img src="https://via.placeholder.com/120" alt="Profile Picture">
-                          <h4>Jane Smith</h4>
-                          <p>Data Analyst</p>
-                          <div class="details">
-                            <span><strong>ID:</strong> 67890</span>
-                            <span><strong>Email:</strong> jane.smith@example.com</span>
-                            <span><strong>Phone:</strong> +0987654321</span>
-                          </div>
-                        </div>
-                        <!-- Card 3 -->
-                        <div class="suggestion-id-card">
-                          <img src="https://via.placeholder.com/120" alt="Profile Picture">
-                          <h4>Michael Brown</h4>
-                          <p>Project Manager</p>
-                          <div class="details">
-                            <span><strong>ID:</strong> 11223</span>
-                            <span><strong>Email:</strong> michael.brown@example.com</span>
-                            <span><strong>Phone:</strong> +1122334455</span>
-                          </div>
-                        </div>
+                        <% }) %>
+                        <% } %>
+                      
                       </div>
                     </div>
+                    <% } %>
                     
                     
                   </div>
