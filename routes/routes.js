@@ -671,9 +671,9 @@ router.post("/mail/sendInquiries", masterController.sendInquiries);
 router.post("/mail/bookOrder", masterController.bookOrder);
 
 //nepal division
-router.get("/api/provinces",masterController.getProvinces);
-router.get("/api/districts/:province",masterController.getDistricts);
-router.get("/api/municipalities/:district",masterController.getMunicipalities);
+// router.get("/api/provinces",masterController.getProvinces);
+// router.get("/api/districts/:province",masterController.getDistricts);
+// router.get("/api/municipalities/:district",masterController.getMunicipalities);
 
 
 // FALL BACK ROUTE
