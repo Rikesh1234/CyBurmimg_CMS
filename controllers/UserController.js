@@ -4,8 +4,80 @@ const User = require("../models/user");
 const Permission = require("../models/Permission");
 const Model = require("../models/Model");
 const CustomField = require("../models/CustomField");
+const CustomFieldValue = require("../models/CustomFieldValue");
 
-const { validationResult } = require("express-validator");
+const validationConfig = require("../config/validationConfig.json");
+const {
+  fetchCustomFields,
+  saveCustomFieldValues,
+} = require("../helper/customFieldHelper");
+
+const { body,validationResult } = require("express-validator");
+
+
+async function fetchRoles() {
+  const roles = await Role.find({ status: "active" }).lean();
+  return roles ;
+}
+
+const getUserValidationRules = () => {
+  const rules = [];
+
+  // Validate the username field if it's included in the config
+  if (validationConfig.user.username) {
+    rules.push(
+      body("username")
+        .notEmpty()
+        .withMessage("Username is required")
+        .isLength({ min: 3 })
+        .withMessage("Username must be at least 3 characters long")
+    );
+  }
+
+  // Validate the email field if it's included in the config
+  if (validationConfig.user.email) {
+    rules.push(
+      body("email")
+        .notEmpty()
+        .withMessage("Email is required")
+        .isEmail()
+        .withMessage("Email must be a valid email address")
+    );
+  }
+
+  // Validate the password field if it's included in the config
+  if (validationConfig.user.password) {
+    rules.push(
+      body("password")
+        .notEmpty()
+        .withMessage("Password is required")
+        .isLength({ min: 6 })
+        .withMessage("Password must be at least 6 characters long")
+    );
+  }
+
+  // Confirm password validation
+  if (validationConfig.user.confirmPassword) {
+    rules.push(
+      body("confirm")
+        .notEmpty()
+        .withMessage("Confirm Password is required")
+        .custom((value, { req }) => value === req.body.password)
+        .withMessage("Passwords do not match")
+    );
+  }
+
+  // Validate the role field if it's included in the config
+  if (validationConfig.user.role) {
+    rules.push(
+      body("role")
+        .notEmpty()
+        .withMessage("Role is required")
+    );
+  }
+
+  return rules;
+};
 
 exports.getRolePermissions = async (req, res) => {
   try {
@@ -129,15 +201,10 @@ exports.getUserPage = async (req, res) => {
 //view user Create page
 exports.getUserCreatePage = async (req, res) => {
   try {
-    const showingpage = "user";
-    let customField = await CustomField.find()
-  .populate({
-    path: 'model',  // Populate the 'model' field
-    match: { path: '../models/user' } // Filter to only include models with the specified path
-  })
-  .populate({
-    path: 'target_type', // Populate the 'field' field
-  });
+
+      // Fetch custom fields for the Post module
+      const customField = await fetchCustomFields("User");
+
 
     // Fetch the logged-in user from the session
     const username = req.session.user.username;
@@ -302,35 +369,24 @@ exports.getRoleEditPage = async (req, res) => {
 //cruds for users
 exports.createUser = [
   // Validation for required fields
-  (req, res, next) => {
-    const { username, role, email, password, confirm } = req.body;
-
-    const errorMessages = [];
-
-    // Check for required fields
-    if (!username || username.trim() === "") errorMessages.push("Username is required.");
-    if (!role || role.length === 0) errorMessages.push("Role is required.");
-    if (!email || email.trim() === "") errorMessages.push("Email is required.");
-    if (!password || password.trim() === "") errorMessages.push("Password is required.");
-    if (!confirm || confirm.trim() === "") errorMessages.push("Confirm Password is required.");
-    if (password !== confirm) errorMessages.push("Passwords do not match.");
-
-    // If there are errors, re-render the form with error messages
-    if (errorMessages.length > 0) {
-      return res.render("users/user/user_create_edit", {
-        title: "Create User",
-        errorMessages,
-        formData: req.body, // Repopulate form data
-        user: null,
-        roles: [], // Pass roles if needed
-      });
-    }
-
-    next();
-  },
+  ...getUserValidationRules(),
 
   async (req, res) => {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        // Fetch roles if needed to re-render the form
+        const roles = await fetchRoles();
+
+        return res.render("users/user/user_create_edit", {
+          title: "Create User",
+          errorMessages: errors.array().map((err) => err.msg),
+          formData: req.body, // Repopulate form data
+          user: null,
+          roles,
+          customField:[]
+        });
+      }
       // Extract form data from the request body
       const { username, email, password, role, published, published_date } = req.body;
 
@@ -362,7 +418,7 @@ exports.createUser = [
           title: "Create User",
           errorMessages,
           formData: req.body,
-          user: null,
+          user: null, 
           roles: [], // Pass roles if needed
         });
       }

@@ -156,14 +156,15 @@
                       <div class="form-label">
                         <label for="category">Category</label>
                       </div>
-                      <select name="category" class="select-category form-control" multiple="multiple">
+                      <select name="category[]" class="select-category form-control" multiple="multiple">
                         <% categories.forEach(category => { %>
-                            <option value="<%= category._id %>" <%= post && post.category &&
-                                post.category.toString() === category._id.toString() ? 'selected' : '' %>>
-                                <%= category.title %>
-                            </option>
+                          <option value="<%= category._id %>" 
+                              <%= post && post.category && post.category.map(cat => cat.toString()).includes(category._id.toString()) ? 'selected' : '' %> >
+                              <%= category.title %>
+                          </option>
                         <% }) %>
-                    </select>
+                      </select>
+                      
                     
 
                     </div>
@@ -374,10 +375,33 @@
                     </div>
 
                     <input type="submit" class="full-submit-button form-control" />
-                    <div class="button-box">
+                    <div class="button-box" style="z-index: 99;">
                       <input type="submit" class="submit-button form-control" />
                     <a href="/cms/post">  <input type="button" class="cancel-button form-control" value="cancel" /></a>
                     </div>
+
+                    <% if (suggestionPost !== null) { %>
+                  
+                    <div class="suggestion-container mt-3">
+                      <div class="suggestion-owl-carousel owl-carousel">
+                        <!-- Card 1 -->
+                          <%=  suggestionPost %>   
+                        <% if (Array.isArray(suggestionPost) && suggestionPost.length > 0) { %>
+                          <% suggestionPost.forEach(posts => { %>
+                        <div class="suggestion-id-card">
+                          <img src="<%= posts ? posts.featured_image : '/images/upload.png' %>" alt="Profile Picture">
+                          <h4><%= posts.title %></h4>
+                          <p><%= posts.tag_line %></p>
+                          
+                        </div>
+                        <% }) %>
+                        <% } %>
+                      
+                      </div>
+                    </div>
+                    <% } %>
+                    
+                    
                   </div>
                 </div>
               </form>

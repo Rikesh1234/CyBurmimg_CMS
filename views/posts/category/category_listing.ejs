@@ -117,27 +117,27 @@
         
         <div class="pagination-container">
           <ul class="pagination">
-            <li>
-              <a href="#">First</a>
-            </li>
-            <li>
-              <a href="#">Prev</a>
-            </li>
-            <li>
-              <a href="#">1</a>
-            </li>
-            <li class="active">
-              <a href="#">2</a>
-            </li>
-            <li>
-              <a href="#">3</a>
-            </li>
-            <li>
-              <a href="#">Next</a>
-            </li>
-            <li>
-              <a href="#">Last</a>
-            </li>
+            <% if (currentPage > 1) { %>
+              <li><a href="?page=1">First</a></li>
+              <li><a href="?page=<%= currentPage - 1 %>">Prev</a></li>
+            <% } else { %>
+              <li class="disabled"><a href="#">First</a></li>
+              <li class="disabled"><a href="#">Prev</a></li>
+            <% } %>
+        
+            <% for (let i = 1; i <= totalPages; i++) { %>
+              <li class="<%= currentPage === i ? 'active' : '' %>">
+                <a href="?page=<%= i %>"><%= i %></a>
+              </li>
+            <% } %>
+        
+            <% if (currentPage < totalPages) { %>
+              <li><a href="?page=<%= currentPage + 1 %>">Next</a></li>
+              <li><a href="?page=<%= totalPages %>">Last</a></li>
+            <% } else { %>
+              <li class="disabled"><a href="#">Next</a></li>
+              <li class="disabled"><a href="#">Last</a></li>
+            <% } %>
           </ul>
         </div>
       </main>

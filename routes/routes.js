@@ -126,7 +126,7 @@ router.post(
   postController.deleteAuthor
 );
 
-//categoey
+//category
 router.get(
   "/cms/category",
   cacheMiddleware,
@@ -669,6 +669,12 @@ router.get("/page/:pageSlug", homeController.getStaticPage);
 //mail
 router.post("/mail/sendInquiries", masterController.sendInquiries);
 router.post("/mail/bookOrder", masterController.bookOrder);
+
+//nepal division
+// router.get("/api/provinces",masterController.getProvinces);
+// router.get("/api/districts/:province",masterController.getDistricts);
+// router.get("/api/municipalities/:district",masterController.getMunicipalities);
+
 
 // FALL BACK ROUTE
 router.use((req, res) => {
