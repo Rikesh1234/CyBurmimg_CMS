@@ -56,6 +56,16 @@
                 <span class="card-author-name"><%= post.author %></span>
               </div>
               <div class="card-body p-4">
+                <div class="category-published">
+                  <span class="badge category-name px-2 mt-3"><%= post.category %></span>
+                  <label class="wraper" for="something">
+                    <span class="label-text">Published</span>
+                    <div class="switch-wrap">
+                      <input type="checkbox" checked id="something" />
+                      <div class="switch"></div>
+                    </div>
+                  </label>
+                </div>
                 <a
                   class="d-block my-2 text-dark fw-semibold link-primary"
                   href="/cms/post/edit/<%= post._id %>"

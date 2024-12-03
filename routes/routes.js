@@ -126,7 +126,7 @@ router.post(
   postController.deleteAuthor
 );
 
-//categoey
+//category
 router.get(
   "/cms/category",
   cacheMiddleware,
