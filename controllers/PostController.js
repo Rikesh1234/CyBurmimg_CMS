@@ -368,6 +368,8 @@ exports.getPostEditPage = async (req, res) => {
           values: fieldValues,
         };
       });
+      console.log(post);
+      
 
       if (!post) {
         return res.status(404).send("Post not found");
