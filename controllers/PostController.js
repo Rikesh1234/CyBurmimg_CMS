@@ -139,6 +139,7 @@ exports.getPostCreatePage = async (req, res) => {
         customField,
         gallery_images: [],
         showingpage,
+        suggestionPost: null,
         postsWithCustomFields : null,
       });
     } catch (error) {
@@ -839,6 +840,11 @@ exports.deleteAuthor = async (req, res) => {
 //view Category page
 exports.getCategoryPage = async (req, res) => {
   try {
+    // Fetch total count of categories for pagination calculations
+    const page = parseInt(req.query.page) || 1; // Current page, default to 1
+  const limit = parseInt(req.query.limit) || 10; // Limit per page, default to 10
+  const skip = (page - 1) * limit;
+
     // Fetch total count of categories for pagination calculations
     const totalCategories = await Category.countDocuments();
     const totalPages = Math.ceil(totalCategories / limit);
