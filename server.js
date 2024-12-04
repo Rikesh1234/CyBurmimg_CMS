@@ -1,5 +1,6 @@
 require('dotenv').config();
 require('module-alias/register'); //using alias
+const moduleAlias = require('module-alias')
 const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -9,6 +10,9 @@ const globalData = require('./middleware/globalData');
 const cacheMiddleware = require('./middleware/cacheMiddleware');
 const sessionMiddleware = require('./middleware/sessionMiddleware');
 
+moduleAlias.addAliases({
+  '@'  : path.resolve(__dirname, '.')
+})
 // Dynamically load specific routes based on the THEME environment variable
 const themeRoutesPath = path.join(__dirname, 'routes', 'themeRoutes.js');
 const themeRoutes = require(themeRoutesPath);

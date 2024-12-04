@@ -838,10 +838,6 @@ exports.deleteAuthor = async (req, res) => {
 
 //view Category page
 exports.getCategoryPage = async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Current page, default to 1
-  const limit = parseInt(req.query.limit) || 10; // Limit per page, default to 10
-  const skip = (page - 1) * limit;
-
   try {
     // Fetch total count of categories for pagination calculations
     const totalCategories = await Category.countDocuments();
