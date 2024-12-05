@@ -1,6 +1,6 @@
-const Category = require('../models/Category');
-const Page = require('../models/StaticPage');
-const Package = require('../models/Package');
+const Category = require("../models/Category");
+const Page = require("../models/StaticPage");
+const Package = require("../models/Package");
 const Post = require("../models/Post");
 const CustomFieldValue = require("../models/CustomFieldValue");
 
@@ -18,38 +18,75 @@ module.exports = async (req, res, next) => {
     ]);
     const customField = await fetchCustomFields("Post");
 
-
     // Fetch latest blogs under 'blog' category
     const latestBlogs = await Post.find()
-      .populate({ path: 'category', match: { slug: 'blog' } })
+      .populate({ path: "category", match: { slug: "blog" } })
       .sort({ createdAt: -1 })
       .limit(3);
-    const filteredLatestBlogs = latestBlogs.filter(post => post.category.length > 0);
+    const filteredLatestBlogs = latestBlogs.filter(
+      (post) => post.category.length > 0
+    );
 
     // Fetch custom fields for Posts, Pages, and Categories
-    const [postCustomFields, pageCustomFields, categoryCustomFields] = await Promise.all([
-      fetchCustomFields("Post"),
-      fetchCustomFields("StaticPage"),
-      fetchCustomFields("Category"),
-    ]);
+    const [postCustomFields, pageCustomFields, categoryCustomFields] =
+      await Promise.all([
+        fetchCustomFields("Post"),
+        fetchCustomFields("StaticPage"),
+        fetchCustomFields("Category"),
+      ]);
 
     // Fetch custom field values for Posts, Pages, and Categories
-    const [postCustomFieldValues, pageCustomFieldValues, categoryCustomFieldValues] = await Promise.all([
+    const [
+      postCustomFieldValues,
+      pageCustomFieldValues,
+      categoryCustomFieldValues,
+    ] = await Promise.all([
       CustomFieldValue.find({ entityType: "Post" }),
       CustomFieldValue.find({ entityType: "StaticPage" }),
       CustomFieldValue.find({ entityType: "Category" }),
     ]);
 
     // Helper to enrich entities with custom fields and values
-    const enrichEntitiesWithCustomFields = (entities, customFields, customFieldValues) => {
-      return entities.map(entity => {
-        const customFieldValuesObj = customFields.reduce((acc, field) => {
-          const fieldValues = {};
-          const valueRecords = customFieldValues.filter(val => val.customField.toString() === field._id.toString());
+    const enrichEntitiesWithCustomFields = (
+      entities = [],
+      customFields = [],
+      customFieldValues = []
+    ) => {
+      // Validate inputs
+      if (
+        !Array.isArray(entities) ||
+        !Array.isArray(customFields) ||
+        !Array.isArray(customFieldValues)
+      ) {
+        throw new Error(
+          "Invalid input: entities, customFields, and customFieldValues must be arrays."
+        );
+      }
 
-          field.field_name.forEach(fieldName => {
-            const valueRecord = valueRecords.find(val => val.fieldName === fieldName);
-            fieldValues[fieldName] = valueRecord ? valueRecord.value : "";
+      // Return original entities if no custom fields are defined
+      if (customFields.length === 0) {
+        return entities.map((entity) => ({
+          ...ensureObject(entity), // Convert to object if needed
+          customFieldValues: {}, // Provide an empty customFieldValues object
+        }));
+      }
+
+      return entities.map((entity) => {
+        const customFieldValuesObj = customFields.reduce((acc, field) => {
+          if (!field.field_name || !Array.isArray(field.field_name)) {
+            return acc; // Skip if field_name is missing or not an array
+          }
+
+          const fieldValues = {};
+          const valueRecords = customFieldValues.filter(
+            (val) => val.customField?.toString() === field._id?.toString()
+          );
+
+          field.field_name.forEach((fieldName) => {
+            const valueRecord = valueRecords.find(
+              (val) => val.fieldName === fieldName
+            );
+            fieldValues[fieldName] = valueRecord ? valueRecord.value : ""; // Default to empty string if not found
           });
 
           Object.assign(acc, fieldValues);
@@ -57,16 +94,36 @@ module.exports = async (req, res, next) => {
         }, {});
 
         return {
-          ...entity.toObject(),
+          ...ensureObject(entity), // Convert to object if needed
           customFieldValues: customFieldValuesObj,
         };
       });
     };
 
+    // Utility function to ensure entity is a plain object
+    const ensureObject = (entity) => {
+      if (entity && typeof entity.toObject === "function") {
+        return entity.toObject(); // If it's a Mongoose document, call toObject()
+      }
+      return typeof entity === "object" ? entity : {}; // Otherwise, return as-is or empty object
+    };
+
     // Enrich posts, pages, and categories with custom fields and values
-    const enrichedPosts = enrichEntitiesWithCustomFields(posts, postCustomFields, postCustomFieldValues);
-    const enrichedPages = enrichEntitiesWithCustomFields(pages, pageCustomFields, pageCustomFieldValues);
-    const enrichedCategories = enrichEntitiesWithCustomFields(categories, categoryCustomFields, categoryCustomFieldValues);
+    const enrichedPosts = enrichEntitiesWithCustomFields(
+      posts,
+      postCustomFields,
+      postCustomFieldValues
+    );
+    const enrichedPages = enrichEntitiesWithCustomFields(
+      pages,
+      pageCustomFields,
+      pageCustomFieldValues
+    );
+    const enrichedCategories = enrichEntitiesWithCustomFields(
+      categories,
+      categoryCustomFields,
+      categoryCustomFieldValues
+    );
 
     // User-related information
     const userInfo = req.session.user
@@ -81,16 +138,16 @@ module.exports = async (req, res, next) => {
 
     // Contact details
     const contact = {
-      phone: '+04 20 900 310',
-      email: 'anilsah37618@gmail.com',
+      phone: "+04 20 900 310",
+      email: "anilsah37618@gmail.com",
       socialLinks: {
-        facebook: '#',
-        instagram: '#',
-        twitter: '#',
-        linkedin: '#',
+        facebook: "#",
+        instagram: "#",
+        twitter: "#",
+        linkedin: "#",
       },
     };
-    
+
     // Set data in res.locals
     Object.assign(res.locals, {
       categories: enrichedCategories,
