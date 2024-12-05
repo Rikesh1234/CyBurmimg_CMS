@@ -814,3 +814,64 @@ exports.getSuggestionPost = async (post,category,customField) => {
   }
 };
 // ------------Suggestion Post--------------------------------------------------------------
+
+
+// ------------Search tutor post--------------------------------------------------------------
+
+exports.searchTutors = async (req, res) => {
+  try {
+    const { location, level, subject } = req.query;
+
+    // Fetch tutor posts with matching criteria
+    const tutors = await Post.find({
+      category: await Category.findOne({ slug: 'for-tutor' }).select('_id'),
+      location: { $regex: new RegExp(location, 'i') },
+      level: { $regex: new RegExp(level, 'i') },
+      subject: { $regex: new RegExp(subject, 'i') },
+    });
+
+    res.status(200).json({
+      success: true,
+      tutors,
+    });
+    // res.render('search/tutors', {
+    //   title: 'Search Tutors',
+    //   results: tutors,
+    //   query: { location, level, subject },
+    // });
+  } catch (error) {
+    console.error('Error fetching tutors:', error);
+    res.status(500).send('Server Error');
+  }
+};
+// ------------Search tutor post--------------------------------------------------------------
+
+
+// ------------Search student post--------------------------------------------------------------
+
+exports.searchStudents = async (req, res) => {
+  try {
+    const { location, level, subject } = req.query;
+
+    // Fetch student posts with matching criteria
+    const students = await Post.find({
+      category: await Category.findOne({ slug: 'for-student' }).select('_id'),
+      location: { $regex: new RegExp(location, 'i') },
+      level: { $regex: new RegExp(level, 'i') },
+      subject: { $regex: new RegExp(subject, 'i') },
+    });
+    res.status(200).json({
+      success: true,
+      students,
+    });
+    // res.render('search/students', {
+    //   title: 'Search Students',
+    //   results: students,
+    //   query: { location, level, subject },
+    // });
+  } catch (error) {
+    console.error('Error fetching students:', error);
+    res.status(500).send('Server Error');
+  }
+};
+// ------------Search student post--------------------------------------------------------------

@@ -150,9 +150,9 @@ exports.getDistricts= async (req, res) => {
     const districts= districtsData.districts[province];
     if(districts){
       console.log(districts);
-      res.json(districts);
+      return res.json(districts);
     }else{
-      res.status(404).json({error: "Provnce not found"});
+      return res.status(404).json({error: "Provnce not found"});
     }
   } catch(err){
     console.error(err);
@@ -164,7 +164,7 @@ exports.getMunicipalities= async (req, res) => {
     const {district} = req.params;
     const municipalities= municipalitiesData.municipalities[district];
     if(municipalities){
-      res.json(municipalities);
+      return res.json(municipalities);
     }else{
       res.status(404).json({error: "District not found"});
     }

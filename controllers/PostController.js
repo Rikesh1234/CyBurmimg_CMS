@@ -139,6 +139,7 @@ exports.getPostCreatePage = async (req, res) => {
         customField,
         gallery_images: [],
         showingpage,
+        suggestionPost: null,
         postsWithCustomFields : null,
       });
     } catch (error) {
@@ -368,6 +369,7 @@ exports.getPostEditPage = async (req, res) => {
           values: fieldValues,
         };
       });
+      
 
       if (!post) {
         return res.status(404).send("Post not found");
@@ -840,12 +842,18 @@ exports.deleteAuthor = async (req, res) => {
 exports.getCategoryPage = async (req, res) => {
   try {
     // Fetch total count of categories for pagination calculations
+    const page = parseInt(req.query.page) || 1; // Current page, default to 1
+  const limit = parseInt(req.query.limit) || 10; // Limit per page, default to 10
+  const skip = (page - 1) * limit;
+
+    // Fetch total count of categories for pagination calculations
     const totalCategories = await Category.countDocuments();
     const totalPages = Math.ceil(totalCategories / limit);
 
-    // Fetch categories with pagination
-    const categories = await Category.find()
+    // Fetch active categories with pagination, sorted by order and createdAt
+    const categories = await Category.find({ status: "active" })
       .populate("parent")
+      .sort({ order: 1, createdAt: 1 }) 
       .skip(skip)
       .limit(limit);
 
@@ -879,8 +887,7 @@ exports.createCategory = [
 
   // Process request
   async (req, res) => {
-    console.log(req.file);
-    console.log(req.body);
+
 
     const errors = validationResult(req);
 
@@ -897,7 +904,7 @@ exports.createCategory = [
     }
 
     try {
-      const { title, slug, tag_line, parent, content } = req.body;
+      const { title, slug, tag_line, parent, content ,order } = req.body;
       const status = req.body.status === "on" ? "active" : "inactive";
       const parentCategory = parent === "None" ? null : parent;
 
@@ -909,6 +916,7 @@ exports.createCategory = [
         parent: parentCategory,
         content,
         status,
+        order: order || 999
       });
 
       // Handle uploaded file (category_image)
@@ -1089,7 +1097,7 @@ exports.getCategoryEditPage = async (req, res) => {
 // Update Category
 exports.updateCategory = async (req, res) => {
   try {
-    const { title, slug, tag_line, parent, content } = req.body;
+    const { title, slug, tag_line, parent, content,order } = req.body;
 
     // Check if a file was uploaded
     let featured_image = req.body.existing_featured_image;
@@ -1102,7 +1110,8 @@ exports.updateCategory = async (req, res) => {
       tag_line,
       parent: parent === "None" ? null : parent,
       content,
-      featured_image, // Set updated image
+      featured_image,
+      order: order || 999
     };
 
     const categoryId = req.params.categoryId;
