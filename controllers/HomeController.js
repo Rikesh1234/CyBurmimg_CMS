@@ -9,6 +9,8 @@ const StaticPage = require("../models/StaticPage");
 const Testominal = require("../models/Testominal");
 const Gallery = require("../models/Gallery");
 const CustomFieldValue = require("../models/CustomFieldValue");
+const CustomField = require("../models/CustomField");
+
 const logger = require("../logger");
 
 const {
@@ -384,71 +386,6 @@ exports.getPackage = async (req, res) => {
 };
 // ---------END PRICE------------------------------------------------------
 
-// ---------NEW POST----------------------------------------------------------
-// exports.createNewPost = async (req, res) => {
-//   try {
-//     const {
-//       title,
-//       slug,
-//       tag_line,
-//       summary,
-//       content,
-//       category,
-//       author,
-//       tags,
-//       photo_gallery,
-//       gallery,
-//       published,
-//       featured_image,
-//     } = req.body;
-
-//     // Validate required fields
-//     if (!title || !content || !category || !slug) {
-//       return res.status(400).json({
-//         error: 'Title, content, slug, and category are required fields.',
-//       });
-//     }
-
-//     // Create a new post instance
-//     const post = new Post({
-//       title,
-//       slug,
-//       tag_line,
-//       summary,
-//       content,
-//       category,
-//       author,
-//       tags,
-//       photo_gallery,
-//       gallery,
-//       published,
-//       featured_image,
-//     });
-
-//     // Save the post to the database
-//     const savedPost = await post.save();
-
-//     // Respond with success
-//     res.status(201).json({
-//       message: 'Post created successfully',
-//       post: savedPost,
-//     });
-//   } catch (error) {
-//     // Check for duplicate slug error
-//     if (error.code === 11000 && error.keyPattern && error.keyPattern.slug) {
-//       return res.status(400).json({
-//         error: 'Slug must be unique. The provided slug already exists.',
-//       });
-//     }
-
-//     // Log and return server error
-//     console.error('Error creating post:', error);
-//     res.status(500).json({ error: 'Server error. Please try again later.' });
-//   }
-// };
-
-// ---------END NEW POST------------------------------------------------------
-
 // ---------STUDENT FORM FOR NEW POST------------------------------------------------------
 
 // Controller to handle form submission
@@ -663,7 +600,7 @@ exports.submitTeacherForm = async (req, res) => {
 // ---------STUDENT FORM FOR NEW POST------------------------------------------------------
 
 // ------------Suggestion Post--------------------------------------------------------------
-exports.getSuggestionPost = async (post,category,customField) => {
+exports.getSuggestionPost = async (post, category, customField) => {
   try {
     if (themeConfig.POST_SUGGESTION_MODULE) {
       const customSuggestionCategory = themeConfig.POST_SUGGESTION_CATEGORY;
@@ -797,12 +734,11 @@ exports.getSuggestionPost = async (post,category,customField) => {
               customFields: customFieldMap[post._id.toString()] || [],
             }));
 
-           
             return postsWithCustomFields;
           }
         }
       }
-    }else{
+    } else {
       return null;
     }
   } catch (error) {
@@ -815,63 +751,150 @@ exports.getSuggestionPost = async (post,category,customField) => {
 };
 // ------------Suggestion Post--------------------------------------------------------------
 
+// Utility function to enrich entities with custom field values
+const enrichEntitiesWithCustomFields = (
+  entities,
+  customFields,
+  customFieldValues
+) => {
+  return entities.map((entity) => {
+    const customFieldValuesObj = customFields.reduce((acc, field) => {
+      const fieldValues = {};
+      const valueRecords = customFieldValues.filter(
+        (val) => val.customField.toString() === field._id.toString()
+      );
 
-// ------------Search tutor post--------------------------------------------------------------
+      field.field_name.forEach((fieldName) => {
+        const valueRecord = valueRecords.find(
+          (val) => val.fieldName === fieldName
+        );
+        fieldValues[fieldName] = valueRecord ? valueRecord.value : "";
+      });
 
-exports.searchTutors = async (req, res) => {
-  try {
-    const { location, level, subject } = req.query;
+      Object.assign(acc, fieldValues);
+      return acc;
+    }, {});
 
-    // Fetch tutor posts with matching criteria
-    const tutors = await Post.find({
-      category: await Category.findOne({ slug: 'for-tutor' }).select('_id'),
-      location: { $regex: new RegExp(location, 'i') },
-      level: { $regex: new RegExp(level, 'i') },
-      subject: { $regex: new RegExp(subject, 'i') },
-    });
-
-    res.status(200).json({
-      success: true,
-      tutors,
-    });
-    // res.render('search/tutors', {
-    //   title: 'Search Tutors',
-    //   results: tutors,
-    //   query: { location, level, subject },
-    // });
-  } catch (error) {
-    console.error('Error fetching tutors:', error);
-    res.status(500).send('Server Error');
-  }
+    return {
+      ...entity.toObject(),
+      customFieldValues: customFieldValuesObj,
+    };
+  });
 };
 // ------------Search tutor post--------------------------------------------------------------
 
+// Function to search tutors
+exports.searchTutors = async (req, res) => {
+  try {
+    const { level, subject, location, district } = req.query;
+
+    const tutorCategory = await Category.findOne({ slug: 'for-tutor' }).select('_id');
+
+    if (!tutorCategory) {
+      return res.status(404).json({ success: false, message: 'Tutor category not found' });
+    }
+
+
+    let tutorPosts = await Post.find({
+      category: tutorCategory._id,
+    }).populate('category', 'slug title');
+
+    const customFieldValues = await CustomFieldValue.find({
+      entityId: { $in: tutorPosts.map((post) => post._id) },
+      fieldName: { $in: ['location', 'district'] },
+    });
+
+    if (level || subject || location || district) {
+      const levelCategory = level ? await Category.findOne({ slug: level }).select('_id') : null;
+      const subjectCategory = subject ? await Category.findOne({ slug: subject }).select('_id') : null;
+
+      tutorPosts = tutorPosts.filter((post) => {
+        const postCustomFields = customFieldValues.filter((cfv) => cfv.entityId.equals(post._id));
+        const postLocation = postCustomFields.find((cfv) => cfv.fieldName === 'location')?.value;
+        const postDistrict = postCustomFields.find((cfv) => cfv.fieldName === 'district')?.value;
+
+        // Check if post matches the level or subject category
+        const matchesLevel = levelCategory ? post.category.some((cat) => cat.equals(levelCategory._id)) : true;
+        const matchesSubject = subjectCategory ? post.category.some((cat) => cat.equals(subjectCategory._id)) : true;
+
+        // Check if post matches the location or district
+        const matchesLocation = location ? postLocation?.toLowerCase() === location.toLowerCase() : true;
+        const matchesDistrict = district ? postDistrict?.toLowerCase() === district.toLowerCase() : true;
+
+        // Return posts that match any of the conditions (OR logic for level/subject, AND logic for location/district)
+        return (matchesLevel || matchesSubject) && matchesLocation && matchesDistrict;
+      });
+    }
+
+
+    // Step 5: Respond with the filtered posts
+    res.status(200).json({
+      success: true,
+      tutors: tutorPosts,
+    });
+
+  } catch (error) {
+    console.error('Error fetching tutors:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
+// ------------Search tutor post--------------------------------------------------------------
 
 // ------------Search student post--------------------------------------------------------------
 
+// Function to search students
 exports.searchStudents = async (req, res) => {
   try {
-    const { location, level, subject } = req.query;
+    const { location, level, subject, district } = req.query;
 
-    // Fetch student posts with matching criteria
-    const students = await Post.find({
-      category: await Category.findOne({ slug: 'for-student' }).select('_id'),
-      location: { $regex: new RegExp(location, 'i') },
-      level: { $regex: new RegExp(level, 'i') },
-      subject: { $regex: new RegExp(subject, 'i') },
+    const studentCategory = await Category.findOne({ slug: 'for-student' }).select('_id');
+    
+    if (!studentCategory) {
+      return res.status(404).json({ success: false, message: 'Student category not found' });
+    }
+
+    let studentPosts = await Post.find({
+      category: studentCategory._id,
+    }).populate('category', 'slug title');
+
+    const customFieldValues = await CustomFieldValue.find({
+      entityId: { $in: studentPosts.map((post) => post._id) },
+      fieldName: { $in: ['location', 'district'] },
     });
+
+    if (level || subject || location || district) {
+      const levelCategory = level ? await Category.findOne({ slug: level }).select('_id') : null;
+      const subjectCategory = subject ? await Category.findOne({ slug: subject }).select('_id') : null;
+
+      studentPosts = studentPosts.filter((post) => {
+        const postCustomFields = customFieldValues.filter((cfv) => cfv.entityId.equals(post._id));
+        const postLocation = postCustomFields.find((cfv) => cfv.fieldName === 'location')?.value;
+        const postDistrict = postCustomFields.find((cfv) => cfv.fieldName === 'district')?.value;
+
+        // Check if post matches the level or subject category
+        const matchesLevel = levelCategory ? post.category.some((cat) => cat.equals(levelCategory._id)) : true;
+        const matchesSubject = subjectCategory ? post.category.some((cat) => cat.equals(subjectCategory._id)) : true;
+
+        // Check if post matches the location or district
+        const matchesLocation = location ? postLocation?.toLowerCase() === location.toLowerCase() : true;
+        const matchesDistrict = district ? postDistrict?.toLowerCase() === district.toLowerCase() : true;
+
+        // Return posts that match any of the conditions (OR logic for level/subject, AND logic for location/district)
+        return (matchesLevel || matchesSubject) && matchesLocation && matchesDistrict;
+      });
+    }
+
+    // Step 5: Respond with the filtered posts
     res.status(200).json({
       success: true,
-      students,
+      students: studentPosts,
     });
-    // res.render('search/students', {
-    //   title: 'Search Students',
-    //   results: students,
-    //   query: { location, level, subject },
-    // });
+
   } catch (error) {
     console.error('Error fetching students:', error);
-    res.status(500).send('Server Error');
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
+
 // ------------Search student post--------------------------------------------------------------

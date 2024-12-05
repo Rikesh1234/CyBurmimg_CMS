@@ -16,7 +16,6 @@ exports.sendInquiries = async (req, res) => {
   };
   const to = process.env.MAIL_RECEIVER.split(',');
   const subject = "Customer Inquiry";
-  console.log(req.body);
   // Render the EJS template and pass data
   const html = await ejs.renderFile(
     path.join(
@@ -110,7 +109,6 @@ exports.getLoginUserData = async (req, res) => {
     // Get the username from the session
     const username = req.session.user.username;
 
-    console.log(username);
 
     // Fetch the user by username
     const user = await User.findOne({ username });
@@ -137,7 +135,6 @@ exports.getLoginUserData = async (req, res) => {
 //nepal division
 exports.getProvinces= async (req, res) => {
   try{
-    console.log(provincesData);
     res.json(provincesData["provinces"]);
   } catch(err){
     console.error(err);
@@ -149,7 +146,6 @@ exports.getDistricts= async (req, res) => {
     const {province} = req.params;
     const districts= districtsData.districts[province];
     if(districts){
-      console.log(districts);
       return res.json(districts);
     }else{
       return res.status(404).json({error: "Provnce not found"});
