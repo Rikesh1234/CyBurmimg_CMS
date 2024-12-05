@@ -1,45 +1,85 @@
-// globalData middleware
 const Category = require('../models/Category');
 const Page = require('../models/StaticPage');
 const Package = require('../models/Package');
 const Post = require("../models/Post");
+const CustomFieldValue = require("../models/CustomFieldValue");
 
-const {
-  fetchCustomFields,
-  saveCustomFieldValues,
-} = require("../helper/customFieldHelper");
-
-
+const { fetchCustomFields } = require("../helper/customFieldHelper");
 const { truncateWords } = require("../helper/truncateWord");
 
 module.exports = async (req, res, next) => {
   try {
-    const categories = await Category.find();
-    const pages = await Page.find();
-    const packages = await Package.find();
-    const posts = await Post.find().sort({ createdAt: -1 }).limit(5);
-    const latestBlogs = await Post.find()
-    .populate({
-      path: 'category',
-      match: { slug: 'blog' }
-    })
-    .sort({ createdAt: -1 })
-    .limit(3);
-
+    // Fetch entities
+    const [categories, pages, packages, posts] = await Promise.all([
+      Category.find(),
+      Page.find(),
+      Package.find(),
+      Post.find().sort({ createdAt: -1 }).limit(5),
+    ]);
     const customField = await fetchCustomFields("Post");
 
 
-    if (req.session.user) {
-      res.locals.loginFeaturedImage = req.session.user.featuredImage;
-      res.locals.loginUser = req.session.user.username;
-    } else {
-      res.locals.loginFeaturedImage = null;
-      res.locals.loginUser = null;
-    }
-  
-  // Filter out posts where category didn't match (in case of no blog category)
-  const filteredLatestBlogs = latestBlogs.filter(post => post.category.length > 0);  
-    // Replace with your actual contact details fetching logic
+    // Fetch latest blogs under 'blog' category
+    const latestBlogs = await Post.find()
+      .populate({ path: 'category', match: { slug: 'blog' } })
+      .sort({ createdAt: -1 })
+      .limit(3);
+    const filteredLatestBlogs = latestBlogs.filter(post => post.category.length > 0);
+
+    // Fetch custom fields for Posts, Pages, and Categories
+    const [postCustomFields, pageCustomFields, categoryCustomFields] = await Promise.all([
+      fetchCustomFields("Post"),
+      fetchCustomFields("StaticPage"),
+      fetchCustomFields("Category"),
+    ]);
+
+    // Fetch custom field values for Posts, Pages, and Categories
+    const [postCustomFieldValues, pageCustomFieldValues, categoryCustomFieldValues] = await Promise.all([
+      CustomFieldValue.find({ entityType: "Post" }),
+      CustomFieldValue.find({ entityType: "StaticPage" }),
+      CustomFieldValue.find({ entityType: "Category" }),
+    ]);
+
+    // Helper to enrich entities with custom fields and values
+    const enrichEntitiesWithCustomFields = (entities, customFields, customFieldValues) => {
+      return entities.map(entity => {
+        const customFieldValuesObj = customFields.reduce((acc, field) => {
+          const fieldValues = {};
+          const valueRecords = customFieldValues.filter(val => val.customField.toString() === field._id.toString());
+
+          field.field_name.forEach(fieldName => {
+            const valueRecord = valueRecords.find(val => val.fieldName === fieldName);
+            fieldValues[fieldName] = valueRecord ? valueRecord.value : "";
+          });
+
+          Object.assign(acc, fieldValues);
+          return acc;
+        }, {});
+
+        return {
+          ...entity.toObject(),
+          customFieldValues: customFieldValuesObj,
+        };
+      });
+    };
+
+    // Enrich posts, pages, and categories with custom fields and values
+    const enrichedPosts = enrichEntitiesWithCustomFields(posts, postCustomFields, postCustomFieldValues);
+    const enrichedPages = enrichEntitiesWithCustomFields(pages, pageCustomFields, pageCustomFieldValues);
+    const enrichedCategories = enrichEntitiesWithCustomFields(categories, categoryCustomFields, categoryCustomFieldValues);
+
+    // User-related information
+    const userInfo = req.session.user
+      ? {
+          loginFeaturedImage: req.session.user.featuredImage,
+          loginUser: req.session.user.username,
+        }
+      : {
+          loginFeaturedImage: null,
+          loginUser: null,
+        };
+
+    // Contact details
     const contact = {
       phone: '+04 20 900 310',
       email: 'anilsah37618@gmail.com',
@@ -47,24 +87,22 @@ module.exports = async (req, res, next) => {
         facebook: '#',
         instagram: '#',
         twitter: '#',
-        linkedin: '#'
-      }
+        linkedin: '#',
+      },
     };
     
-
-    // Attach categories, pages, and contact to res.locals for global access
-    res.locals.categories = categories;
-    res.locals.pages = pages;
-    res.locals.contact = contact;
-    res.locals.packages = packages;
-    res.locals.posts = posts;
-    res.locals.latestBlogs = filteredLatestBlogs
-    res.locals.truncateWords = truncateWords;
-    res.locals.customField = customField
-
-    
-
-    
+    // Set data in res.locals
+    Object.assign(res.locals, {
+      categories: enrichedCategories,
+      pages: enrichedPages,
+      packages,
+      customField,
+      posts: enrichedPosts,
+      latestBlogs: filteredLatestBlogs,
+      truncateWords,
+      contact,
+      ...userInfo,
+    });
 
     next();
   } catch (err) {

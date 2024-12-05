@@ -13,7 +13,9 @@ const categorySchema = new mongoose.Schema({
   parent: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
   featured_image: { type: String, default: '/uploads/category/default.jpg' },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  order: { type: Number, default: 999 }, 
+
 });
 
 // Condtion to check to if category is assigned or not
