@@ -183,6 +183,7 @@ exports.createPost = [
           formConfig: validationConfig.post,
           customField: [],
           gallery_images: [],
+          showingpage: "create_post", 
         });
       }
 
